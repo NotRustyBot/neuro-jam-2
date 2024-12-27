@@ -1,0 +1,20 @@
+{
+  "name": "neuro-jam-2",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc && vite build",
+    "preview": "vite preview"
+  },
+  "devDependencies": {
+    "typescript": "~5.6.2",
+    "vite": "^6.0.5"
+  },
+  "dependencies": {
+    "@types/howler": "^2.2.12",
+    "howler": "^2.2.4",
+    "pixi.js": "^8.6.6"
+  }
+}
