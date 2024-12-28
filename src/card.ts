@@ -143,8 +143,7 @@ export class Card {
         this.inHand = true;
         this.container.position.x = 0;
         this.container.position.y = 1000;
-        this.description.text = this.definition.description += " ";
-        this.description.text = this.definition.description;
+        this.description._didTextUpdate = true;
     }
 
     destroy(): void {
