@@ -3,11 +3,16 @@ import { Player } from "./player";
 import { createCardDefinitions } from "./cardDefinitions";
 import { createEquipmentDefinitions } from "./equipment";
 import { UIManager } from "./uiManager";
+import { Background } from "./background";
+
 export let game: Game;
 export class Game {
     app: Application;
     player!: Player;
+    bakcground!: Background;
     clickableBg!: Graphics;
+    backgroundContainer = new Container();
+    enemyContainer = new Container();
     cardContainer = new Container();
     uiContainer = new Container();
 
@@ -35,10 +40,13 @@ export class Game {
         this.clickableBg.fill(0x000000);
 
         this.app.stage.addChild(this.clickableBg);
+        this.app.stage.addChild(this.backgroundContainer);
+        this.app.stage.addChild(this.enemyContainer);
         this.app.stage.addChild(this.cardContainer);
         this.app.stage.addChild(this.uiContainer);
         this.player = new Player();
         this.uiManager = new UIManager();
+        this.bakcground = new Background();
 
         this.app.stage.interactive = true;
         this.app.stage.on("pointermove", (e) => {
@@ -67,9 +75,8 @@ export class Game {
 
     update(dt: number) {
         this.player.update(dt);
-
         this.uiManager.update(dt);
-
+        this.bakcground.update(dt);
 
         const deck = this.player.instance.deck.map((card) => card.definition.name).join(", ");
         const used = this.player.instance.usedPile.map((card) => card.definition.name).join(", ");

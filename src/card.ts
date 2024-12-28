@@ -1,6 +1,7 @@
 import { Container, Graphics, HTMLText, Text } from "pixi.js";
 import { CardDefinition, cardDefinitions, CardTemplate } from "./cardDefinitions";
 import { game } from "./game";
+import { BattleInstance } from "./player";
 
 export class Card {
     type: CardTemplate;
@@ -22,8 +23,10 @@ export class Card {
     }
 
     definition: CardDefinition;
+    instance: BattleInstance;
 
-    constructor(type: CardTemplate) {
+    constructor(type: CardTemplate, instance: BattleInstance) {
+        this.instance = instance;
         this.type = type;
         this.definition = cardDefinitions.get(this.type)!;
         this.container = new Container();
@@ -73,14 +76,14 @@ export class Card {
         if (!this.inHand) {
             return;
         }
-        const myIndex = game.player.instance.hand.indexOf(this);
-        const cardCount = game.player.instance.hand.length;
+        const myIndex = this.instance.hand.indexOf(this);
+        const cardCount = this.instance.hand.length;
         const halfCount = Math.floor(cardCount / 2);
         const cardWidth = 230 - 10 * (cardCount - 1);
 
         let targetAngle = myIndex * 0.1 - halfCount * 0.1;
 
-        if (this.isHovered && game.player.instance.activeCard == null) {
+        if (this.isHovered && this.instance.activeCard == null) {
             targetAngle = 0;
             game.cardContainer.setChildIndex(this.container, cardCount - 1);
             if (game.mouse.down) {
@@ -114,9 +117,9 @@ export class Card {
     }
 
     play() {
-        this.definition.onPlayed?.(game.player, game.player.instance.enemy);
-        game.player.instance.usedPile.push(this);
-        game.player.instance.hand.splice(game.player.instance.hand.indexOf(this), 1);
+        this.definition.onPlayed?.(game.player, this.instance.enemy);
+        this.instance.usedPile.push(this);
+        this.instance.hand.splice(this.instance.hand.indexOf(this), 1);
         this.hide();
     }
 

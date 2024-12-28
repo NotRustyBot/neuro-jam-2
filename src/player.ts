@@ -40,7 +40,7 @@ export class BattleInstance {
         }
 
         for (const template of this.library) {
-            this.deck.push(new Card(template));
+            this.deck.push(new Card(template, this));
         }
 
         this.shuffleDeck();
