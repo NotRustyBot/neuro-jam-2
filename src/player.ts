@@ -12,20 +12,49 @@ export class Player {
     instance!: BattleInstance;
     inBattle: boolean = false;
 
+    
+    library = new Array<CardTemplate>();
+    deck = new Array<Card>();
+    hand = new Array<Card>();
+    discardPile = new Array<Card>();
+    usedPile = new Array<Card>();
+
+    equipment: Equipment[];
+
+    activeCard: Card | null = null;
+
     constructor() {
+        const equipment = [EquipmentTemplate.blastRing, EquipmentTemplate.alchemyKit]; 
         this.buffs = new Buffs(this);
+        this.equipment = equipment.map((eq) => equipmentDefinitions.get(eq)!);
+
+
+    }
+
+    startBattle(instance: BattleInstance) {
+        this.inBattle = true;
+        this.instance = instance;
+        for (const eq of this.equipment) {
+            eq.cards.forEach((card) => this.library.push(card));
+        }
+
+        for (const template of this.library) {
+            this.deck.push(new Card(template, this.instance));
+        }
+
+        this.shuffleDeck();
     }
 
     update(dt: number) {
         if(this.inBattle){
-            this.instance.hand.forEach((card) => card.update(dt));
+            this.hand.forEach((card) => card.update(dt));
         }
     }
 
     startTurn() {
         game.encounter.nextTurn();
         this.buffs.startTurn();
-        this.instance.drawCards(2);
+        this.drawCards(2);
     }
 
     endTurn(): void {
@@ -37,37 +66,6 @@ export class Player {
         for (let i = 0; i < quantity; i++) {
             this.health -= damage;
         }
-    }
-}
-
-export class BattleInstance {
-    enemy: Enemy;
-
-    library = new Array<CardTemplate>();
-    deck = new Array<Card>();
-    hand = new Array<Card>();
-    discardPile = new Array<Card>();
-    usedPile = new Array<Card>();
-
-    equipment: Equipment[];
-
-    activeCard: Card | null = null;
-
-    constructor(enemy: Enemy) {
-        const equipment = [EquipmentTemplate.blastRing, EquipmentTemplate.alchemyKit]; // player 
-        this.equipment = equipment.map((eq) => equipmentDefinitions.get(eq)!);
-
-        for (const eq of this.equipment) {
-            eq.cards.forEach((card) => this.library.push(card));
-        }
-
-        for (const template of this.library) {
-            this.deck.push(new Card(template, this));
-        }
-
-        this.shuffleDeck();
-
-        this.enemy = enemy;
     }
 
     drawCards(count: number) {
@@ -91,5 +89,16 @@ export class BattleInstance {
 
     shuffleDeck() {
         this.deck.sort(() => Math.random() - 0.5);
+    }
+}
+
+export class BattleInstance {
+    enemy: Enemy;
+    player: Player;
+
+
+    constructor(enemy: Enemy) {
+        this.player = game.player;
+        this.enemy = enemy;
     }
 }

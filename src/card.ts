@@ -15,11 +15,11 @@ export class Card {
 
     isHovered = false;
     get isActive() {
-        return game.player.instance.activeCard == this;
+        return game.player.activeCard == this;
     }
 
     set isActive(value: boolean) {
-        game.player.instance.activeCard = value ? this : null;
+        game.player.activeCard = value ? this : null;
     }
 
     definition: CardDefinition;
@@ -77,14 +77,14 @@ export class Card {
         if (!this.inHand) {
             return;
         }
-        const myIndex = this.instance.hand.indexOf(this);
-        const cardCount = this.instance.hand.length;
+        const myIndex = game.player.hand.indexOf(this);
+        const cardCount = game.player.hand.length;
         const halfCount = Math.floor(cardCount / 2);
         const cardWidth = 230 - 10 * (cardCount - 1);
 
         let targetAngle = myIndex * 0.1 - halfCount * 0.1;
 
-        if (this.isHovered && this.instance.activeCard == null) {
+        if (this.isHovered && game.player.activeCard == null) {
             targetAngle = 0;
             game.cardContainer.setChildIndex(this.container, cardCount - 1);
             if (game.mouse.down) {
@@ -125,8 +125,8 @@ export class Card {
 
     play() {
         this.definition.onPlayed?.(game.player, this.instance.enemy);
-        this.instance.usedPile.push(this);
-        this.instance.hand.splice(this.instance.hand.indexOf(this), 1);
+        game.player.usedPile.push(this);
+        game.player.hand.splice(game.player.hand.indexOf(this), 1);
         this.hide();
     }
 

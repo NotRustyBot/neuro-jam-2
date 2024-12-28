@@ -22,6 +22,10 @@ export class Encounter {
         return this.inPast ? this.pastBackground : this.futureBackground;
     }
 
+    get instance(){
+        return this.inPast ? this.past : this.future;
+    }
+
     constructor(template: EncounterTemplate) {
         this.past = new BattleInstance(new Enemy(template.pastEnemy));
         this.future = new BattleInstance(new Enemy(template.futureEnemy));
@@ -35,8 +39,9 @@ export class Encounter {
     }
 
     begin() {
+        game.player.startBattle(this.instance);
         game.player.startTurn();
-        game.player.instance.enemy.show();
+        this.instance.enemy.show();
     }
 
     nextTurn() {
@@ -49,10 +54,10 @@ export class Encounter {
 
     switch(){
         this.inPast = !this.inPast;
-        game.player.instance.hand.forEach((card) => card.hide());
+        game.player.hand.forEach((card) => card.hide());
         game.player.instance.enemy.hide();
         game.player.instance = this.inPast ? this.past : this.future;
-        game.player.instance.hand.forEach((card) => card.show());
+        game.player.hand.forEach((card) => card.show());
         game.player.instance.enemy.show();
     }
 }

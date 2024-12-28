@@ -1,4 +1,4 @@
-import { Assets, Container, Sprite } from "pixi.js";
+import { Assets, Container, Graphics, Sprite } from "pixi.js";
 import { game } from "./game";
 import { buffDefinitions, Buffs, BuffType } from "./buffs";
 
@@ -9,12 +9,17 @@ export class Enemy {
     sprite!: Sprite;
     buffs: Buffs;
 
+    hpBar = new Graphics();
+    uiContainer = new Container();
+
     actions: EnemyAction[] = [];
     template: EnemyTemplate;
     constructor(template: EnemyTemplate) {
         this.template = template;
         this.buffs = new Buffs(this);
         this.container = new Container();
+        this.container.addChild(this.uiContainer);
+        this.uiContainer.addChild(this.hpBar);
         this.sprite = new Sprite(Assets.get(template.sprite));
         this.container.addChild(this.sprite);
         game.enemyContainer.addChild(this.container);
@@ -38,6 +43,8 @@ export class Enemy {
         this.container.position.y = game.app.screen.height / 2;
 
         if (this.template.name == "spiderbot") this.updateSpiderBot(dt);
+
+        this.updateUi();
     }
 
     sprites = new Array<Sprite>();
@@ -83,6 +90,17 @@ export class Enemy {
         }
 
         this.actions.push(action);
+    }
+
+    updateUi() {
+        this.hpBar.clear();
+        const hpRatio = this.health / this.maxHealth;
+        this.hpBar.arc(100, 50, 200, -1, 0.2);
+        this.hpBar.stroke({ width: 20, color: 0x330033 });
+        if(hpRatio >= 0){
+            this.hpBar.arc(100, 50, 200, - hpRatio, 0.2);
+            this.hpBar.stroke({ width: 20, color: 0xee3333 });
+        }
     }
 
     startTurn() {

@@ -52,8 +52,6 @@ export class Game {
         this.app.stage.addChild(this.uiContainer);
         this.player = new Player();
         this.encounter = Encounter.createFirstEncounter();
-        this.player.inBattle = true;
-        this.player.instance = this.encounter.past;
         this.encounter.begin();
         this.uiManager = new UIManager();
         this.bakcground = new Background();
@@ -89,8 +87,8 @@ export class Game {
         this.bakcground.update(dt);
         this.player.instance.enemy.update(dt);
 
-        const deck = this.player.instance.deck.map((card) => card.definition.name).join(", ");
-        const used = this.player.instance.usedPile.map((card) => card.definition.name).join(", ");
+        const deck = this.player.deck.map((card) => card.definition.name).join(", ");
+        const used = this.player.usedPile.map((card) => card.definition.name).join(", ");
         const buffs = [...this.player.buffs.buffs.values()].map((buff) => buff.definition.name + " " + buff.severity).join(", ");
         const enemyBuffs = [...this.player.instance.enemy.buffs.buffs.values()].map((buff) => buff.definition.name + " " + buff.severity).join(", ");
         this.debugText.text ="";

@@ -5,7 +5,7 @@ import bundle from "./bundle.json";
 
 async function main() {
     const app = new Application();
-    await app.init({ resizeTo: window, backgroundColor: 0x1099bb });
+    await app.init({ resizeTo: window, backgroundColor: 0x1099bb, antialias: true   });
     document.body.appendChild(app.canvas);
 
     for (const key in bundle) {
