@@ -10,6 +10,7 @@ export class Card {
     inHand = true;
     name: Text;
     description: HTMLText;
+    usageCost: HTMLText;
 
     containerPosition = { x: 0, y: 0 };
 
@@ -67,8 +68,23 @@ export class Card {
         this.description.anchor.set(0.5, 0);
         this.description.position.y = -100;
 
-        this.container.addChild(this.description);
-        this.container.addChild(this.name);
+        // show stamina cost
+        this.usageCost = new HTMLText({
+            text: this.definition.cost,
+            style: {
+                fontFamily: "Arial",
+                fontSize: 30,
+                fill: 0x0000f0,
+                wordWrap: true,
+                wordWrapWidth: 200,
+                align: "center",
+            },
+        });
+
+        this.usageCost.position.x = -90;
+        this.usageCost.position.y = -210;
+
+        this.container.addChild(this.usageCost, this.description, this.name);
 
         this.container.addEventListener("pointerover", () => (this.isHovered = true));
         this.container.addEventListener("pointerout", () => (this.isHovered = false));
