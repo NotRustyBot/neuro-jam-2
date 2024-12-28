@@ -14,14 +14,10 @@ export class Menu {
     }
 
     init() {
-        const title = new Graphics();
-        title.rect(0, 0, 400, 100);
-        title.position.set((game.app.screen.width - title.width) / 2, 200);
-
         const titleText = new Text({ text: "Game Title", style: { fontFamily: "monospace", fontSize: 48, fill: 0xffffff } });
-        titleText.position.set(title.width / 2, title.height / 2);
+        titleText.position.set(game.app.screen.width / 2, 200);
         titleText.anchor.set(0.5);
-        title.addChild(titleText);
+        this.container.addChild(titleText);
 
         const startButton = this.createButton("Start", 0x00ff00, 400, () => {
             this.onStart();
@@ -38,7 +34,6 @@ export class Menu {
         this.container.addChild(startButton);
         this.container.addChild(settingsButton);
         this.container.addChild(quitButton);
-        this.container.addChild(title);
     }
 
     show() {
