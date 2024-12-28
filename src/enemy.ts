@@ -1,6 +1,8 @@
-import { Assets, Container, Graphics, Sprite } from "pixi.js";
+import { Assets, Container, Graphics, Point, Sprite, Text } from "pixi.js";
 import { game } from "./game";
 import { buffDefinitions, Buffs, BuffType, Entity } from "./buffs";
+import { Vector } from "./types";
+import { interpolateColors } from "./utils";
 
 export class Enemy {
     health: number = 15;
@@ -9,6 +11,8 @@ export class Enemy {
     sprite!: Sprite;
     buffs: Buffs;
 
+    enemyName: Text;
+    hpText: Text;
     hpBar = new Graphics();
     uiContainer = new Container();
 
@@ -23,6 +27,7 @@ export class Enemy {
         this.buffs = new Buffs(this);
         this.container = new Container();
         this.container.addChild(this.uiContainer);
+        game.uiContainer.addChild(this.uiContainer);
         this.uiContainer.addChild(this.hpBar);
         this.sprite = new Sprite(Assets.get(template.sprite));
         this.container.addChild(this.sprite);
@@ -31,39 +36,82 @@ export class Enemy {
         this.maxHealth = template.health;
         this.actions = template.actions;
         this.container.visible = false;
-        if (template.name === "spiderbot") this.spiderBotSetup();
+        if (template.name.includes("spiderbot")) this.spiderBotSetup();
+
+        this.hpText = new Text({
+            text: ``,
+            style: {
+                fontFamily: "Arial",
+                fontSize: 24,
+                fill: 0xffffff,
+                align: "center",
+            },
+        });
+
+        this.hpText.anchor.set(0.5, 1);
+
+        this.uiContainer.addChild(this.hpText);
+
+        this.enemyName = new Text({
+            text: template.name,
+            style: {
+                fontFamily: "Arial",
+                fontSize: 60,
+                fill: 0xffffff,
+                align: "center",
+            },
+        });
+
+        this.enemyName.anchor.set(0.5, 1);
+        this.enemyName.position.set(100, -200);
+
+        this.uiContainer.addChild(this.enemyName);
+
+        this.uiContainer.addChild(this.buffs.container);
+        this.buffs.container.y = -300;
     }
 
     hide() {
         this.container.visible = false;
+        this.uiContainer.visible = false;
     }
 
     show() {
         this.container.visible = true;
+        this.uiContainer.visible = true;
     }
 
     destroy() {
         this.container.destroy();
+        this.uiContainer.destroy();
     }
 
     takeDamage(damage: number, quantity = 1, bypass = false) {
+        const startingHealth = this.health;
+        if(this.health <= 0) return;
         this.health -= damage * quantity;
         if (this.health <= 0) {
+            game.camera.shakePower = 1000;
             this.health = 0;
             game.encounter.countdown = 0;
             if (game.encounter.otherInstance.enemy.health <= 0) {
                 game.encounter.win();
             }
         }
+
+        this.recentDamage += startingHealth - this.health;
     }
 
     update(dt: number) {
         this.container.position.x = (game.app.screen.width / 3) * 2;
         this.container.position.y = game.app.screen.height / 2;
 
-        if (this.template.name == "spiderbot") this.updateSpiderBot(dt);
+        this.uiContainer.position.x = this.container.position.x;
+        this.uiContainer.position.y = this.container.position.y;
 
-        this.updateUi();
+        if (this.template.name.includes("spiderbot")) this.updateSpiderBot(dt);
+
+        this.updateUi(dt);
     }
 
     isStunned = false;
@@ -98,6 +146,10 @@ export class Enemy {
         this.sprites[0].x = game.phase * 20;
         this.sprites[1].rotation = game.phase * 0.2 + 0.1;
         this.sprites[1].scale.x = 1 + game.phase * 0.1;
+
+        if(this.template.name.includes("2")){
+            this.sprites.forEach(sprite => sprite.tint = 0xccffcc);
+        }
     }
 
     doAction() {
@@ -118,26 +170,43 @@ export class Enemy {
         this.actions.push(action);
     }
 
-    updateUi() {
+    recentDamage = 0;
+
+    updateUi(dt: number) {
+        this.recentDamage *= 0.9;
         this.hpBar.clear();
-        const hpRatio = this.health / this.maxHealth;
+        const hpRatio = (this.health + this.recentDamage) / this.maxHealth;
+        this.hpText.text = `${this.health}`;
+
         this.hpBar.arc(100, 50, 200, -1, 0.2);
         this.hpBar.stroke({ width: 20, color: 0x330033 });
-        if (hpRatio >= 0) {
+        if (this.health >= 0) {
             this.hpBar.arc(100, 50, 200, -(hpRatio * 1.2) + 0.2, 0.2);
             this.hpBar.stroke({ width: 20, color: 0xee3333 });
         }
+        const hpAngle = Math.PI * 2 - (hpRatio * 1.2 - 0.2);
+        const positon = Vector.fromAngle(hpAngle).mult(210).add({ x: 100, y: 50 });
+        this.hpText.position.set(positon.x, positon.y);
+        this.hpText.rotation = hpAngle + Math.PI / 2;
+        this.hpText.scale.set(1 + this.recentDamage * 0.5);
+        this.hpText.style.fill = interpolateColors(0xffaaaa, 0xff0000, this.recentDamage / 3);
+
+        this.uiContainer.alpha = 0.75 + this.recentDamage * 0.5;
     }
 
     startTurn() {
         this.buffs.startTurn();
         if (this.isStunned) {
         } else {
-            this.doAction();
+            setTimeout(() => {
+                this.doAction();
+            }, 100);
         }
 
-        this.buffs.endTurn();
-        game.player.startTurn();
+        setTimeout(() => {
+            this.buffs.endTurn();
+            game.player.startTurn();
+        }, 200);
     }
 }
 

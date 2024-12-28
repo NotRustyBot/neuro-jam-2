@@ -91,6 +91,7 @@ export function createCardDefinitions() {
             let damage = 3;
             damage = player.modifyAttackDamage(damage);
             enemy.takeDamage(damage);
+            enemy.buffs.add(BuffType.stun);
         },
     });
 
@@ -156,7 +157,11 @@ export function createCardDefinitions() {
         name: "Magic Bolt",
         cost: 1,
         description: `Deal 4 damage`,
-        onPlayed: (player: Player, enemy: Enemy) => {},
+        onPlayed: (player: Player, enemy: Enemy) => {
+            let damage = 4;
+            damage = player.modifyAttackDamage(damage);
+            enemy.takeDamage(damage);
+        },
     });
 
     cardDefinitions.set(CardTemplate.frostShield, {

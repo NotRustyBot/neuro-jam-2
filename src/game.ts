@@ -1,7 +1,7 @@
-import { Application, Container, Graphics, Text } from "pixi.js";
+import { Application, Assets, Container, Graphics, Sprite, Text } from "pixi.js";
 import { Player } from "./player";
 import { createCardDefinitions } from "./cardDefinitions";
-import { createEquipmentDefinitions } from "./equipment";
+import { createEquipmentDefinitions, equipmentDefinitions, EquipmentTemplate } from "./equipment";
 import { UIManager } from "./uiManager";
 import { Background } from "./background";
 import { createBuffDefinitions } from "./buffs";
@@ -10,17 +10,20 @@ import { desribeAction } from "./enemy";
 import { Menu } from "./menu";
 import { SelectionScreen, SelectionMode } from "./selectionScreen";
 import { Equipment } from "./equipment";
+import { Camera } from "./camera";
 
 export let game: Game;
 export class Game {
     app: Application;
     player!: Player;
+    camera!: Camera;
     background!: Background;
     clickableBg!: Graphics;
     backgroundContainer = new Container();
     enemyContainer = new Container();
     cardContainer = new Container();
     uiContainer = new Container();
+    screenReflectContainer = new Container();
 
     menu!: Menu;
     selectionScreen!: SelectionScreen;
@@ -54,8 +57,16 @@ export class Game {
         createEquipmentDefinitions();
         createBuffDefinitions();
         this.player = new Player();
+        this.camera = new Camera();
         this.uiManager = new UIManager();
         this.background = new Background();
+        
+        /*
+        this.player.addEquipment([
+            equipmentDefinitions.get(EquipmentTemplate.pepperSpray)!,
+        ]);
+        this.startGame();
+        return;*/
 
 
         // menu
@@ -78,6 +89,8 @@ export class Game {
         this.menu.show();
     }
 
+
+    cursor!: Sprite;
     startGame() {
         // mouse
         this.app.stage.interactive = true;
@@ -97,8 +110,13 @@ export class Game {
         this.app.stage.addChild(this.clickableBg);
         this.app.stage.addChild(this.backgroundContainer);
         this.app.stage.addChild(this.enemyContainer);
-        this.app.stage.addChild(this.cardContainer);
         this.app.stage.addChild(this.uiContainer);
+        this.app.stage.addChild(this.screenReflectContainer);
+        this.app.stage.addChild(this.cardContainer);
+        this.cursor = new Sprite(Assets.get("cursor"));
+        this.cursor.eventMode = "none";
+        this.cursor.anchor.set(0.2);
+        //this.app.stage.addChild(this.cursor);
 
         // debug encounter
         this.encounter = Encounter.createFirstEncounter();
@@ -125,6 +143,8 @@ export class Game {
         this.time += dt;
         this.player.update(dt);
         this.uiManager.update(dt);
+        this.camera.update(dt);
+        //this.cursor.position.set(this.mouse.x, this.mouse.y);
 
         // encounter
         if (this.encounter) {

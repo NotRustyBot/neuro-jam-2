@@ -7,5 +7,14 @@
     "pastGround": "./bg/pastGround.webp",
     "enemy1_f": "./enemy1_f.png",
     "enemy1_p": "./enemy1_p.png",
+    "Burn": "./buffs/Burn.png",
+    "Extra attack damage": "./buffs/Extra attack damage.png",
+    "Immune": "./buffs/Immune.png",
+    "Strength": "./buffs/Strength.png",
+    "Stun": "./buffs/Stun.png",
+    "Vulnerable": "./buffs/Vulnerable.png",
+    "Weak": "./buffs/Weak.png",
+    "Pyromaniac": "./buffs/Pyromaniac.png",
+    "cursor": "./cursor.png",
     "skyGradient": "./bg/skyGradient.png"
 }

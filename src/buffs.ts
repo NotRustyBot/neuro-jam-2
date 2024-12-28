@@ -1,15 +1,56 @@
-import { Sprite, Text } from "pixi.js";
+import { Assets, Container, Graphics, Sprite } from "pixi.js";
 import { Card } from "./card";
 import { KeywordType } from "./cardDefinitions";
 import { Enemy } from "./enemy";
 import { Player } from "./player";
+import { game } from "./game";
 
 export type Entity = Player | Enemy;
 export class Buffs {
     buffs = new Set<Buff>();
     target: Entity;
+    container: Container;
+    sprites = new Array<Sprite>();
     constructor(target: Entity) {
         this.target = target;
+        this.container = new Container();
+    }
+
+    render() {
+        let x = 0;
+        const size = 80;
+        this.sprites.forEach((sprite) => sprite.destroy());
+        this.sprites = [];
+        game.uiManager.hideBuff();
+        for (const buff of this.buffs) {
+            const graphics = new Graphics();
+            graphics.moveTo(0, 0);
+            graphics.lineTo(size/2, size/2);
+            graphics.lineTo(size, 0);
+            graphics.lineTo( size/2, -size/2);
+            graphics.lineTo(0, 0);
+            graphics.fill(0xffffff);
+
+            this.container.addChild(graphics);
+
+            graphics.interactive = true;
+            graphics.on("mouseenter", () => {
+                game.uiManager.showBuff(buff, this.container.position);
+            });
+
+            graphics.on("mouseleave", () => {
+                game.uiManager.hideBuff();
+            });
+            graphics.position.set(x, 0);
+
+            const sprite = new Sprite(Assets.get(buff.definition.name));
+            sprite.anchor.set(0.5);
+            sprite.position.set(x + size/2, 0);
+            this.sprites.push();
+            this.container.addChild(sprite);
+
+            x += 100;
+        }
     }
 
     add(buffType: BuffType, severity: number = 0) {
@@ -24,6 +65,8 @@ export class Buffs {
         }
 
         this.buffs.add(new Buff(buffType, severity, this.target));
+
+        this.render();
     }
 
     has(buffType: BuffType) {
@@ -47,22 +90,26 @@ export class Buffs {
         for (const buff of this.buffs) {
             buff.onTurnStart();
         }
+        this.render();
     }
 
     endTurn() {
         for (const buff of this.buffs) {
             buff.onTurnEnd();
         }
+        this.render();
     }
 
     cardPlayed(card: Card) {
         for (const buff of this.buffs) {
             buff.onCardPlayed(card);
         }
+        this.render();
     }
 
     delete(buff: Buff) {
         this.buffs.delete(buff);
+        this.render();
     }
 }
 
@@ -71,6 +118,13 @@ export class Buff {
     type: BuffType;
     target: Entity;
     definition: BuffDefinition;
+    get description() {
+        if (typeof this.definition.description === "string") {
+            return this.definition.description;
+        } else {
+            return this.definition.description(this.severity);
+        }
+    }
 
     constructor(type: BuffType, severity: number = 0, target: Entity) {
         this.type = type;
@@ -115,7 +169,7 @@ export enum BuffType {
     bonusAttackDamage,
     strength,
     vuenerable,
-    immune
+    immune,
 }
 
 export type BuffDefinition = {
@@ -142,7 +196,7 @@ export function createBuffDefinitions() {
         description: `At the end of turn, deal 1 damage`,
         modifySeverity: -1,
         onTurnEnd(buff, target) {
-            target.health -= 1;
+            target.takeDamage(1);
         },
         stacks: true,
     });
@@ -150,7 +204,7 @@ export function createBuffDefinitions() {
     buffDefinitions.set(BuffType.weak, {
         type: BuffType.weak,
         name: "Weak",
-        description: `Reduces damage by 25%`,
+        description: `Reduces damage by 50%`,
         modifySeverity: -1,
         stacks: true,
     });
@@ -209,8 +263,6 @@ export function createBuffDefinitions() {
         description: `Ignore incoming damage`,
         onTurnStart(buff, target) {
             target.buffs.delete(buff);
-        }
+        },
     });
-
-
 }

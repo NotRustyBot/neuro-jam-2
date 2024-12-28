@@ -31,6 +31,7 @@ export class Player {
 
     constructor() {
         this.buffs = new Buffs(this);
+        game.uiContainer.addChild(this.buffs.container);
     }
 
     addEquipment(selectedEquipment: Equipment[]) {
@@ -71,6 +72,7 @@ export class Player {
     }
 
     update(dt: number) {
+        this.buffs.container.position.set(200, game.app.screen.height - 400);
         if (this.inBattle) {
             this.hand.forEach((card) => card.update(dt));
         }
@@ -117,7 +119,8 @@ export class Player {
 
             damage -= this.block;
             this.block = 0;
-
+            game.camera.shakePower += 100 * damage;
+            game.uiManager.recentPlayerDamage += damage;
             this.health -= damage;
         }
     }

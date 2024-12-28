@@ -2,6 +2,7 @@ import { BuffType } from "./buffs";
 import { Enemy, EnemyTemplate } from "./enemy";
 import { game } from "./game";
 import { BattleInstance } from "./player";
+import { SelectionMode } from "./selectionScreen";
 
 export class Encounter {
     past: BattleInstance;
@@ -14,7 +15,7 @@ export class Encounter {
         skyColor: string;
         skyRotation: number;
     };
-    inPast = true;
+    inPast = false;
 
     countdown = 3;
 
@@ -64,13 +65,17 @@ export class Encounter {
     }
 
     win() {
-        setTimeout(() => { // timeout is temporary
+        game.selectionScreen.show(SelectionMode.POST_ENCOUNTER);
+
+        game.selectionScreen.onSelectionComplete = (newEquipment) => {
+            game.player.addEquipment(newEquipment);
+            game.selectionScreen.hide();
             this.future.destroy();
             this.past.destroy();
+
             game.encounter = new Encounter(secondEncounter);
             game.encounter.begin();
-        }, 100);
-
+        };
     }
 }
 
@@ -138,7 +143,7 @@ const firstEncounter: EncounterTemplate = {
 
 const secondEncounter: EncounterTemplate = {
     pastEnemy: {
-        name: "enemy1",
+        name: "enemy2",
         health: 20,
         sprite: "enemy1_p",
         actions: [
@@ -155,7 +160,7 @@ const secondEncounter: EncounterTemplate = {
         ],
     },
     futureEnemy: {
-        name: "spiderbot",
+        name: "spiderbot2",
         health: 50,
         sprite: "enemy1_f",
         actions: [
