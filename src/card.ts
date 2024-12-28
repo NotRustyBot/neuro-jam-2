@@ -32,6 +32,7 @@ export class Card {
         this.container = new Container();
         this.graphic = new Graphics();
         this.container.addChild(this.graphic);
+        this.graphic.clear();
         this.graphic.rect(-100, -250, 200, 300);
         this.graphic.fill(0xffffff);
         this.graphic.stroke({ color: 0xffaa00, width: 2 });
