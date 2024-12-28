@@ -8,6 +8,8 @@ import { createBuffDefinitions } from "./buffs";
 import { Encounter } from "./encounter";
 import { desribeAction } from "./enemy";
 import { Menu } from "./menu";
+import { SelectionScreen, SelectionMode } from "./selectionScreen";
+import { Equipment } from "./equipment";
 
 export let game: Game;
 export class Game {
@@ -19,7 +21,9 @@ export class Game {
     enemyContainer = new Container();
     cardContainer = new Container();
     uiContainer = new Container();
+
     menu!: Menu;
+    selectionScreen!: SelectionScreen;
 
     uiManager!: UIManager;
 
@@ -53,12 +57,18 @@ export class Game {
         this.uiManager = new UIManager();
         this.background = new Background();
 
-        // menu
         this.menu = new Menu();
         this.menu.init();
+        this.selectionScreen = new SelectionScreen();
+        this.selectionScreen.init();
 
         this.menu.onStart = () => {
             this.menu.hide();
+            this.selectionScreen.show(SelectionMode.STARTING_EQUIPMENT);
+        };
+
+        this.selectionScreen.onSelectionComplete = (selectedEquipment: Equipment[]) => {
+            this.selectionScreen.hide();
             this.startGame();
         };
 
