@@ -150,11 +150,11 @@ export type EnemyTemplate = {
 
 export function desribeAction(action: EnemyAction) {
     if (action.type === "attack") {
-        return `Attack for ${action.damage} x ${action.quantity} damage.`;
+        return `Attack for ${action.damage} x ${action.quantity} damage`;
     } else if (action.type === "buff") {
-        return `Buff ${buffDefinitions.get(action.buff)!.name} by ${action.severity}.`;
+        return `Buff ${buffDefinitions.get(action.buff)!.name} by ${action.severity}`;
     } else if (action.type === "debuff") {
-        return `Debuff ${buffDefinitions.get(action.buff)!.name} by ${action.severity}.`;
+        return `Debuff ${buffDefinitions.get(action.buff)!.name} by ${action.severity}`;
     }
 }
 

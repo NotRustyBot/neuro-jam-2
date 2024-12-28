@@ -158,7 +158,7 @@ export function createBuffDefinitions() {
     buffDefinitions.set(BuffType.stun, {
         type: BuffType.stun,
         name: "Stun",
-        description: `Skip a trun.`,
+        description: `Skip a turn`,
         onTurnEnd(buff, target) {
             target.buffs.delete(buff);
             target.handleStun();

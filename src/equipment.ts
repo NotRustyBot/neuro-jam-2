@@ -114,7 +114,7 @@ export function createEquipmentDefinitions() {
 
         name: "Summoning Sigil",
         template: EquipmentTemplate.summoningSigil,
-        cards: [CardTemplate.ansestorsCall, CardTemplate.ansestorsCall],
+        cards: [CardTemplate.ancestorsCall, CardTemplate.ancestorsCall],
     });
 
     equipmentDefinitions.set(EquipmentTemplate.vampiricDagger, {

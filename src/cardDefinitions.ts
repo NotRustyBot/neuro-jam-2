@@ -14,7 +14,7 @@ export enum CardTemplate {
     ignite,
     magicBolt,
     frostShield,
-    ansestorsCall,
+    ancestorsCall,
     backstab,
     bigBang,
     //hitech
@@ -170,11 +170,11 @@ export function createCardDefinitions() {
         },
     });
 
-    cardDefinitions.set(CardTemplate.ansestorsCall, {
-        template: CardTemplate.ansestorsCall,
+    cardDefinitions.set(CardTemplate.ancestorsCall, {
+        template: CardTemplate.ancestorsCall,
         family: CardType.skill,
         keywords: [KeywordType.strength, KeywordType.weakness],
-        name: "Ansestor's Call",
+        name: "Ancestor's Call",
         cost: 1,
         description: `Gain 2 #strength\n inflict 1 #weakness`,
         onPlayed: (player: Player, enemy: Enemy) => {
@@ -356,7 +356,7 @@ function createKeywordDefinitions() {
     keywordDefinitions.set(KeywordType.immune, {
         template: KeywordType.immune,
         name: "Immune",
-        description: `Igonore incoming damage`,
+        description: `Ignore incoming damage`,
         color: "#339999",
     });
 }

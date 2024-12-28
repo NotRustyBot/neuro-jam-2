@@ -96,7 +96,8 @@ export class Card {
         const halfCount = Math.floor(cardCount / 2);
         const cardWidth = 230 - 10 * (cardCount - 1);
 
-        let targetAngle = myIndex * 0.1 - halfCount * 0.1 + game.phase * 0.03;
+        // angle towards the center (+0.5) cause it was irritating me
+        let targetAngle = (myIndex + 0.5) * 0.1 - halfCount * 0.1 + game.phase * 0.03;
 
         if (this.isHovered && game.player.activeCard == null) {
             targetAngle = 0;
