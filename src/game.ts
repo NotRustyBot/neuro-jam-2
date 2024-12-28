@@ -4,6 +4,9 @@ import { createCardDefinitions } from "./cardDefinitions";
 import { createEquipmentDefinitions } from "./equipment";
 import { UIManager } from "./uiManager";
 import { Background } from "./background";
+import { createBuffDefinitions } from "./buffs";
+import { Encounter } from "./encounter";
+import { desribeAction } from "./enemy";
 
 export let game: Game;
 export class Game {
@@ -32,9 +35,12 @@ export class Game {
 
     debugText!: Text;
 
+    encounter!: Encounter;
+
     init() {
         createCardDefinitions();
         createEquipmentDefinitions();
+        createBuffDefinitions();
         this.clickableBg = new Graphics();
         this.clickableBg.rect(0, 0, this.app.screen.width, this.app.screen.height);
         this.clickableBg.fill(0x000000);
@@ -45,6 +51,10 @@ export class Game {
         this.app.stage.addChild(this.cardContainer);
         this.app.stage.addChild(this.uiContainer);
         this.player = new Player();
+        this.encounter = Encounter.createFirstEncounter();
+        this.player.inBattle = true;
+        this.player.instance = this.encounter.past;
+        this.encounter.begin();
         this.uiManager = new UIManager();
         this.bakcground = new Background();
 
@@ -65,7 +75,7 @@ export class Game {
         this.app.stage.addChild(button);
 
         button.interactive = true;
-        button.on("pointerdown", () => this.player.instance.drawCards(1));
+        button.on("pointerdown", () => this.player.endTurn());
 
         this.debugText = new Text({ text: "debug", style: { fontFamily: "monospace", fontSize: 24, fill: 0xffffff } });
         this.app.stage.addChild(this.debugText);
@@ -77,9 +87,21 @@ export class Game {
         this.player.update(dt);
         this.uiManager.update(dt);
         this.bakcground.update(dt);
+        this.player.instance.enemy.update(dt);
 
         const deck = this.player.instance.deck.map((card) => card.definition.name).join(", ");
         const used = this.player.instance.usedPile.map((card) => card.definition.name).join(", ");
-        this.debugText.text = `Deck: ${deck}\nUsed: ${used}`;
+        const buffs = [...this.player.buffs.buffs.values()].map((buff) => buff.definition.name + " " + buff.severity).join(", ");
+        const enemyBuffs = [...this.player.instance.enemy.buffs.buffs.values()].map((buff) => buff.definition.name + " " + buff.severity).join(", ");
+        this.debugText.text ="";
+        this.debugText.text +=`Deck: ${deck}\n`;
+        this.debugText.text +=`Used: ${used}\n`;
+        this.debugText.text += `Buffs: ${buffs}\n`;
+        this.debugText.text += `Stamina: ${this.player.stamina}\n`;
+        this.debugText.text += `Hp: ${this.player.health}\n`;
+        this.debugText.text += `EnemyHp: ${this.player.instance.enemy.health}/${this.player.instance.enemy.maxHealth}\n`;
+        this.debugText.text += `EnemyBuffs: ${enemyBuffs}\n`;
+        this.debugText.text += `EnemyActions: ${this.player.instance.enemy.actions.map((action) => desribeAction(action)).join(", ")}\n`;
+        this.debugText.text += `You are in the ${this.encounter.inPast ? "past" : "future"}. Switch in ${this.encounter.countdown} turns.`;
     }
 }

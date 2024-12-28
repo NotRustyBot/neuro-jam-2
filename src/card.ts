@@ -111,6 +111,12 @@ export class Card {
             this.containerPosition.y = game.app.canvas.height - 50;
         }
 
+        if (this.isActive || this.isHovered) {
+            this.container.scale.set(1);
+        } else {
+            this.container.scale.set(0.9);
+        }
+
         this.container.position.x = (this.containerPosition.x + this.container.position.x) / 2;
         this.container.position.y = (this.containerPosition.y + this.container.position.y) / 2;
         this.container.rotation = (targetAngle + this.container.rotation) / 2;

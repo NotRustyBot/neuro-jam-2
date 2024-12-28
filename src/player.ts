@@ -1,21 +1,42 @@
+import { Buffs } from "./buffs";
 import { Card } from "./card";
 import { CardTemplate } from "./cardDefinitions";
 import { Enemy } from "./enemy";
 import { Equipment, equipmentDefinitions, EquipmentTemplate } from "./equipment";
+import { game } from "./game";
 
 export class Player {
-    health: number = 5;
-    stamina: number = 5;
-
-    instance: BattleInstance;
+    health: number = 20;
+    stamina: number = 3;
+    buffs: Buffs;
+    instance!: BattleInstance;
+    inBattle: boolean = false;
 
     constructor() {
-        this.instance = new BattleInstance([EquipmentTemplate.blastRing, EquipmentTemplate.alchemyKit], new Enemy());
-        this.instance.drawCards(2);
+        this.buffs = new Buffs(this);
     }
 
     update(dt: number) {
-        this.instance.hand.forEach((card) => card.update(dt));
+        if(this.inBattle){
+            this.instance.hand.forEach((card) => card.update(dt));
+        }
+    }
+
+    startTurn() {
+        game.encounter.nextTurn();
+        this.buffs.startTurn();
+        this.instance.drawCards(2);
+    }
+
+    endTurn(): void {
+        this.buffs.endTurn();
+        this.instance.enemy.startTurn();
+    }
+
+    takeDamage(damage: number, quantity: number) {
+        for (let i = 0; i < quantity; i++) {
+            this.health -= damage;
+        }
     }
 }
 
@@ -32,7 +53,8 @@ export class BattleInstance {
 
     activeCard: Card | null = null;
 
-    constructor(equipment: EquipmentTemplate[], enemy: Enemy) {
+    constructor(enemy: Enemy) {
+        const equipment = [EquipmentTemplate.blastRing, EquipmentTemplate.alchemyKit]; // player 
         this.equipment = equipment.map((eq) => equipmentDefinitions.get(eq)!);
 
         for (const eq of this.equipment) {
@@ -57,10 +79,11 @@ export class BattleInstance {
             }
 
             if (this.deck.length == 0) {
-                throw new Error("No more cards in deck");
+                console.error("No more cards in deck");
+                return;
             }
 
-            const card =this.deck.pop()!
+            const card = this.deck.pop()!
             card.show();
             this.hand.push(card);
         }

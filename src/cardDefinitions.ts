@@ -1,3 +1,4 @@
+import { BuffType } from "./buffs";
 import { Enemy } from "./enemy";
 import { Player } from "./player";
 
@@ -55,7 +56,7 @@ export function createCardDefinitions() {
         name: "Poison Potion",
         description: `Apply <b>3</b> #poison to the enemy`,
         onPlayed: (player: Player, enemy: Enemy) => {
-            
+            enemy.buffs.add(BuffType.poison, 3);
         },
     });
 

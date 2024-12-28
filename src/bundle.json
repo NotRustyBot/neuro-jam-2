@@ -1,3 +1,7 @@
 {
-    "past1": "./bg/past1.png"
+    "past1": "./bg/past1.png",
+    "pastGround": "./bg/pastGround.webp",
+    "enemy1_f": "./enemy1_f.png",
+    "enemy1_p": "./enemy1_p.png",
+    "skyGradient": "./bg/skyGradient.png"
 }
