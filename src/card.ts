@@ -75,10 +75,6 @@ export class Card {
     }
 
     update(dt: number) {
-        if (!this.inHand) {
-            return;
-        }
-
         const myIndex = game.player.hand.indexOf(this);
         const cardCount = game.player.hand.length;
         const halfCount = Math.floor(cardCount / 2);
@@ -129,10 +125,10 @@ export class Card {
     }
 
     play() {
-        this.definition.onPlayed?.(game.player, this.instance.enemy);
         game.player.usedPile.push(this);
         game.player.hand.splice(game.player.hand.indexOf(this), 1);
         this.hide();
+        this.definition.onPlayed?.(game.player, this.instance.enemy);
     }
 
     hide() {
@@ -147,5 +143,11 @@ export class Card {
         this.inHand = true;
         this.container.position.x = 0;
         this.container.position.y = 1000;
+        this.description.text = this.definition.description += " ";
+        this.description.text = this.definition.description;
+    }
+
+    destroy(): void {
+        this.container.destroy();
     }
 }

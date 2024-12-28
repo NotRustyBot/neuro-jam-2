@@ -1,6 +1,6 @@
 import { Application, Container, Graphics, Text } from "pixi.js";
 import { game } from "./game";
-import { Equipment, EquipmentTemplate, equipmentDefinitions } from "./equipment";
+import { Equipment, EquipmentCategory, EquipmentTemplate, equipmentDefinitions } from "./equipment";
 
 export enum SelectionMode {
     STARTING_EQUIPMENT,
@@ -80,7 +80,7 @@ export class SelectionScreen {
         if (this.selectionMode === SelectionMode.STARTING_EQUIPMENT) {
             const MAX_PER_ROW = 6;
 
-            const equipmentArray = Array.from(equipmentDefinitions.values());
+            const equipmentArray = Array.from(equipmentDefinitions.values()).filter((equipment) => equipment.category === EquipmentCategory.starting);
 
             const buttonWidth = 200;
             const buttonHeight = 200;

@@ -42,8 +42,19 @@ export class Enemy {
         this.container.visible = true;
     }
 
-    takeDamage(damage: number, quantity = 1) {
+    destroy() {
+        this.container.destroy();
+    }
+
+    takeDamage(damage: number, quantity = 1, bypass = false) {
         this.health -= damage * quantity;
+        if (this.health <= 0) {
+            this.health = 0;
+            game.encounter.countdown = 0;
+            if (game.encounter.otherInstance.enemy.health <= 0) {
+                game.encounter.win();
+            }
+        }
     }
 
     update(dt: number) {
@@ -90,6 +101,10 @@ export class Enemy {
     }
 
     doAction() {
+        if (this.health <= 0) {
+            return;
+        }
+
         const action = this.actions.shift()!;
 
         if (action.type === "attack") {
@@ -109,7 +124,7 @@ export class Enemy {
         this.hpBar.arc(100, 50, 200, -1, 0.2);
         this.hpBar.stroke({ width: 20, color: 0x330033 });
         if (hpRatio >= 0) {
-            this.hpBar.arc(100, 50, 200, -hpRatio, 0.2);
+            this.hpBar.arc(100, 50, 200, -(hpRatio * 1.2) + 0.2, 0.2);
             this.hpBar.stroke({ width: 20, color: 0xee3333 });
         }
     }

@@ -30,7 +30,14 @@ export class Player {
     }
 
     constructor() {
-        const equipment = [EquipmentTemplate.pepperSpray, EquipmentTemplate.selfieStick, EquipmentTemplate.stunBaton, EquipmentTemplate.yogaMat, EquipmentTemplate.fryingPan, EquipmentTemplate.laserPointer];
+        const equipment = [
+            EquipmentTemplate.laserGun,
+            EquipmentTemplate.healingBot,
+            EquipmentTemplate.emGauntlet,
+            EquipmentTemplate.antimatterGrenade,
+            EquipmentTemplate.forceField,
+            EquipmentTemplate.quantumTeleporter,
+        ];
         this.buffs = new Buffs(this);
         this.equipment = equipment.map((eq) => equipmentDefinitions.get(eq)!);
     }
@@ -38,6 +45,9 @@ export class Player {
     startBattle(instance: BattleInstance) {
         this.inBattle = true;
         this.instance = instance;
+
+        this.clearCards();
+
         for (const eq of this.equipment) {
             eq.cards?.forEach((card) => this.library.push(card));
         }
@@ -53,6 +63,18 @@ export class Player {
         }
     }
 
+    clearCards() {
+        this.deck.forEach((card) => card.destroy());
+        this.hand.forEach((card) => card.destroy());
+        this.discardPile.forEach((card) => card.destroy());
+        this.usedPile.forEach((card) => card.destroy());
+        this.library = new Array<CardTemplate>();
+        this.deck = new Array<Card>();
+        this.hand = new Array<Card>();
+        this.discardPile = new Array<Card>();
+        this.usedPile = new Array<Card>();
+    }
+
     update(dt: number) {
         if (this.inBattle) {
             this.hand.forEach((card) => card.update(dt));
@@ -62,11 +84,19 @@ export class Player {
     modifyAttackDamage(damage: number) {
         if (this.buffs.has(BuffType.bonusAttackDamage)) damage += this.buffs.getBuff(BuffType.bonusAttackDamage)!.severity;
         if (this.buffs.has(BuffType.weak)) damage = Math.floor(damage * 0.5);
+        if (this.buffs.has(BuffType.strength)) damage = Math.floor(damage * 1.5);
         return damage;
     }
 
     handleStun() {
         // ???
+    }
+
+    heal(amount: number) {
+        this.health += amount;
+        if (this.health > this.maxHealth) {
+            this.health = this.maxHealth;
+        }
     }
 
     startTurn() {
@@ -82,9 +112,10 @@ export class Player {
         this.instance.enemy.startTurn();
     }
 
-    takeDamage(damage: number, quantity: number) {
+    takeDamage(damage: number, quantity = 1) {
+        if (game.player.buffs.has(BuffType.immune)) return;
         for (let i = 0; i < quantity; i++) {
-            if(this.block > damage){
+            if (this.block > damage) {
                 this.block -= damage;
                 continue;
             }
@@ -123,6 +154,10 @@ export class Player {
 export class BattleInstance {
     enemy: Enemy;
     player: Player;
+
+    destroy() {
+        this.enemy.destroy();
+    }
 
     constructor(enemy: Enemy) {
         this.player = game.player;

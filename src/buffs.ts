@@ -113,6 +113,9 @@ export enum BuffType {
     stun,
     pyromaniac,
     bonusAttackDamage,
+    strength,
+    vuenerable,
+    immune
 }
 
 export type BuffDefinition = {
@@ -165,7 +168,7 @@ export function createBuffDefinitions() {
     buffDefinitions.set(BuffType.pyromaniac, {
         type: BuffType.pyromaniac,
         name: "Pyromaniac",
-        description: `If the opponent was burning when your turn started, attacks deal 1 extra damage.`,
+        description: `If the opponent was burning when your turn started, attacks deal 1 extra damage`,
         onTurnStart(buff, target) {
             if (target.opponent.buffs.has(BuffType.burn)) {
                 target.buffs.add(BuffType.bonusAttackDamage, 1);
@@ -177,10 +180,37 @@ export function createBuffDefinitions() {
     buffDefinitions.set(BuffType.bonusAttackDamage, {
         type: BuffType.bonusAttackDamage,
         name: "Extra attack damage",
-        description: (severity: number) => `Attacks deal ${severity} extra damage this turn.`,
+        description: (severity: number) => `Attacks deal ${severity} extra damage this turn`,
         onTurnEnd(buff, target) {
             target.buffs.delete(buff);
         },
         stacks: true,
     });
+
+    buffDefinitions.set(BuffType.strength, {
+        type: BuffType.strength,
+        name: "Strength",
+        description: `Attacks deal 50% more damage`,
+        modifySeverity: -1,
+        stacks: true,
+    });
+
+    buffDefinitions.set(BuffType.vuenerable, {
+        type: BuffType.vuenerable,
+        name: "Vulnerable",
+        description: `Incoming damage is increased by 50%`,
+        modifySeverity: -1,
+        stacks: true,
+    });
+
+    buffDefinitions.set(BuffType.immune, {
+        type: BuffType.immune,
+        name: "Immune",
+        description: `Ignore incoming damage`,
+        onTurnStart(buff, target) {
+            target.buffs.delete(buff);
+        }
+    });
+
+
 }

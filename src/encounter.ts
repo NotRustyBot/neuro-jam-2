@@ -9,11 +9,11 @@ export class Encounter {
     pastBackground: {
         skyColor: string;
         skyRotation: number;
-    }
+    };
     futureBackground: {
         skyColor: string;
         skyRotation: number;
-    }
+    };
     inPast = true;
 
     countdown = 3;
@@ -22,8 +22,12 @@ export class Encounter {
         return this.inPast ? this.pastBackground : this.futureBackground;
     }
 
-    get instance(){
+    get instance() {
         return this.inPast ? this.past : this.future;
+    }
+
+    get otherInstance() {
+        return this.inPast ? this.future : this.past;
     }
 
     constructor(template: EncounterTemplate) {
@@ -46,17 +50,27 @@ export class Encounter {
 
     nextTurn() {
         this.countdown -= 1;
-        if (this.countdown === 0) {
+        if (this.countdown <= 0 && this.otherInstance.enemy.health > 0) {
             this.switch();
             this.countdown = 3;
         }
     }
 
-    switch(){
+    switch() {
         this.inPast = !this.inPast;
         game.player.instance.enemy.hide();
         game.player.instance = this.inPast ? this.past : this.future;
         game.player.instance.enemy.show();
+    }
+
+    win() {
+        setTimeout(() => {
+            this.future.destroy();
+            this.past.destroy();
+            game.encounter = new Encounter(secondEncounter);
+            game.encounter.begin(); 
+        }, 100);
+
     }
 }
 
@@ -67,12 +81,12 @@ type EncounterTemplate = {
     pastBackground: {
         skyColor: string;
         skyRotation: number;
-    }
+    };
 
     futureBackground: {
         skyColor: string;
         skyRotation: number;
-    }
+    };
 };
 
 const firstEncounter: EncounterTemplate = {
@@ -80,31 +94,35 @@ const firstEncounter: EncounterTemplate = {
         name: "enemy1",
         health: 15,
         sprite: "enemy1_p",
-        actions: [{
-            type: "attack",
-            damage: 2,
-            quantity: 1,
-        },
-    {
-        type: "debuff",
-        severity: 1,
-        buff: BuffType.burn,
-    }],
+        actions: [
+            {
+                type: "attack",
+                damage: 2,
+                quantity: 1,
+            },
+            {
+                type: "debuff",
+                severity: 1,
+                buff: BuffType.burn,
+            },
+        ],
     },
     futureEnemy: {
         name: "spiderbot",
-        health: 50,
+        health: 20,
         sprite: "enemy1_f",
-        actions: [{
-            type: "attack",
-            damage: 4,
-            quantity: 1,
-        },
-    {
-        type: "debuff",
-        severity: 2,
-        buff: BuffType.burn,
-    }],
+        actions: [
+            {
+                type: "attack",
+                damage: 4,
+                quantity: 1,
+            },
+            {
+                type: "debuff",
+                severity: 2,
+                buff: BuffType.burn,
+            },
+        ],
     },
 
     pastBackground: {
@@ -115,5 +133,51 @@ const firstEncounter: EncounterTemplate = {
     futureBackground: {
         skyColor: "#ccaa96",
         skyRotation: -0.05,
+    },
+};
+
+const secondEncounter: EncounterTemplate = {
+    pastEnemy: {
+        name: "enemy1",
+        health: 20,
+        sprite: "enemy1_p",
+        actions: [
+            {
+                type: "attack",
+                damage: 2,
+                quantity: 1,
+            },
+            {
+                type: "debuff",
+                severity: 1,
+                buff: BuffType.burn,
+            },
+        ],
+    },
+    futureEnemy: {
+        name: "spiderbot",
+        health: 50,
+        sprite: "enemy1_f",
+        actions: [
+            {
+                type: "attack",
+                damage: 4,
+                quantity: 1,
+            },
+            {
+                type: "debuff",
+                severity: 2,
+                buff: BuffType.burn,
+            },
+        ],
+    },
+    pastBackground: {
+        skyColor: "#4065DF",
+        skyRotation: 0.1,
+    },
+
+    futureBackground: {
+        skyColor: "#666633",
+        skyRotation: -0.1,
     },
 };

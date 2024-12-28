@@ -57,6 +57,8 @@ export class Game {
         this.uiManager = new UIManager();
         this.background = new Background();
 
+
+        // menu
         this.menu = new Menu();
         this.menu.init();
         this.selectionScreen = new SelectionScreen();
