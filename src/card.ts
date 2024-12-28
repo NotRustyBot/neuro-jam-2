@@ -23,10 +23,12 @@ export class Card {
     }
 
     definition: CardDefinition;
-    instance: BattleInstance;
+    get instance(): BattleInstance
+    {
+        return game.player.instance;
+    }
 
-    constructor(type: CardTemplate, instance: BattleInstance) {
-        this.instance = instance;
+    constructor(type: CardTemplate) {
         this.type = type;
         this.definition = cardDefinitions.get(this.type)!;
         this.container = new Container();
