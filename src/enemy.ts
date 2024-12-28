@@ -6,32 +6,69 @@ export class Enemy {
     health: number = 15;
     maxHealth: number = 15;
     container: Container;
-    sprite: Sprite;
+    sprite!: Sprite;
     buffs: Buffs;
 
     actions: EnemyAction[] = [];
-
+    template: EnemyTemplate;
     constructor(template: EnemyTemplate) {
+        this.template = template;
         this.buffs = new Buffs(this);
         this.container = new Container();
         this.sprite = new Sprite(Assets.get(template.sprite));
         this.container.addChild(this.sprite);
+        game.enemyContainer.addChild(this.container);
         this.health = template.health;
         this.maxHealth = template.health;
         this.actions = template.actions;
+        this.container.visible = false;
+        if (template.name === "spiderbot") this.spiderBotSetup();
     }
 
     hide() {
-        game.enemyContainer.removeChild(this.container);
+        this.container.visible = false;
     }
 
     show() {
-        game.enemyContainer.addChild(this.container);
+        this.container.visible = true;
     }
 
     update(dt: number) {
         this.container.position.x = (game.app.screen.width / 3) * 2;
         this.container.position.y = game.app.screen.height / 2;
+
+        if (this.template.name == "spiderbot") this.updateSpiderBot(dt);
+    }
+
+    sprites = new Array<Sprite>();
+
+    spiderBotSetup() {
+        this.sprite.visible = false;
+        this.sprites[0] = new Sprite(Assets.get("spiderbot_body"));
+        this.sprites[1] = new Sprite(Assets.get("spiderbot_cannon"));
+        this.sprites[1].anchor.set(0.6, 1);
+        this.sprites[1].position.set(70, 30);
+        this.sprites[2] = new Sprite(Assets.get("spiderbot_leg1"));
+        this.sprites[2].anchor.set(0.5, 1);
+        this.sprites[2].position.set(35, 180);
+        this.sprites[3] = new Sprite(Assets.get("spiderbot_leg2"));
+        this.sprites[3].anchor.set(0.5, 1);
+        this.sprites[3].position.set(180, 180);
+        this.container.addChild(this.sprites[0]);
+        this.sprites[0].addChild(this.sprites[1]);
+        this.container.addChild(this.sprites[2]);
+        this.container.addChild(this.sprites[3]);
+    }
+
+    time = 0;
+    updateSpiderBot(dt: number) {
+        this.time += dt;
+        const phase = Math.sin(this.time * 0.003);
+        this.sprites[2].rotation = phase * 0.1 - 0.2;
+        this.sprites[3].rotation = phase * 0.1 + 0.2;
+        this.sprites[0].x = phase * 20;
+        this.sprites[1].rotation = phase * 0.2 + 0.1;
+        this.sprites[1].scale.x = 1 + phase * 0.1;
     }
 
     doAction() {

@@ -28,7 +28,7 @@ export class Background {
         this.graphics.clear();
         this.graphics.rect(0, 0, game.app.screen.width, game.app.screen.height);
         this.skyMask.width = game.app.screen.width * 1.12;
-        this.skyMask.height = game.app.screen.height * 1.12;
+        this.skyMask.height = game.app.screen.height * 1.5;
         this.skyMask.x = game.app.screen.width / 2;
         this.skyMask.y = -game.app.screen.height * 0.1;
         this.graphics.fill(game.encounter.backgroundData.skyColor);

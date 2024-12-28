@@ -89,7 +89,7 @@ const firstEncounter: EncounterTemplate = {
     }],
     },
     futureEnemy: {
-        name: "enemy1",
+        name: "spiderbot",
         health: 50,
         sprite: "enemy1_f",
         actions: [{

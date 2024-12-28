@@ -1,5 +1,9 @@
 {
     "past1": "./bg/past1.png",
+    "spiderbot_body": "./spiderbot/body.png",
+    "spiderbot_cannon": "./spiderbot/cannon.png",
+    "spiderbot_leg1": "./spiderbot/leg1.png",
+    "spiderbot_leg2": "./spiderbot/leg2.png",
     "pastGround": "./bg/pastGround.webp",
     "enemy1_f": "./enemy1_f.png",
     "enemy1_p": "./enemy1_p.png",
