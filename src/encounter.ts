@@ -54,10 +54,8 @@ export class Encounter {
 
     switch(){
         this.inPast = !this.inPast;
-        game.player.hand.forEach((card) => card.hide());
         game.player.instance.enemy.hide();
         game.player.instance = this.inPast ? this.past : this.future;
-        game.player.hand.forEach((card) => card.show());
         game.player.instance.enemy.show();
     }
 }
@@ -90,7 +88,7 @@ const firstEncounter: EncounterTemplate = {
     {
         type: "debuff",
         severity: 1,
-        buff: BuffType.poison,
+        buff: BuffType.burn,
     }],
     },
     futureEnemy: {
@@ -105,7 +103,7 @@ const firstEncounter: EncounterTemplate = {
     {
         type: "debuff",
         severity: 2,
-        buff: BuffType.poison,
+        buff: BuffType.burn,
     }],
     },
 

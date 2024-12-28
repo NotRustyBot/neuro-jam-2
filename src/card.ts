@@ -23,8 +23,7 @@ export class Card {
     }
 
     definition: CardDefinition;
-    get instance(): BattleInstance
-    {
+    get instance(): BattleInstance {
         return game.player.instance;
     }
 
@@ -79,12 +78,13 @@ export class Card {
         if (!this.inHand) {
             return;
         }
+
         const myIndex = game.player.hand.indexOf(this);
         const cardCount = game.player.hand.length;
         const halfCount = Math.floor(cardCount / 2);
         const cardWidth = 230 - 10 * (cardCount - 1);
 
-        let targetAngle = myIndex * 0.1 - halfCount * 0.1;
+        let targetAngle = myIndex * 0.1 - halfCount * 0.1 + game.phase * 0.03;
 
         if (this.isHovered && game.player.activeCard == null) {
             targetAngle = 0;
@@ -101,7 +101,10 @@ export class Card {
             this.isActive = false;
             game.uiManager.hideKeywords();
             if (game.mouse.y < game.app.canvas.height / 2) {
-                this.play();
+                if (this.definition.cost == undefined || game.player.stamina >= this.definition.cost) {
+                    game.player.stamina -= this.definition.cost ?? 0;
+                    this.play();
+                }
             }
         }
 

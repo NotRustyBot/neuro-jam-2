@@ -37,6 +37,12 @@ export class Game {
 
     encounter!: Encounter;
 
+    time = 0;
+    get phase() {
+        const phase = Math.sin(this.time * 0.003);
+        return phase;
+    }
+
     init() {
         createCardDefinitions();
         createEquipmentDefinitions();
@@ -82,6 +88,7 @@ export class Game {
     }
 
     update(dt: number) {
+        this.time += dt;
         this.player.update(dt);
         this.uiManager.update(dt);
         this.bakcground.update(dt);
@@ -91,9 +98,9 @@ export class Game {
         const used = this.player.usedPile.map((card) => card.definition.name).join(", ");
         const buffs = [...this.player.buffs.buffs.values()].map((buff) => buff.definition.name + " " + buff.severity).join(", ");
         const enemyBuffs = [...this.player.instance.enemy.buffs.buffs.values()].map((buff) => buff.definition.name + " " + buff.severity).join(", ");
-        this.debugText.text ="";
-        this.debugText.text +=`Deck: ${deck}\n`;
-        this.debugText.text +=`Used: ${used}\n`;
+        this.debugText.text = "";
+        this.debugText.text += `Deck: ${deck}\n`;
+        this.debugText.text += `Used: ${used}\n`;
         this.debugText.text += `Buffs: ${buffs}\n`;
         this.debugText.text += `Stamina: ${this.player.stamina}\n`;
         this.debugText.text += `Hp: ${this.player.health}\n`;

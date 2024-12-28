@@ -17,7 +17,7 @@ export class UIManager {
         new Set(keywords).forEach((keyword) => {
             const uiKeyword = new UiKeywordDefinition(keyword);
             this.keywords.add(uiKeyword);
-            uiKeyword.container.position.y = this.keywords.size + 100 + 300;
+            uiKeyword.container.position.y = this.keywords.size + 100 * this.keywords.size + 300;
         });
     }
 

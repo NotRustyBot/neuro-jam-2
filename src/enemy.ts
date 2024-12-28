@@ -1,6 +1,6 @@
 import { Assets, Container, Graphics, Sprite } from "pixi.js";
 import { game } from "./game";
-import { buffDefinitions, Buffs, BuffType } from "./buffs";
+import { buffDefinitions, Buffs, BuffType, Entity } from "./buffs";
 
 export class Enemy {
     health: number = 15;
@@ -11,6 +11,10 @@ export class Enemy {
 
     hpBar = new Graphics();
     uiContainer = new Container();
+
+    get opponent(): Entity {
+        return game.player;
+    }
 
     actions: EnemyAction[] = [];
     template: EnemyTemplate;
@@ -38,6 +42,10 @@ export class Enemy {
         this.container.visible = true;
     }
 
+    takeDamage(damage: number, quantity = 1) {
+        this.health -= damage * quantity;
+    }
+
     update(dt: number) {
         this.container.position.x = (game.app.screen.width / 3) * 2;
         this.container.position.y = game.app.screen.height / 2;
@@ -45,6 +53,11 @@ export class Enemy {
         if (this.template.name == "spiderbot") this.updateSpiderBot(dt);
 
         this.updateUi();
+    }
+
+    isStunned = false;
+    handleStun() {
+        this.isStunned = true;
     }
 
     sprites = new Array<Sprite>();
@@ -69,13 +82,11 @@ export class Enemy {
 
     time = 0;
     updateSpiderBot(dt: number) {
-        this.time += dt;
-        const phase = Math.sin(this.time * 0.003);
-        this.sprites[2].rotation = phase * 0.1 - 0.2;
-        this.sprites[3].rotation = phase * 0.1 + 0.2;
-        this.sprites[0].x = phase * 20;
-        this.sprites[1].rotation = phase * 0.2 + 0.1;
-        this.sprites[1].scale.x = 1 + phase * 0.1;
+        this.sprites[2].rotation = game.phase * 0.1 - 0.2;
+        this.sprites[3].rotation = game.phase * 0.1 + 0.2;
+        this.sprites[0].x = game.phase * 20;
+        this.sprites[1].rotation = game.phase * 0.2 + 0.1;
+        this.sprites[1].scale.x = 1 + game.phase * 0.1;
     }
 
     doAction() {
@@ -97,15 +108,19 @@ export class Enemy {
         const hpRatio = this.health / this.maxHealth;
         this.hpBar.arc(100, 50, 200, -1, 0.2);
         this.hpBar.stroke({ width: 20, color: 0x330033 });
-        if(hpRatio >= 0){
-            this.hpBar.arc(100, 50, 200, - hpRatio, 0.2);
+        if (hpRatio >= 0) {
+            this.hpBar.arc(100, 50, 200, -hpRatio, 0.2);
             this.hpBar.stroke({ width: 20, color: 0xee3333 });
         }
     }
 
     startTurn() {
         this.buffs.startTurn();
-        this.doAction();
+        if (this.isStunned) {
+        } else {
+            this.doAction();
+        }
+
         this.buffs.endTurn();
         game.player.startTurn();
     }
