@@ -84,6 +84,14 @@ export class Player {
 
     takeDamage(damage: number, quantity: number) {
         for (let i = 0; i < quantity; i++) {
+            if(this.block > damage){
+                this.block -= damage;
+                continue;
+            }
+
+            damage -= this.block;
+            this.block = 0;
+
             this.health -= damage;
         }
     }
