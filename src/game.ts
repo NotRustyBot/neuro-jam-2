@@ -71,6 +71,7 @@ export class Game {
 
         this.selectionScreen.onSelectionComplete = (selectedEquipment: Equipment[]) => {
             this.selectionScreen.hide();
+            this.player.addEquipment(selectedEquipment);
             this.startGame();
         };
 

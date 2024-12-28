@@ -64,7 +64,7 @@ export class Encounter {
     }
 
     win() {
-        setTimeout(() => {
+        setTimeout(() => { // timeout is temporary
             this.future.destroy();
             this.past.destroy();
             game.encounter = new Encounter(secondEncounter);

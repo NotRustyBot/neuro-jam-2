@@ -20,7 +20,7 @@ export class Player {
     discardPile = new Array<Card>();
     usedPile = new Array<Card>();
 
-    equipment: Equipment[];
+    equipment = new Array<Equipment>();
 
     activeCard: Card | null = null;
     block = 0;
@@ -30,16 +30,11 @@ export class Player {
     }
 
     constructor() {
-        const equipment = [
-            EquipmentTemplate.laserGun,
-            EquipmentTemplate.healingBot,
-            EquipmentTemplate.emGauntlet,
-            EquipmentTemplate.antimatterGrenade,
-            EquipmentTemplate.forceField,
-            EquipmentTemplate.quantumTeleporter,
-        ];
         this.buffs = new Buffs(this);
-        this.equipment = equipment.map((eq) => equipmentDefinitions.get(eq)!);
+    }
+
+    addEquipment(selectedEquipment: Equipment[]) {
+        this.equipment.push(...selectedEquipment); 
     }
 
     startBattle(instance: BattleInstance) {
