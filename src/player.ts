@@ -34,7 +34,7 @@ export class Player {
     }
 
     addEquipment(selectedEquipment: Equipment[]) {
-        this.equipment.push(...selectedEquipment); 
+        this.equipment.push(...selectedEquipment);
     }
 
     startBattle(instance: BattleInstance) {

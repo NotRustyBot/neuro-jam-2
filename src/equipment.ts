@@ -125,7 +125,7 @@ export function createEquipmentDefinitions() {
     });
 
     equipmentDefinitions.set(EquipmentTemplate.unstableAlchemyBomb, {
-        category: EquipmentCategory.arcane,
+        category: EquipmentCategory.hitech,
         name: "Unstable Alchemy Bomb",
         template: EquipmentTemplate.unstableAlchemyBomb,
         cards: [CardTemplate.bigBang, CardTemplate.bigBang],
@@ -133,42 +133,42 @@ export function createEquipmentDefinitions() {
 
     //hitech
     equipmentDefinitions.set(EquipmentTemplate.laserGun, {
-        category: EquipmentCategory.arcane,
+        category: EquipmentCategory.hitech,
         name: "Laser Gun",
         template: EquipmentTemplate.laserGun,
         cards: [CardTemplate.laserBeam, CardTemplate.laserBeam],
     });
 
     equipmentDefinitions.set(EquipmentTemplate.healingBot, {
-        category: EquipmentCategory.arcane,
+        category: EquipmentCategory.hitech,
         name: "Healing Bot",
         template: EquipmentTemplate.healingBot,
         cards: [CardTemplate.naniteRepair, CardTemplate.naniteRepair],
     });
 
     equipmentDefinitions.set(EquipmentTemplate.emGauntlet, {
-        category: EquipmentCategory.arcane,
+        category: EquipmentCategory.hitech,
         name: "EM Gauntlet",
         template: EquipmentTemplate.emGauntlet,
         cards: [CardTemplate.emStrike, CardTemplate.emStrike],
     });
 
     equipmentDefinitions.set(EquipmentTemplate.antimatterGrenade, {
-        category: EquipmentCategory.arcane,
+        category: EquipmentCategory.hitech,
         name: "Antimatter Grenade",
         template: EquipmentTemplate.antimatterGrenade,
         cards: [CardTemplate.antimatterExplosion, CardTemplate.antimatterExplosion],
     });
 
     equipmentDefinitions.set(EquipmentTemplate.forceField, {
-        category: EquipmentCategory.arcane,
+        category: EquipmentCategory.hitech,
         name: "Force Field",
         template: EquipmentTemplate.forceField,
         cards: [CardTemplate.forceField, CardTemplate.forceField],
     });
 
     equipmentDefinitions.set(EquipmentTemplate.quantumTeleporter, {
-        category: EquipmentCategory.arcane,
+        category: EquipmentCategory.hitech,
         name: "Quantum Teleporter",
         template: EquipmentTemplate.quantumTeleporter,
         cards: [CardTemplate.quantumJump, CardTemplate.quantumJump],

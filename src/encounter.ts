@@ -68,7 +68,7 @@ export class Encounter {
             this.future.destroy();
             this.past.destroy();
             game.encounter = new Encounter(secondEncounter);
-            game.encounter.begin(); 
+            game.encounter.begin();
         }, 100);
 
     }

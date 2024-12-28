@@ -335,7 +335,7 @@ function createKeywordDefinitions() {
     keywordDefinitions.set(KeywordType.stun, {
         template: KeywordType.stun,
         name: "Stun",
-        description: `Skip a trun.`,
+        description: `Skip a turn`,
         color: "#ff9900",
     });
 
