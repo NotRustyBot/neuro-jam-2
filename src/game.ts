@@ -7,17 +7,19 @@ import { Background } from "./background";
 import { createBuffDefinitions } from "./buffs";
 import { Encounter } from "./encounter";
 import { desribeAction } from "./enemy";
+import { Menu } from "./menu";
 
 export let game: Game;
 export class Game {
     app: Application;
     player!: Player;
-    bakcground!: Background;
+    background!: Background;
     clickableBg!: Graphics;
     backgroundContainer = new Container();
     enemyContainer = new Container();
     cardContainer = new Container();
     uiContainer = new Container();
+    menu!: Menu;
 
     uiManager!: UIManager;
 
@@ -47,21 +49,24 @@ export class Game {
         createCardDefinitions();
         createEquipmentDefinitions();
         createBuffDefinitions();
-        this.clickableBg = new Graphics();
-        this.clickableBg.rect(0, 0, this.app.screen.width, this.app.screen.height);
-        this.clickableBg.fill(0x000000);
-
-        this.app.stage.addChild(this.clickableBg);
-        this.app.stage.addChild(this.backgroundContainer);
-        this.app.stage.addChild(this.enemyContainer);
-        this.app.stage.addChild(this.cardContainer);
-        this.app.stage.addChild(this.uiContainer);
         this.player = new Player();
-        this.encounter = Encounter.createFirstEncounter();
-        this.encounter.begin();
         this.uiManager = new UIManager();
-        this.bakcground = new Background();
+        this.background = new Background();
 
+        // menu
+        this.menu = new Menu();
+        this.menu.init();
+
+        this.menu.onStart = () => {
+            this.menu.hide();
+            this.startGame();
+        };
+
+        this.menu.show();
+    }
+
+    startGame() {
+        // mouse
         this.app.stage.interactive = true;
         this.app.stage.on("pointermove", (e) => {
             this.mouse.y = e.y;
@@ -71,6 +76,22 @@ export class Game {
         this.app.stage.on("pointerdown", (e) => (this.mouse.down = true));
         this.app.stage.on("pointerup", (e) => (this.mouse.down = false));
 
+        // background
+        this.clickableBg = new Graphics();
+        this.clickableBg.rect(0, 0, this.app.screen.width, this.app.screen.height);
+        this.clickableBg.fill(0x000000);
+
+        this.app.stage.addChild(this.clickableBg);
+        this.app.stage.addChild(this.backgroundContainer);
+        this.app.stage.addChild(this.enemyContainer);
+        this.app.stage.addChild(this.cardContainer);
+        this.app.stage.addChild(this.uiContainer);
+
+        // debug encounter
+        this.encounter = Encounter.createFirstEncounter();
+        this.encounter.begin();
+
+        // debug button
         const button = new Graphics();
         button.rect(0, 0, 200, 100);
         button.fill(0x00ff00);
@@ -91,22 +112,28 @@ export class Game {
         this.time += dt;
         this.player.update(dt);
         this.uiManager.update(dt);
-        this.bakcground.update(dt);
-        this.player.instance.enemy.update(dt);
 
-        const deck = this.player.deck.map((card) => card.definition.name).join(", ");
-        const used = this.player.usedPile.map((card) => card.definition.name).join(", ");
-        const buffs = [...this.player.buffs.buffs.values()].map((buff) => buff.definition.name + " " + buff.severity).join(", ");
-        const enemyBuffs = [...this.player.instance.enemy.buffs.buffs.values()].map((buff) => buff.definition.name + " " + buff.severity).join(", ");
-        this.debugText.text = "";
-        this.debugText.text += `Deck: ${deck}\n`;
-        this.debugText.text += `Used: ${used}\n`;
-        this.debugText.text += `Buffs: ${buffs}\n`;
-        this.debugText.text += `Stamina: ${this.player.stamina}\n`;
-        this.debugText.text += `Hp: ${this.player.health}\n`;
-        this.debugText.text += `EnemyHp: ${this.player.instance.enemy.health}/${this.player.instance.enemy.maxHealth}\n`;
-        this.debugText.text += `EnemyBuffs: ${enemyBuffs}\n`;
-        this.debugText.text += `EnemyActions: ${this.player.instance.enemy.actions.map((action) => desribeAction(action)).join(", ")}\n`;
-        this.debugText.text += `You are in the ${this.encounter.inPast ? "past" : "future"}. Switch in ${this.encounter.countdown} turns.`;
+        // encounter
+        if (this.encounter) {
+            this.background.update(dt);
+            this.player.instance.enemy.update(dt);
+
+            const deck = this.player.deck.map((card) => card.definition.name).join(", ");
+            const used = this.player.usedPile.map((card) => card.definition.name).join(", ");
+            const buffs = [...this.player.buffs.buffs.values()].map((buff) => buff.definition.name + " " + buff.severity).join(", ");
+            const enemyBuffs = [...this.player.instance.enemy.buffs.buffs.values()].map((buff) => buff.definition.name + " " + buff.severity).join(", ");
+
+            if (!this.debugText) return;
+            this.debugText.text = "";
+            this.debugText.text += `Deck: ${deck}\n`;
+            this.debugText.text += `Used: ${used}\n`;
+            this.debugText.text += `Buffs: ${buffs}\n`;
+            this.debugText.text += `Stamina: ${this.player.stamina}\n`;
+            this.debugText.text += `Hp: ${this.player.health}\n`;
+            this.debugText.text += `EnemyHp: ${this.player.instance.enemy.health}/${this.player.instance.enemy.maxHealth}\n`;
+            this.debugText.text += `EnemyBuffs: ${enemyBuffs}\n`;
+            this.debugText.text += `EnemyActions: ${this.player.instance.enemy.actions.map((action) => desribeAction(action)).join(", ")}\n`;
+            this.debugText.text += `You are in the ${this.encounter.inPast ? "past" : "future"}. Switch in ${this.encounter.countdown} turns.`;
+        }
     }
 }

@@ -14,10 +14,10 @@ export class UIManager {
     showKeywords(keywords?: KeywordType[]) {
         this.keywords.forEach((keyword) => keyword.destroy());
         this.keywords.clear();
-        new Set(keywords).forEach((keyword) => {
+        new Set(keywords).forEach((keyword, index) => {
             const uiKeyword = new UiKeywordDefinition(keyword);
             this.keywords.add(uiKeyword);
-            uiKeyword.container.position.y = this.keywords.size + 100 * this.keywords.size + 300;
+            uiKeyword.container.position.y = this.keywords.size + 75 * this.keywords.size + 300;
         });
     }
 
