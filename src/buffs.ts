@@ -1,4 +1,4 @@
-import { Assets, Container, Graphics, Sprite } from "pixi.js";
+import { Assets, Container, Graphics, Sprite, Text } from "pixi.js";
 import { Card } from "./card";
 import { KeywordType } from "./cardDefinitions";
 import { Enemy } from "./enemy";
@@ -10,7 +10,7 @@ export class Buffs {
     buffs = new Set<Buff>();
     target: Entity;
     container: Container;
-    sprites = new Array<Sprite>();
+    sprites = new Array<{ destroy: () => void }>();
     constructor(target: Entity) {
         this.target = target;
         this.container = new Container();
@@ -25,9 +25,9 @@ export class Buffs {
         for (const buff of this.buffs) {
             const graphics = new Graphics();
             graphics.moveTo(0, 0);
-            graphics.lineTo(size/2, size/2);
+            graphics.lineTo(size / 2, size / 2);
             graphics.lineTo(size, 0);
-            graphics.lineTo( size/2, -size/2);
+            graphics.lineTo(size / 2, -size / 2);
             graphics.lineTo(0, 0);
             graphics.fill(0xffffff);
 
@@ -45,9 +45,18 @@ export class Buffs {
 
             const sprite = new Sprite(Assets.get(buff.definition.name));
             sprite.anchor.set(0.5);
-            sprite.position.set(x + size/2, 0);
-            this.sprites.push();
+            sprite.position.set(x + size / 2, 0);
+            this.sprites.push(sprite);
+            this.sprites.push(graphics);
             this.container.addChild(sprite);
+
+            if (buff.severity > 0) {
+                const text = new Text({ text: buff.severity.toString(), style: { fontFamily: "monospace", fontSize: 24, fill: 0x000000 } });
+                text.position.set(x + size / 2, 0);
+                text.anchor.set(0.5);
+                this.container.addChild(text);
+                this.sprites.push(text);
+            }
 
             x += 100;
         }
