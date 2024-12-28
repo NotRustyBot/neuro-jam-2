@@ -241,9 +241,9 @@ export function createCardDefinitions() {
         template: CardTemplate.emStrike,
         family: CardType.attack,
         name: "EM Strike",
-        keywords: [KeywordType.vunerable],
+        keywords: [KeywordType.vulnerable],
         cost: 2,
-        description: `Deal 3 damage\nInflict 2 #vunerable`,
+        description: `Deal 3 damage\nInflict 2 #vulnerable`,
         onPlayed: (player: Player, enemy: Enemy) => {
             let damage = 3;
             damage = player.modifyAttackDamage(damage);
@@ -256,9 +256,9 @@ export function createCardDefinitions() {
         template: CardTemplate.antimatterExplosion,
         family: CardType.attack,
         name: "Antimatter Explosion",
-        keywords: [KeywordType.vunerable],
+        keywords: [KeywordType.vulnerable],
         cost: 2,
-        description: `Deal 6 damage\nInflict 1 #vunerable`,
+        description: `Deal 6 damage\nInflict 1 #vulnerable`,
         onPlayed: (player: Player, enemy: Enemy) => {
             let damage = 6;
             damage = player.modifyAttackDamage(damage);
@@ -304,7 +304,7 @@ export enum KeywordType {
     weakness,
     stun,
     strength,
-    vunerable,
+    vulnerable,
     immune
 }
 
@@ -346,9 +346,9 @@ function createKeywordDefinitions() {
         color: "#cc9900",
     });
 
-    keywordDefinitions.set(KeywordType.vunerable, {
-        template: KeywordType.vunerable,
-        name: "Vunerable",
+    keywordDefinitions.set(KeywordType.vulnerable, {
+        template: KeywordType.vulnerable,
+        name: "Vulnerable",
         description: `Incoming damage is increased by 50%`,
         color: "#996666",
     });
