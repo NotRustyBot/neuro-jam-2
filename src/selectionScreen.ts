@@ -267,6 +267,7 @@ export class SelectionScreen {
             // display card
             const card = new Card(cardTemplate);
             card.container.position.set(xOffset + card.container.width / 2, card.container.height - 50);
+            card.container.visible = true;
 
             // display card counts
             const cardCountText = new Text({text: `${cardCounts[cardTemplate]}x`, style: { fontFamily: "monospace", fontSize: 30, fill: 0xffffff, stroke: { color: 0x000000, width: 5 } }});

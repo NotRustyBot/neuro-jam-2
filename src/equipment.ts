@@ -125,7 +125,7 @@ export function createEquipmentDefinitions() {
     });
 
     equipmentDefinitions.set(EquipmentTemplate.unstableAlchemyBomb, {
-        category: EquipmentCategory.hitech,
+        category: EquipmentCategory.arcane,
         name: "Unstable Alchemy Bomb",
         template: EquipmentTemplate.unstableAlchemyBomb,
         cards: [CardTemplate.bigBang, CardTemplate.bigBang],

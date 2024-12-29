@@ -11,8 +11,8 @@ export class Card {
     sprite: Sprite;
     inHand = true;
     name: Text;
-    description: HTMLText;
     usageCost: Text;
+    description!: HTMLText;
 
     containerPosition = { x: 0, y: 0 };
 
@@ -37,7 +37,7 @@ export class Card {
 
         // hacky implementation to get category of card (first occurence)
         let asset!: string;
-        const equipment = Array.from(equipmentDefinitions.values()).find(equipment => equipment.cards.includes(this.type));
+        const equipment = Array.from(equipmentDefinitions.values()).find((equipment) => equipment.cards.includes(this.type));
         if (equipment) {
             switch (equipment.category) {
                 case EquipmentCategory.starting:
@@ -53,26 +53,24 @@ export class Card {
         }
 
         this.sprite = new Sprite(Assets.get(asset ?? "basicCard"));
-        this.sprite.position.set(-100, -250)
+        this.sprite.position.set(-100, -250);
         this.sprite.scale.set(0.55);
         //this.sprite.anchor.set(0.5, 0.8);
 
         this.graphic = new Graphics();
         this.container.addChild(this.graphic);
         this.graphic.clear();
-        this.graphic.rect(this.sprite.position.x, this.sprite.position.y, this.sprite.width+1, this.sprite.height+1);
+        this.graphic.rect(this.sprite.position.x, this.sprite.position.y, this.sprite.width + 1, this.sprite.height + 1);
         //this.graphic.fill(0xffffff);
         this.graphic.stroke({ color: 0x404040, width: 3 });
         this.container.visible = false;
         game.cardContainer.addChild(this.container);
-
 
         this.container.addChild(this.sprite);
         this.container.addChild(this.graphic);
         game.cardContainer.addChild(this.container);
 
         this.container.interactive = true;
-
 
         this.name = new Text({
             text: this.definition.name,
@@ -89,20 +87,7 @@ export class Card {
         this.name.anchor.set(0.5, 0.5);
         this.name.position.set(0, -120);
 
-        this.description = new HTMLText({
-            text: this.definition.description,
-            style: {
-                fontFamily: "Arial",
-                fontSize: 18,
-                fill: 0xffffff,
-                stroke: { color: 0x000000, width: 2 },
-                wordWrap: true,
-                wordWrapWidth: 180,
-                align: "center",
-            },
-        });
-        this.description.anchor.set(0.5, 0.5);
-        this.description.position.set(0, -40);
+        this.createDescription();
 
         // show stamina cost
         this.usageCost = new Text({
@@ -128,6 +113,25 @@ export class Card {
         this.container.addEventListener("pointerout", () => (this.isHovered = false));
     }
 
+    createDescription() {
+        this.description = new HTMLText({
+            text: this.definition.description,
+            style: {
+                fontFamily: "Arial",
+                fontSize: 18,
+                fill: 0xffffff,
+                wordWrap: true,
+                wordWrapWidth: 180,
+                align: "center",
+            },
+        });
+        this.description.anchor.set(0.5, 0.5);
+        this.description.position.set(0, -40);
+
+        this.container.addChild(this.description);
+    }
+
+    wasHovered = false;
     update(dt: number) {
         const myIndex = game.player.hand.indexOf(this);
         const cardCount = game.player.hand.length;
@@ -142,11 +146,26 @@ export class Card {
             game.cardContainer.setChildIndex(this.container, game.cardContainer.children.length - 1);
             if (game.mouse.down) {
                 this.isActive = true;
+                game.soundManager.play("select", 0.25);
                 if (this.definition.keywords) game.uiManager.showKeywords(this.definition.keywords);
             }
         } else {
             game.cardContainer.setChildIndex(this.container, cardCount - myIndex - 1);
         }
+
+        if (this.isHovered && !this.wasHovered) {
+            if (!this.isActive) {
+                game.soundManager.play("select", 0.1);
+            }
+        }
+
+        if (game.player.stamina < (this.definition.cost ?? 0)) {
+            this.usageCost.style.fill = 0xff0000;
+        } else {
+            this.usageCost.style.fill = 0xffffff;
+        }
+
+        this.wasHovered = this.isHovered;
 
         if (this.isActive && !game.mouse.down) {
             this.isActive = false;
@@ -200,6 +219,8 @@ export class Card {
     }
 
     show() {
+        this.description.destroy();
+        this.createDescription();
         this.container.visible = true;
         this.inHand = true;
         this.container.position.x = 0;

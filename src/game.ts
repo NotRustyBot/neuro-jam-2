@@ -11,12 +11,16 @@ import { Menu } from "./menu";
 import { SelectionScreen, SelectionMode } from "./selectionScreen";
 import { Equipment } from "./equipment";
 import { Camera } from "./camera";
+import { TimeManager } from "./timeManager";
+import { SoundManager } from "./soundManager";
 
 export let game: Game;
 export class Game {
     app: Application;
     player!: Player;
     camera!: Camera;
+    timeManager!: TimeManager;
+    soundManager!: SoundManager;
     background!: Background;
     clickableBg!: Graphics;
     backgroundContainer = new Container();
@@ -60,6 +64,8 @@ export class Game {
         this.player = new Player();
         this.camera = new Camera();
         this.background = new Background();
+        this.timeManager = new TimeManager();
+        this.soundManager = new SoundManager();
         this.uiManager = new UIManager();
         this.uiManager.initKeywords();
 
@@ -168,6 +174,7 @@ export class Game {
         this.uiManager.update(dt);
         this.selectionScreen.update(dt);
         this.camera.update(dt);
+        this.timeManager.update(dt);
         //this.cursor.position.set(this.mouse.x, this.mouse.y);
 
         // encounter

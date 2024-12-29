@@ -1,4 +1,4 @@
-import { BlurFilter, ColorMatrixFilter, Container, Graphics, RenderTexture, Sprite, Text } from "pixi.js";
+import { Assets, BlurFilter, ColorMatrixFilter, Container, Graphics, RenderTexture, Sprite, Text } from "pixi.js";
 import { KeywordDefinition, keywordDefinitions, KeywordType } from "./cardDefinitions";
 import { game } from "./game";
 import { interpolateColors } from "./utils";
@@ -14,6 +14,10 @@ export class UIManager {
     playerUiContainer = new Container();
     playerGraphics: Graphics;
     playerHpText: Text;
+
+    blockContainer: Container;
+    blockText: Text;
+    blockSprite: Sprite;
 
     buffText: Text;
     constructor() {
@@ -43,6 +47,19 @@ export class UIManager {
         this.buffText = new Text({ text: "", style: { fontFamily: "Arial", fontSize: 24, fill: 0xffffff, align: "center", wordWrap: true, wordWrapWidth: 300 } });
         this.buffText.anchor.set(0.5, 1);
         game.uiContainer.addChild(this.buffText);
+
+        this.blockContainer = new Container();
+        this.blockText = new Text({ text: "", style: { fontFamily: "Arial", fontSize: 40, fill: 0xffffff } });
+        this.blockText.anchor.set(0.5, 0.5);
+        this.blockSprite = new Sprite(Assets.get("block"));
+        this.blockSprite.anchor.set(0.5);
+        this.blockSprite.scale.set(0.5);
+        this.blockSprite.position.x = -80;
+        this.blockText.position.x = -80;
+        this.blockContainer.addChild(this.blockSprite);
+        this.blockContainer.addChild(this.blockText);
+        this.playerUiContainer.addChild(this.blockContainer);
+        this.blockContainer.visible = false;
     }
 
     recentPlayerDamage = 0;
@@ -101,6 +118,13 @@ export class UIManager {
         this.playerHpText.style.fill = interpolateColors(0xffaaaa, 0xff0000, this.recentPlayerDamage / 3);
         this.playerHpText.scale.set(1 + this.recentPlayerDamage * 0.5);
         this.recentPlayerDamage *= 0.9;
+
+        if(game.player.block > 0) {
+            this.blockContainer.visible = true;
+            this.blockText.text = `${game.player.block}`;
+        }else {
+            this.blockContainer.visible = false;
+        }
     }
 
     update(dt: number) {

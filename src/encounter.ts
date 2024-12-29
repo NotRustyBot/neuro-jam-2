@@ -54,6 +54,9 @@ export class Encounter {
         if (this.countdown <= 0 && this.otherInstance.enemy.health > 0) {
             this.switch();
             this.countdown = 3;
+            this.instance.player.startTurn();
+        } else {
+            this.instance.enemy.startTurn();
         }
     }
 

@@ -1,5 +1,6 @@
 import { Buff, BuffType } from "./buffs";
 import { Enemy } from "./enemy";
+import { game } from "./game";
 import { Player } from "./player";
 import { roll } from "./utils";
 
@@ -74,6 +75,7 @@ export function createCardDefinitions() {
         onPlayed: (player: Player, enemy: Enemy) => {
             let damage = 2;
             damage = player.modifyAttackDamage(damage);
+            game.soundManager.play("sweeping_strike");
             enemy.takeDamage(damage);
             if (roll(0.5)) enemy.buffs.add(BuffType.stun);
         },
@@ -100,7 +102,8 @@ export function createCardDefinitions() {
         family: CardType.skill,
         name: "Meditate",
         cost: 1,
-        description: `Gain 5 block and draw a card`,
+        description: `Gain 5 #block and draw a card`,
+        keywords: [KeywordType.block],
         onPlayed: (player: Player, enemy: Enemy) => {
             player.block += 5;
             player.drawCards(1);
@@ -168,8 +171,9 @@ export function createCardDefinitions() {
         template: CardTemplate.frostShield,
         family: CardType.skill,
         name: "Frost Shield",
+        keywords: [KeywordType.block],
         cost: 1,
-        description: `Gain 8 block`,
+        description: `Gain 8 #block`,
         onPlayed: (player: Player, enemy: Enemy) => {
             player.block += 8;
         },
@@ -275,9 +279,10 @@ export function createCardDefinitions() {
     cardDefinitions.set(CardTemplate.forceField, {
         template: CardTemplate.forceField,
         family: CardType.skill,
+        keywords: [KeywordType.block],
         name: "Electronic Field",
         cost: 1,
-        description: `Gain 4 block`,
+        description: `Gain 4 #block`,
         onPlayed: (player: Player, enemy: Enemy) => {
             player.block += 4;
         },
@@ -310,7 +315,8 @@ export enum KeywordType {
     stun,
     strength,
     vulnerable,
-    immune
+    immune,
+    block
 }
 
 export type KeywordDefinition = {
@@ -363,5 +369,12 @@ function createKeywordDefinitions() {
         name: "Immune",
         description: `Ignore incoming damage`,
         color: "#339999",
+    });
+
+    keywordDefinitions.set(KeywordType.block, {
+        template: KeywordType.block,
+        name: "Block",
+        description: `Blocks incoming damage, lasts one turn`,
+        color: "#5599ff",
     });
 }

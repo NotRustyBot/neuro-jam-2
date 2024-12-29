@@ -96,16 +96,17 @@ export class Enemy {
         if (this.health <= 0) {
             game.camera.shakePower = 1000;
             this.health = 0;
+            this.die();
             game.encounter.countdown = 0;
-            if (game.encounter.otherInstance.enemy.health <= 0) {
-                game.encounter.win();
-            }
         }
 
         this.recentDamage += startingHealth - this.health;
     }
 
+    dyingProgress = 0;
+    isDead = false;
     update(dt: number) {
+        if (this.isDead) return;
         this.container.position.x = (game.app.screen.width / 3) * 2;
         this.container.position.y = (game.app.screen.height / 5) * 3;
 
@@ -116,6 +117,21 @@ export class Enemy {
         if (this.template.name == "spider") this.spiderUpdate();
 
         this.updateUi(dt);
+
+        this.helperContainer.tint = interpolateColors(0xffffff, 0xff0000, this.recentDamage / 3);
+        this.sprite.tint = interpolateColors(0xffffff, 0xff0000, this.recentDamage / 3);
+
+        if (this.isDying) {
+            this.dyingProgress -= dt / 1000;
+            this.container.alpha = this.dyingProgress;
+            if (this.dyingProgress <= 0) {
+                this.destroy();
+                this.isDead = true;
+                if (game.encounter.otherInstance.enemy.health <= 0) {
+                    game.encounter.win();
+                }
+            }
+        }
     }
 
     isStunned = false;
@@ -180,7 +196,7 @@ export class Enemy {
         this.helperContainer.y = game.phase * 5;
     }
 
-    doAction() {
+    async doAction() {
         if (this.health <= 0) {
             return;
         }
@@ -199,6 +215,13 @@ export class Enemy {
     }
 
     recentDamage = 0;
+
+    isDying = false;
+    die() {
+        if (this.isDying || this.isDead) return;
+        this.isDying = true;
+        this.dyingProgress = 1;
+    }
 
     updateUi(dt: number) {
         this.recentDamage *= 0.9;
@@ -222,19 +245,25 @@ export class Enemy {
         this.uiContainer.alpha = 0.75 + this.recentDamage * 0.5;
     }
 
-    startTurn() {
+    myTurn = false;
+    async startTurn() {
+        this.myTurn = true;
         this.buffs.startTurn();
         if (this.isStunned) {
+            this.isStunned = false;
+            game.timeManager.delay(() => {
+                this.buffs.endTurn();
+                game.player.startTurn();
+                this.myTurn = false;
+            }, 200);
         } else {
-            setTimeout(() => {
-                this.doAction();
-            }, 100);
-        }
-
-        setTimeout(() => {
+            await game.timeManager.wait(200);
+            await this.doAction();
+            await game.timeManager.wait(200);
             this.buffs.endTurn();
             game.player.startTurn();
-        }, 200);
+            this.myTurn = false;
+        }
     }
 }
 

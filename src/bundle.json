@@ -21,6 +21,7 @@
     "Pyromaniac": "./buffs/Pyromaniac.png",
     "cursor": "./cursor.png",
     "player": "./player.png",
+    "block": "./block.png",
     "skyGradient": "./bg/skyGradient.png",
     "basicCard": "./basicCard.png",
     "hitechCard": "./hitechCard.png",

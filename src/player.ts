@@ -106,7 +106,6 @@ export class Player {
     }
 
     startTurn() {
-        game.encounter.nextTurn();
         this.stamina = this.maxStamina;
         this.block = 0;
         this.buffs.startTurn();
@@ -119,8 +118,7 @@ export class Player {
         for (let i = 0; i < count; i++) {
             this.hand[0].discard();
         }
-
-        this.instance.enemy.startTurn();
+        game.encounter.nextTurn();
     }
 
     takeDamage(damage: number, quantity = 1) {
