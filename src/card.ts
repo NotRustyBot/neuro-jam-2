@@ -181,7 +181,6 @@ export class Card {
 
         if (this.isHovered && game.player.activeCard == null) {
             targetAngle = 0;
-            game.cardContainer.setChildIndex(this.container, game.cardContainer.children.length - 1);
             if (game.mouse.down) {
                 this.isActive = true;
                 game.soundManager.play("select", 0.25);
@@ -228,6 +227,8 @@ export class Card {
         }
 
         if (this.isActive || this.isHovered) {
+            game.cardContainer.setChildIndex(this.container, game.cardContainer.children.length - 1);
+
             this.container.scale.set(1);
         } else {
             this.container.scale.set(0.9);
