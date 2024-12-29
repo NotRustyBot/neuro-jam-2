@@ -1,5 +1,6 @@
 {
     "past1": "./bg/past1.png",
+    "menu": "./bg/menu.png",
     "spiderbot_body": "./spiderbot/body.png",
     "spiderbot_head": "./spiderbot/head.png",
     "spiderbot_leg1": "./spiderbot/leg1.png",

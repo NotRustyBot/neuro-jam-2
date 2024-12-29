@@ -1,7 +1,7 @@
 import { Container, Graphics, Text } from "pixi.js";
 import { game } from "./game";
 import { Equipment, EquipmentCategory, EquipmentTemplate, equipmentDefinitions } from "./equipment";
-import { cardDefinitions, CardTemplate } from "./cardDefinitions";
+import { CardTemplate } from "./cardDefinitions";
 import { Card } from "./card";
 import { KeywordType } from "./cardDefinitions";
 import { Vector } from "./types";
@@ -27,9 +27,18 @@ export class SelectionScreen {
     equipmentMaximumPerPool = 1;
     equipmentPoolSize = 2;
 
-    background!: Graphics;
-    title!: Text;
     tooltip!: Container;
+    tooltipSide: number = 0;
+
+    title!: Text;
+    background!: Graphics;
+    selectContainer!: Container;
+
+    // equipment buttons
+    buttonWidth = 200;
+    buttonHeight = 200;
+    xPadding = 60;
+    yPadding = 20;
 
     visible: boolean = false;
 
@@ -54,13 +63,14 @@ export class SelectionScreen {
         this.title.anchor.set(0.5);
 
         this.equipmentContainer = new Container();
-        this.equipmentContainer.position.set(200, 150);
+        this.equipmentContainer.position.set(game.app.screen.width/2 - this.equipmentContainer.width/2, 100);
 
         // select button
+        this.selectContainer = new Container();
+
         const selectButton = new Graphics();
         selectButton.roundRect(0, 0, 200, 75);
         selectButton.fill(0x00ff00);
-        selectButton.position.set((game.app.screen.width - selectButton.width) / 2, 800);
         selectButton.interactive = true;
         selectButton.cursor = "pointer";
         selectButton.on("pointerdown", () => this.completeSelection());
@@ -68,9 +78,12 @@ export class SelectionScreen {
         const selectText = new Text({ text: "Select", style: { fontFamily: "monospace", fontSize: 24, fill: 0x000000 } });
         selectText.position.set(selectButton.width / 2, selectButton.height / 2);
         selectText.anchor.set(0.5);
-        selectButton.addChild(selectText);
 
-        this.container.addChild(this.background, this.title, this.equipmentContainer, selectButton);
+
+        this.selectContainer.position.set((game.app.screen.width - selectButton.width) / 2, 800);
+        this.selectContainer.addChild(selectButton, selectText);
+
+        this.container.addChild(this.background, this.title, this.equipmentContainer, this.selectContainer);
     }
 
     show(mode: SelectionMode) {
@@ -101,16 +114,12 @@ export class SelectionScreen {
     displayEquipmentOptions() {
         if (this.selectionMode === SelectionMode.STARTING_EQUIPMENT) {
             // equipment filtering
-            const MAX_PER_ROW = 6;
             const startingEquipmentPool = Array.from(equipmentDefinitions.values())//.filter((equipment) => equipment.category === EquipmentCategory.starting);
             const equipmentArray = startingEquipmentPool//.sort(() => Math.random() - 0.5).slice(0, this.startingEquipmentPoolSize);
 
             this.title.text = `Select your starting equipment (${this.startingEquipmentMaximum})`;
             // button settings
-            const buttonWidth = 200;
-            const buttonHeight = 200;
-            const xPadding = 60;
-            const yPadding = 20;
+            const MAX_PER_ROW = Math.floor(game.app.screen.width / (this.buttonWidth + this.xPadding * 2));
 
             // row/column precalculations
             const equipmentPerRow = equipmentArray.length > MAX_PER_ROW ? MAX_PER_ROW : equipmentArray.length;
@@ -119,8 +128,8 @@ export class SelectionScreen {
             // create background
             const { background, text } = this.createEquipmentBackground(
                 "Starting Equipment Pool", 0, 200,
-                equipmentPerRow * buttonWidth + (equipmentPerRow - 1) * xPadding,
-                equipmentColumns * buttonHeight + (equipmentColumns - 1) * yPadding
+                equipmentPerRow * this.buttonWidth + (equipmentPerRow - 1) * this.xPadding,
+                equipmentColumns * this.buttonHeight + (equipmentColumns - 1) * this.yPadding
             );
             this.equipmentContainer.addChild(background, text);
 
@@ -128,15 +137,14 @@ export class SelectionScreen {
             equipmentArray.forEach((equipment, index) => {
                 const row = Math.floor(index / MAX_PER_ROW);
                 const column = index % MAX_PER_ROW;
-                const x = column * (buttonWidth + xPadding) + background.position.x;
-                const y = row * (buttonHeight + yPadding) + background.position.y;
+                const x = column * (this.buttonWidth + this.xPadding) + background.position.x;
+                const y = row * (this.buttonHeight + this.yPadding) + background.position.y;
                 const button = this.createEquipmentButton(equipment, x, y);
                 this.equipmentContainer.addChild(button);
             });
         }
         else if (this.selectionMode === SelectionMode.POST_ENCOUNTER) {
             // equipment filtering
-            const MAX_PER_ROW = 2;
             const arcanePool = Array.from(equipmentDefinitions.values()).filter((equipment) => equipment.category === EquipmentCategory.arcane && !game.player.equipment.includes(equipment));
             const hitechPool = Array.from(equipmentDefinitions.values()).filter((equipment) => equipment.category === EquipmentCategory.hitech && !game.player.equipment.includes(equipment));
 
@@ -145,10 +153,7 @@ export class SelectionScreen {
 
             this.title.text = `Select your reward (${this.equipmentMaximumPerPool} per pool)`;
             // button settings
-            const buttonWidth = 200;
-            const buttonHeight = 200;
-            const xPadding = 60;
-            const yPadding = 20;
+            const MAX_PER_ROW = 2;
 
             // row/column precalculations
             const arcanePerRow = arcaneEquipment.length > MAX_PER_ROW ? MAX_PER_ROW : arcaneEquipment.length;
@@ -159,14 +164,14 @@ export class SelectionScreen {
 
             // create background for each pool
             const { background: arcaneBackground, text: arcaneText } = this.createEquipmentBackground(
-                "Arcane Pool", 100, 200,
-                arcanePerRow * buttonWidth + (arcanePerRow - 1) * xPadding,
-                arcaneColumns * buttonHeight + (arcaneColumns - 1) * yPadding
+                "Arcane Pool", 0, 200,
+                arcanePerRow * this.buttonWidth + (arcanePerRow - 1) * this.xPadding,
+                arcaneColumns * this.buttonHeight + (arcaneColumns - 1) * this.yPadding
             );
             const { background: hitechBackground, text: hitechText } = this.createEquipmentBackground(
-                "High-Tech Pool", 900, 200,
-                hitechPerRow * buttonWidth + (hitechPerRow - 1) * xPadding,
-                hitechColumns * buttonHeight + (hitechColumns - 1) * yPadding
+                "High-Tech Pool", game.app.screen.width - this.equipmentContainer.position.x, 200,
+                hitechPerRow * this.buttonWidth + (hitechPerRow - 1) * this.xPadding,
+                hitechColumns * this.buttonHeight + (hitechColumns - 1) * this.yPadding
             );
             this.equipmentContainer.addChild(arcaneBackground, hitechBackground, arcaneText, hitechText);
 
@@ -174,8 +179,8 @@ export class SelectionScreen {
             arcaneEquipment.forEach((equipment, index) => {
                 const row = Math.floor(index / MAX_PER_ROW);
                 const column = index % MAX_PER_ROW;
-                const x = column * (buttonWidth + xPadding) + arcaneBackground.position.x;
-                const y = row * (buttonHeight + yPadding) + arcaneBackground.position.y;
+                const x = column * (this.buttonWidth + this.xPadding) + arcaneBackground.position.x;
+                const y = row * (this.buttonHeight + this.yPadding) + arcaneBackground.position.y;
                 const button = this.createEquipmentButton(equipment, x, y);
                 this.equipmentContainer.addChild(button);
             });
@@ -183,8 +188,8 @@ export class SelectionScreen {
             hitechEquipment.forEach((equipment, index) => {
                 const row = Math.floor(index / MAX_PER_ROW);
                 const column = index % MAX_PER_ROW;
-                const x = column * (buttonWidth + xPadding) + hitechBackground.position.x;
-                const y = row * (buttonHeight + yPadding) + hitechBackground.position.y;
+                const x = column * (this.buttonWidth + this.xPadding) + hitechBackground.position.x;
+                const y = row * (this.buttonHeight + this.yPadding) + hitechBackground.position.y;
                 const button = this.createEquipmentButton(equipment, x, y);
                 this.equipmentContainer.addChild(button);
             });
@@ -201,7 +206,18 @@ export class SelectionScreen {
         buttonBackground.roundRect(0, 0, 200, 200);
         buttonBackground.fill(0x404040);
 
-        const buttonText = new Text({ text: equipment.name, style: { fontFamily: "monospace", fontSize: 24, fill: 0xffffff } });
+        const buttonText = new Text({
+            text: equipment.name,
+            style: {
+                fontFamily: "monospace",
+                fontSize: 24,
+                fill: 0xffffff,
+                stroke: { color: 0x000000, width: 2 },
+                wordWrap: true,
+                wordWrapWidth: 190,
+                align: "center",
+            }
+        });
         buttonText.position.set(100, 100);
         buttonText.anchor.set(0.5);
 
@@ -266,15 +282,25 @@ export class SelectionScreen {
         equipmentCards.forEach((cardTemplate) => {
             // display card
             const card = new Card(cardTemplate);
-            card.container.position.set(xOffset + card.container.width / 2, card.container.height - 50);
             card.container.visible = true;
-
-            console.log(card.definition.name);
 
             // display card counts
             const cardCountText = new Text({text: `${cardCounts[cardTemplate]}x`, style: { fontFamily: "monospace", fontSize: 30, fill: 0x00ffff, stroke: { color: 0x000000, width: 5 } }});
-            cardCountText.position.set(xOffset + card.container.width/2, -35);
             cardCountText.anchor.set(0.5, 0)
+
+            // positioning
+            let xPosition: number = 0;
+            if (this.tooltipSide === 0) {
+                // left side
+                xPosition = card.container.width/2 + xOffset;
+            }
+            else if (this.tooltipSide === 1) {
+                // right side
+                xPosition = -card.container.width/2 - xOffset;
+            }
+
+            card.container.position.set(xPosition, card.container.height - 100);
+            cardCountText.position.set(xPosition, -35);
 
             // offset for next card
             xOffset += card.container.width + 10;
@@ -306,8 +332,30 @@ export class SelectionScreen {
 
     update(dt: number) {
         if (!this.visible) return;
-        const offset = 20;
-        this.tooltip.position.set(game.mouse.x + offset, game.mouse.y + offset);
-        game.uiManager.updateKeywords(new Vector(this.tooltip.position.x + 100, this.tooltip.position.y + 250));
+        let offset: number = 20;
+        let keywordsPositionX: number = 0;
+
+        // tooltip positioning right/left
+        if (game.mouse.x > game.app.screen.width / 2) {
+            // right side
+            this.tooltipSide = 1;
+            offset = -20;
+            keywordsPositionX = this.tooltip.position.x - this.tooltip.width;
+        }
+        else {
+            // left side
+            this.tooltipSide = 0;
+            offset = 20;
+            keywordsPositionX = this.tooltip.position.x;
+        }
+
+        this.tooltip.position.set(game.mouse.x + offset, game.mouse.y + 20);
+        game.uiManager.updateKeywords(new Vector(keywordsPositionX + 100, this.tooltip.position.y + 250));
+
+        this.background.width = game.app.screen.width;
+        this.background.height = game.app.screen.height;
+        this.title.position.set(game.app.screen.width / 2, 100);
+        this.selectContainer.position.set((game.app.screen.width - this.selectContainer.width) / 2, 800);
+        this.equipmentContainer.position.set(game.app.screen.width/2 - this.equipmentContainer.width/2, 100);
     }
 }

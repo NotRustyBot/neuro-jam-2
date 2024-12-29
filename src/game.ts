@@ -176,6 +176,7 @@ export class Game {
         this.selectionScreen.update(dt);
         this.camera.update(dt);
         this.timeManager.update(dt);
+        this.menu.update(dt);
         //this.cursor.position.set(this.mouse.x, this.mouse.y);
 
         // encounter

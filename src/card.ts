@@ -72,8 +72,8 @@ export class Card {
         originCircle.stroke({ color: 0x000000, width: 3 });
         originCircle.fill(0xffffff);
 
-        cardOutline.rect(this.cardSprite.position.x, this.cardSprite.position.y, this.cardSprite.width + 1, this.cardSprite.height + 1);
-        cardOutline.stroke({ color: 0x404040, width: 3 });
+        cardOutline.roundRect(this.cardSprite.position.x, this.cardSprite.position.y, this.cardSprite.width + 1, this.cardSprite.height + 1, 2);
+        cardOutline.stroke({ color: 0x808080, width: 3 });
 
         this.container.addChild(this.cardSprite);
         this.container.addChild(originCircle, cardOutline);
@@ -256,8 +256,8 @@ export function getDescriptionTexture(text: string): RenderTexture {
         height: 200,
     });
 
-    // the following is an unholy abomination. viewer discression is advised
-    setTimeout(() => { 
+    // the following is an unholy abomination. viewer discretion is advised     // fixed your comment for you ;)
+    setTimeout(() => {
         game.app.renderer.render({ target: texture, container });
     }, 100);
 
