@@ -115,8 +115,8 @@ export class Game {
             this.player.addEquipment(selectedEquipment);
             this.startGame();
         };
-        this.selectionScreen.onSelectionComplete([equipmentDefinitions.get(EquipmentTemplate.pepperSpray)!]);
-        //this.menu.show();
+        //this.selectionScreen.onSelectionComplete([equipmentDefinitions.get(EquipmentTemplate.pepperSpray)!]);
+        this.menu.show();
     }
 
     resize(){
