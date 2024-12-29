@@ -1,5 +1,6 @@
 {
-    "past1": "./bg/past1.png",
+    "past_fg": "./bg/past_fg.png",
+    "past_bg": "./bg/past_bg.png",
     "menu": "./bg/menu.png",
     "spiderbot_body": "./spiderbot/body.png",
     "spiderbot_head": "./spiderbot/head.png",
@@ -9,7 +10,6 @@
     "spider_head": "./spider/head.png",
     "spider_leg1": "./spider/leg1.png",
     "spider_leg2": "./spider/leg2.png",
-    "pastGround": "./bg/pastGround.webp",
     "enemy1_f": "./enemy1_f.png",
     "enemy1_p": "./enemy1_p.png",
     "Burn": "./buffs/Burn.png",

@@ -29,6 +29,8 @@ export class Game {
     playerContainer = new Container();
     cardContainer = new Container();
     uiContainer = new Container();
+    uiKeywordsContainer = new Container();
+    containerToReflect = new Container();
     screenReflectContainer = new Container();
 
     menu!: Menu;
@@ -113,8 +115,8 @@ export class Game {
             this.player.addEquipment(selectedEquipment);
             this.startGame();
         };
-        //this.selectionScreen.onSelectionComplete([equipmentDefinitions.get(EquipmentTemplate.pepperSpray)!]);
-        this.menu.show();
+        this.selectionScreen.onSelectionComplete([equipmentDefinitions.get(EquipmentTemplate.pepperSpray)!]);
+        //this.menu.show();
     }
 
     resize(){
@@ -137,9 +139,13 @@ export class Game {
         this.app.stage.addChild(this.backgroundContainer);
         this.app.stage.addChild(this.enemyContainer);
         this.app.stage.addChild(this.playerContainer);
-        this.app.stage.addChild(this.uiContainer);
+        this.app.stage.addChild(this.containerToReflect);
         this.app.stage.addChild(this.screenReflectContainer);
         this.app.stage.addChild(this.cardContainer);
+
+        this.containerToReflect.addChild(this.uiContainer);
+        this.containerToReflect.addChild(this.uiKeywordsContainer);
+
         this.cursor = new Sprite(Assets.get("cursor"));
         this.cursor.eventMode = "none";
         this.cursor.anchor.set(0.2);

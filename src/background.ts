@@ -2,24 +2,31 @@ import { Assets, Container, Graphics, Sprite } from "pixi.js";
 import { game } from "./game";
 
 export class Background {
-    sprite: Sprite;
+    spriteForeground: Sprite;
+    spriteBackground: Sprite;
     graphics: Graphics;
     skyMask: Sprite;
 
     constructor() {
-        this.sprite = new Sprite(Assets.get("pastGround"));
-        this.skyMask = new Sprite(Assets.get("skyGradient"));
-        this.sprite.texture.source.scaleMode = "nearest";
-        this.sprite.anchor.set(0.5, 1);
+        this.spriteForeground = new Sprite(Assets.get("past_fg"));
+        this.spriteForeground.texture.source.scaleMode = "nearest";
+        this.spriteForeground.anchor.set(0.5, 1);
 
+        this.spriteBackground = new Sprite(Assets.get("past_bg"));
+        this.spriteBackground.texture.source.scaleMode = "nearest";
+        this.spriteBackground.anchor.set(0.5, 1);
+
+        this.skyMask = new Sprite(Assets.get("skyGradient"));
         this.graphics = new Graphics();
         this.skyMask.scale.set(2);
         this.skyMask.anchor.set(0.5, 0);
         this.graphics.mask = this.skyMask;
-        this.sprite.anchor.set(0.5, 3 / 4);
+        this.spriteForeground.anchor.set(0.5, 3 / 4);
+        this.spriteBackground.anchor.set(0.5, 3 / 4);
 
         game.backgroundContainer.addChild(this.graphics);
-        game.backgroundContainer.addChild(this.sprite);
+        game.backgroundContainer.addChild(this.spriteBackground);
+        game.backgroundContainer.addChild(this.spriteForeground);
         game.backgroundContainer.addChild(this.skyMask);
     }
 
@@ -37,9 +44,12 @@ export class Background {
 
     update(dt: number) {
         this.resize();
-        this.sprite.position.x = game.app.screen.width / 2;
-        this.sprite.position.y = (game.app.screen.height / 3) * 2;
-        const coverRatio = Math.min(this.sprite.texture.width / game.app.screen.width, this.sprite.texture.height / game.app.screen.height);
-        this.sprite.scale.set(1 / coverRatio);
+        this.spriteForeground.position.x = game.app.screen.width / 2;
+        this.spriteForeground.position.y = (game.app.screen.height / 3) * 2;
+        this.spriteBackground.position.x = game.app.screen.width / 2 + game.camera.position.x / 3;
+        this.spriteBackground.position.y = (game.app.screen.height / 3) * 2 + game.camera.position.y / 3;
+        const coverRatio = Math.min(this.spriteForeground.texture.width / game.app.screen.width, this.spriteForeground.texture.height / game.app.screen.height);
+        this.spriteForeground.scale.set(1 / coverRatio);
+        this.spriteBackground.scale.set(1 / coverRatio);
     }
 }

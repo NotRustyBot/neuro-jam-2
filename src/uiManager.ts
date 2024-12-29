@@ -119,10 +119,10 @@ export class UIManager {
         this.playerHpText.scale.set(1 + this.recentPlayerDamage * 0.5);
         this.recentPlayerDamage *= 0.9;
 
-        if(game.player.block > 0) {
+        if (game.player.block > 0) {
             this.blockContainer.visible = true;
             this.blockText.text = `${game.player.block}`;
-        }else {
+        } else {
             this.blockContainer.visible = false;
         }
     }
@@ -131,24 +131,24 @@ export class UIManager {
         this.screenReflectionTexture.resize(window.innerWidth, window.innerHeight);
         this.reflectionSprite.width = window.innerWidth + 200;
         this.reflectionSprite.height = window.innerHeight + 200;
-        game.app.renderer.render({ container: game.uiContainer, target: this.screenReflectionTexture });
+        game.app.renderer.render({ container: game.containerToReflect, target: this.screenReflectionTexture });
         const pos = game.camera.movementDiff.result().mult(3);
         pos.x += window.innerWidth / 2;
         pos.y += window.innerHeight / 2;
         this.reflectionSprite.position.set(pos.x, pos.y);
 
         if (game.player.activeCard != null) {
-            this.keywordContainer.position.set(game.player.activeCard.containerPosition.x, game.player.activeCard.containerPosition.y);
+            const position = Vector.fromLike(game.player.activeCard.containerPosition);
+            this.keywordContainer.position.set(position.x, position.y);
         }
         this.updatePlayerUi(dt);
         this.buffText.position.set(game.mouse.x, game.mouse.y - 10);
     }
 
-    resize() {
-    }
+    resize() {}
 
     initKeywords() {
-        game.uiContainer.addChild(this.keywordContainer);
+        game.uiKeywordsContainer.addChild(this.keywordContainer);
     }
 
     updateKeywords(position: Vector) {
@@ -198,8 +198,8 @@ class UiKeywordDefinition {
                 fill: this.keyword.color,
                 stroke: { color: 0x000000, width: 2 },
                 wordWrap: true,
-                wordWrapWidth: 300
-            }
+                wordWrapWidth: 300,
+            },
         });
 
         this.name.anchor.set(1, 0);

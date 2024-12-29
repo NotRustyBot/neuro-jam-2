@@ -82,7 +82,7 @@ export class Card {
 
         const originCircle = new Graphics();
         const cardOutline = new Graphics();
-        originCircle.roundRect(-5, -5, 10, 10)
+        originCircle.roundRect(-5, -5, 10, 10);
         originCircle.stroke({ color: 0x000000, width: 3 });
         originCircle.fill(0xb0b0b0);
 
@@ -150,7 +150,7 @@ export class Card {
             },
         });
         this.usageCost.anchor.set(0.5, 0.5);
-        this.usageCost.position.set(this.usageCostSprite.position.x + this.usageCostSprite.width/2, this.usageCostSprite.position.y + this.usageCostSprite.height/2);
+        this.usageCost.position.set(this.usageCostSprite.position.x + this.usageCostSprite.width / 2, this.usageCostSprite.position.y + this.usageCostSprite.height / 2);
 
         this.container.addChild(cardType);
         this.container.addChild(this.usageCost);
@@ -191,11 +191,11 @@ export class Card {
             game.cardContainer.setChildIndex(this.container, cardCount - myIndex - 1);
         }
 
-        //if (this.isHovered && !this.wasHovered) {
-        //    if (!this.isActive) {
-        //        game.soundManager.play("select", 0.1);
-        //    }
-        //}
+        if (this.isHovered && !this.wasHovered) {
+            if (!this.isActive) {
+                //game.soundManager.play("select", 0.1);
+            }
+        }
 
         if (game.player.stamina < (this.definition.cost ?? 0)) {
             this.usageCost.style.fill = 0xff0000;
@@ -243,6 +243,7 @@ export class Card {
         game.player.hand.splice(game.player.hand.indexOf(this), 1);
         this.hide();
         this.definition.onPlayed?.(game.player, this.instance.enemy);
+        game.player.buffs.cardPlayed(this);
     }
 
     discard() {
@@ -296,7 +297,7 @@ export function getDescriptionTexture(text: string): RenderTexture {
         height: 200,
     });
 
-    // the following is an unholy abomination. viewer discretion is advised     // fixed your comment for you ;)
+    // the following is an unholy abomination. viewer discretion is advised     // fixed your comment for you ;)    // thanks
     setTimeout(() => {
         game.app.renderer.render({ target: texture, container });
     }, 100);

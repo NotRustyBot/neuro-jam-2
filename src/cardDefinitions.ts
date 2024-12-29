@@ -70,6 +70,7 @@ export function createCardDefinitions() {
             enemy.takeDamage(damage);
             enemy.buffs.add(BuffType.burn, 2);
             enemy.buffs.add(BuffType.weak, 1);
+            game.soundManager.play("blindshot");
         },
     });
 
@@ -103,6 +104,7 @@ export function createCardDefinitions() {
             damage = player.modifyAttackDamage(damage);
             enemy.takeDamage(damage);
             enemy.buffs.add(BuffType.stun);
+            game.soundManager.play("zap");
         },
     });
 
@@ -111,11 +113,12 @@ export function createCardDefinitions() {
         family: CardType.skill,
         name: "Meditate",
         cost: 1,
-        description: `Gain 5 #block and draw a card`,
+        description: `Gain 4 #block and draw a card`,
         keywords: [KeywordType.block],
         onPlayed: (player: Player, enemy: Enemy) => {
-            player.block += 5;
+            player.block += 4;
             player.drawCards(1);
+            game.soundManager.play("meditate");
         },
     });
 
@@ -125,12 +128,13 @@ export function createCardDefinitions() {
         name: "Slam",
         keywords: [KeywordType.stun, KeywordType.weakness],
         cost: 2,
-        description: `Deal 4 damage\nDeal 2 extra damage if the enemy has #weakness or #stun`,
+        description: `Deal 4 damage\nDeal 6 extra damage if the enemy has #weakness or #stun`,
         onPlayed: (player: Player, enemy: Enemy) => {
             let damage = 4;
             damage = player.modifyAttackDamage(damage);
-            if (enemy.buffs.has(BuffType.stun) || enemy.buffs.has(BuffType.weak)) damage += 2;
+            if (enemy.buffs.has(BuffType.stun) || enemy.buffs.has(BuffType.weak)) damage += 6;
             enemy.takeDamage(damage);
+            game.soundManager.play("slam");
         },
     });
 
@@ -143,6 +147,7 @@ export function createCardDefinitions() {
         description: `Inflict 2 #weakness`,
         onPlayed: (player: Player, enemy: Enemy) => {
             enemy.buffs.add(BuffType.weak, 2);
+            game.soundManager.play("laser");
         },
     });
 
@@ -160,6 +165,7 @@ export function createCardDefinitions() {
             if (enemy.buffs.has(BuffType.burn)) damage += 4;
             enemy.takeDamage(damage);
             enemy.buffs.add(BuffType.burn, 2);
+            game.soundManager.play("ignite");
         },
     });
 
@@ -173,6 +179,7 @@ export function createCardDefinitions() {
             let damage = 4;
             damage = player.modifyAttackDamage(damage);
             enemy.takeDamage(damage);
+            game.soundManager.play("magic_bolt");
         },
     });
 
@@ -185,6 +192,7 @@ export function createCardDefinitions() {
         description: `Gain 10 #block`,
         onPlayed: (player: Player, enemy: Enemy) => {
             player.block += 10;
+            game.soundManager.play("shield_up");
         },
     });
 
@@ -198,6 +206,7 @@ export function createCardDefinitions() {
         onPlayed: (player: Player, enemy: Enemy) => {
             player.buffs.add(BuffType.strength, 2);
             enemy.buffs.add(BuffType.weak, 1);
+            game.soundManager.play("ancestors_call");
         },
     });
 
@@ -212,6 +221,7 @@ export function createCardDefinitions() {
             damage = player.modifyAttackDamage(damage);
             player.heal(damage);
             enemy.takeDamage(damage);
+            game.soundManager.play("backstab");
         },
     });
 
@@ -225,6 +235,7 @@ export function createCardDefinitions() {
             let damage = 8;
             enemy.takeDamage(damage);
             player.takeDamage(damage);
+            game.soundManager.play("explosion");
         },
     });
 
@@ -239,6 +250,7 @@ export function createCardDefinitions() {
             let damage = 6;
             damage = player.modifyAttackDamage(damage);
             enemy.takeDamage(damage, 1, true);
+            game.soundManager.play("laser");
         },
     });
 
@@ -252,6 +264,7 @@ export function createCardDefinitions() {
         onPlayed: (player: Player, enemy: Enemy) => {
             player.heal(3);
             player.buffs.add(BuffType.strength, 1);
+            game.soundManager.play("nanite");
         },
     });
 
@@ -282,6 +295,7 @@ export function createCardDefinitions() {
             damage = player.modifyAttackDamage(damage);
             enemy.takeDamage(damage);
             enemy.buffs.add(BuffType.vuenerable, 1);
+            game.soundManager.play("explosion");
         },
     });
 
@@ -294,6 +308,7 @@ export function createCardDefinitions() {
         description: `Gain 4 #block`,
         onPlayed: (player: Player, enemy: Enemy) => {
             player.block += 4;
+            game.soundManager.play("electronic_field");
         },
     });
 
@@ -302,10 +317,11 @@ export function createCardDefinitions() {
         family: CardType.skill,
         name: "Quantum Jump",
         keywords: [KeywordType.immune],
-        cost: 1,
+        cost: 2,
         description: `Gain #immune until next turn`,
         onPlayed: (player: Player, enemy: Enemy) => {
             player.buffs.add(BuffType.immune);
+            game.soundManager.play("quantum_jump");
         },
     });
 

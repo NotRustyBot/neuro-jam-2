@@ -30,6 +30,7 @@ export class Camera {
             if (game.encounter.instance.enemy.myTurn) {
                 this.targetZoom = 1.3;
                 targetPosition.x += 3 * window.innerWidth;
+                targetPosition.y += 3 * window.innerHeight;
             } else if (game.player.activeCard != null && game.player.activeCard.definition.family == CardType.attack) {
                 this.targetZoom = 1.2 - (game.player.activeCard.containerPosition.y / window.innerHeight) * 0.2;
             }

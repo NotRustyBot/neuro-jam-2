@@ -111,24 +111,29 @@ export function createEquipmentDefinitions() {
 
     equipmentDefinitions.set(EquipmentTemplate.summoningSigil, {
         category: EquipmentCategory.arcane,
-
+        onGameStart() {
+            game.player.buffs.add(BuffType.voicesOfThePast);
+        },
         name: "Summoning Sigil",
         template: EquipmentTemplate.summoningSigil,
-        cards: [CardTemplate.ancestorsCall, CardTemplate.ancestorsCall],
+        cards: [CardTemplate.ancestorsCall, CardTemplate.ancestorsCall, CardTemplate.exhaustion, CardTemplate.exhaustion],
     });
 
     equipmentDefinitions.set(EquipmentTemplate.vampiricDagger, {
         category: EquipmentCategory.arcane,
         name: "Vampiric Dagger",
         template: EquipmentTemplate.vampiricDagger,
-        cards: [CardTemplate.backstab, CardTemplate.backstab],
+        cards: [CardTemplate.backstab, CardTemplate.exhaustion, CardTemplate.exhaustion],
     });
 
     equipmentDefinitions.set(EquipmentTemplate.unstableAlchemyBomb, {
         category: EquipmentCategory.arcane,
         name: "Unstable Alchemy Bomb",
         template: EquipmentTemplate.unstableAlchemyBomb,
-        cards: [CardTemplate.bigBang, CardTemplate.bigBang],
+        cards: [CardTemplate.bigBang],
+        onGameStart() {
+            game.player.buffs.add(BuffType.alchemist);
+        },
     });
 
     //hitech
@@ -136,7 +141,7 @@ export function createEquipmentDefinitions() {
         category: EquipmentCategory.hitech,
         name: "Laser Gun",
         template: EquipmentTemplate.laserGun,
-        cards: [CardTemplate.laserBeam, CardTemplate.laserBeam],
+        cards: [CardTemplate.laserBeam, CardTemplate.laserBeam, CardTemplate.exhaustion, CardTemplate.exhaustion],
     });
 
     equipmentDefinitions.set(EquipmentTemplate.healingBot, {
@@ -151,6 +156,9 @@ export function createEquipmentDefinitions() {
         name: "EM Gauntlet",
         template: EquipmentTemplate.emGauntlet,
         cards: [CardTemplate.emStrike, CardTemplate.emStrike],
+        onGameStart() {
+            game.player.buffs.add(BuffType.persistency);
+        },
     });
 
     equipmentDefinitions.set(EquipmentTemplate.antimatterGrenade, {
@@ -171,6 +179,6 @@ export function createEquipmentDefinitions() {
         category: EquipmentCategory.hitech,
         name: "Quantum Teleporter",
         template: EquipmentTemplate.quantumTeleporter,
-        cards: [CardTemplate.quantumJump, CardTemplate.quantumJump],
+        cards: [CardTemplate.quantumJump, CardTemplate.exhaustion, CardTemplate.exhaustion, CardTemplate.exhaustion],
     });
 }
