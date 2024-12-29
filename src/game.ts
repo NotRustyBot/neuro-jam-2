@@ -64,9 +64,7 @@ export class Game {
         this.uiManager.initKeywords();
 
         
-        this.player.addEquipment([
-            equipmentDefinitions.get(EquipmentTemplate.pepperSpray)!,
-        ]);
+
 
 
         // mouse
