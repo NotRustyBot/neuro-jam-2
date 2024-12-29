@@ -40,6 +40,8 @@ export class Enemy {
         this.container.visible = false;
         if (template.name.includes("spiderbot")) this.spiderBotSetup();
         if (this.template.name == "spider") this.spiderSetup();
+        if (this.template.name == "bee") this.beeSetup();
+        if (this.template.name == "drone") this.droneSetup();
 
         this.hpText = new Text({
             text: ``,
@@ -115,6 +117,8 @@ export class Enemy {
 
         if (this.template.name.includes("spiderbot")) this.spiderBotUpdate(dt);
         if (this.template.name == "spider") this.spiderUpdate();
+        if (this.template.name == "bee") this.beeUpdate();
+        if (this.template.name == "drone") this.droneUpdate();
 
         this.updateUi(dt);
 
@@ -167,6 +171,51 @@ export class Enemy {
         this.sprites[1].position.y = -(Math.abs(game.phase) - 0.5) * 3;
         this.sprites[1].rotation = game.phase * 0.05;
         this.helperContainer.y = game.phase * 5;
+    }
+
+    beeSetup() {
+        this.sprite.visible = false;
+        this.sprites[0] = new Sprite(Assets.get("bee_body"));
+        this.sprites[1] = new Sprite(Assets.get("bee_legs"));
+        this.sprites[2] = new Sprite(Assets.get("bee_wing1"));
+        this.sprites[3] = new Sprite(Assets.get("bee_wing2"));
+        for (const sprite of this.sprites) {
+            sprite.texture.source.scaleMode = "nearest";
+            sprite.anchor.set(0.5);
+            sprite.scale.set(4);
+        }
+        this.helperContainer.addChild(this.sprites[1]);
+        this.helperContainer.addChild(this.sprites[0]);
+        this.helperContainer.addChild(this.sprites[2]);
+        this.helperContainer.addChild(this.sprites[3]);
+        this.helperContainer.position.set(50, 100);
+        this.container.addChild(this.helperContainer);
+    }
+
+    beeUpdate() {
+        this.sprites[2].rotation = game.phase * 0.05 - 0.1;
+        this.sprites[3].rotation = -game.phase * 0.05 - 0.1;
+        this.sprites[1].y = -(Math.abs(game.phase) - 0.5) * 3;
+        this.helperContainer.y = game.phase * 5;
+    }
+
+    droneSetup() {
+        this.sprite.visible = false;
+        this.sprites[0] = new Sprite(Assets.get("healingBot"));
+        for (const sprite of this.sprites) {
+            sprite.texture.source.scaleMode = "nearest";
+            sprite.anchor.set(0.5);
+            sprite.scale.set(4);
+        }
+
+        this.helperContainer.addChild(this.sprites[0]);
+        this.container.addChild(this.helperContainer);
+    }
+
+    droneUpdate() {
+        this.sprites[0].rotation = game.phase * 0.2;
+        this.helperContainer.x = Math.cos(game.phase * Math.PI * 2) * 10 + 50;
+        this.helperContainer.y = Math.sin(game.phase * Math.PI * 2) * 10 -50;
     }
 
     spiderBotSetup() {

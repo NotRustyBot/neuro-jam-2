@@ -163,7 +163,7 @@ const firstEncounter: EncounterTemplate = {
 
 const secondEncounter: EncounterTemplate = {
     pastEnemy: {
-        name: "enemy2",
+        name: "bee",
         health: 20,
         sprite: "enemy1_p",
         actions: [
@@ -180,9 +180,9 @@ const secondEncounter: EncounterTemplate = {
         ],
     },
     futureEnemy: {
-        name: "spiderbot2",
+        name: "drone",
         health: 50,
-        sprite: "enemy1_f",
+        sprite: "healingBot",
         actions: [
             {
                 type: "attack",

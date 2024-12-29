@@ -15,6 +15,11 @@
     "spider_leg1": "./spider/leg1.png",
     "spider_leg2": "./spider/leg2.png",
 
+    "bee_body": "./bee/body.png",
+    "bee_legs": "./bee/legs.png",
+    "bee_wing1": "./bee/wing2.png",
+    "bee_wing2": "./bee/wing1.png",
+
     "enemy1_f": "./enemy1_f.png",
     "enemy1_p": "./enemy1_p.png",
 
