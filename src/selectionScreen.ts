@@ -100,7 +100,7 @@ export class SelectionScreen {
         game.app.stage.addChild(this.tooltip);
 
         // keyword display
-        game.app.stage.addChild(game.uiContainer);
+        this.container.addChild(game.uiKeywordsContainer);
 
         this.visible = true;
     }
