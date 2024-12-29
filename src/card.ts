@@ -50,8 +50,7 @@ export class Card {
             },
         });
 
-        this.name.position.x = -90;
-        this.name.position.y = -240;
+        this.name.position.set(-90, -240);
 
         this.description = new HTMLText({
             text: this.definition.description,
@@ -81,8 +80,7 @@ export class Card {
             },
         });
 
-        this.usageCost.position.x = -90;
-        this.usageCost.position.y = -210;
+        this.usageCost.position.set(-90, -210);
 
         this.container.addChild(this.usageCost, this.description, this.name);
 
@@ -104,7 +102,7 @@ export class Card {
             game.cardContainer.setChildIndex(this.container, cardCount - 1);
             if (game.mouse.down) {
                 this.isActive = true;
-                game.uiManager.showKeywords(this.definition.keywords);
+                if (this.definition.keywords) game.uiManager.showKeywords(this.definition.keywords);
             }
         } else {
             game.cardContainer.setChildIndex(this.container, cardCount - myIndex - 1);

@@ -58,15 +58,36 @@ export class Game {
         createBuffDefinitions();
         this.player = new Player();
         this.camera = new Camera();
-        this.uiManager = new UIManager();
         this.background = new Background();
-        
+        this.uiManager = new UIManager();
+        this.uiManager.initKeywords();
+
         /*
         this.player.addEquipment([
             equipmentDefinitions.get(EquipmentTemplate.pepperSpray)!,
         ]);
         this.startGame();
         return;*/
+
+        // mouse
+        this.app.stage.interactive = true;
+        this.app.stage.on("pointermove", (e) => {
+            this.mouse.y = e.y;
+            this.mouse.x = e.x;
+        });
+
+        this.app.stage.on("pointerdown", (e) => (this.mouse.down = true));
+        this.app.stage.on("pointerup", (e) => (this.mouse.down = false));
+
+        // mouse
+        this.app.stage.interactive = true;
+        this.app.stage.on("pointermove", (e) => {
+            this.mouse.y = e.y;
+            this.mouse.x = e.x;
+        });
+
+        this.app.stage.on("pointerdown", (e) => (this.mouse.down = true));
+        this.app.stage.on("pointerup", (e) => (this.mouse.down = false));
 
 
         // menu
@@ -75,11 +96,13 @@ export class Game {
         this.selectionScreen = new SelectionScreen();
         this.selectionScreen.init();
 
+        // functions
         this.menu.onStart = () => {
             this.menu.hide();
             this.selectionScreen.show(SelectionMode.STARTING_EQUIPMENT);
         };
 
+        var count = 0
         this.selectionScreen.onSelectionComplete = (selectedEquipment: Equipment[]) => {
             this.selectionScreen.hide();
             this.player.addEquipment(selectedEquipment);
@@ -92,16 +115,6 @@ export class Game {
 
     cursor!: Sprite;
     startGame() {
-        // mouse
-        this.app.stage.interactive = true;
-        this.app.stage.on("pointermove", (e) => {
-            this.mouse.y = e.y;
-            this.mouse.x = e.x;
-        });
-
-        this.app.stage.on("pointerdown", (e) => (this.mouse.down = true));
-        this.app.stage.on("pointerup", (e) => (this.mouse.down = false));
-
         // background
         this.clickableBg = new Graphics();
         this.clickableBg.rect(0, 0, this.app.screen.width, this.app.screen.height);
@@ -143,6 +156,7 @@ export class Game {
         this.time += dt;
         this.player.update(dt);
         this.uiManager.update(dt);
+        this.selectionScreen.update(dt);
         this.camera.update(dt);
         //this.cursor.position.set(this.mouse.x, this.mouse.y);
 

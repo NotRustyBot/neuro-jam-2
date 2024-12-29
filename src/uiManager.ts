@@ -17,8 +17,6 @@ export class UIManager {
 
     buffText: Text;
     constructor() {
-        game.uiContainer.addChild(this.keywordContainer);
-
         this.screenReflectionTexture = RenderTexture.create({
             width: game.app.screen.width,
             height: game.app.screen.height,
@@ -120,9 +118,19 @@ export class UIManager {
 
     }
 
-    showKeywords(keywords?: KeywordType[]) {
+
+    initKeywords() {
+        game.uiContainer.addChild(this.keywordContainer);
+    }
+
+    updateKeywords(position: Vector) {
+        this.keywordContainer.position.set(position.x, position.y);
+    }
+
+    showKeywords(keywords: KeywordType[], position?: Vector) {
         this.keywords.forEach((keyword) => keyword.destroy());
         this.keywords.clear();
+
         new Set(keywords).forEach((keyword, index) => {
             const uiKeyword = new UiKeywordDefinition(keyword);
             this.keywords.add(uiKeyword);
@@ -131,16 +139,16 @@ export class UIManager {
         });
     }
 
+    hideKeywords() {
+        this.keywords.forEach((keyword) => keyword.destroy());
+    }
+
     showBuff(buff: Buff, coords: Vectorlike) {
         this.buffText.text = buff.definition.name + ": " + buff.description;
     }
 
     hideBuff() {
         this.buffText.text = "";
-    }
-
-    hideKeywords() {
-        this.keywords.forEach((keyword) => keyword.destroy());
     }
 }
 
