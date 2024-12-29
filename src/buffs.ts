@@ -23,6 +23,8 @@ export class Buffs {
         this.sprites = [];
         game.uiManager.hideBuff();
         for (const buff of this.buffs) {
+            const buffContainer = new Container();
+
             const graphics = new Graphics();
             graphics.moveTo(0, 0);
             graphics.lineTo(size / 2, size / 2);
@@ -33,14 +35,14 @@ export class Buffs {
             graphics.alpha = 0.5;
             graphics.stroke({ color: 0x000000, width: 3 });
 
-            this.container.addChild(graphics);
+            buffContainer.addChild(graphics);
 
-            this.container.interactive = true;
-            this.container.on("mouseenter", () => {
-                game.uiManager.showBuff(buff, this.container.position);
+            buffContainer.interactive = true;
+            buffContainer.on("mouseenter", () => {
+                game.uiManager.showBuff(buff, buffContainer.position);
             });
 
-            this.container.on("mouseleave", () => {
+            buffContainer.on("mouseleave", () => {
                 game.uiManager.hideBuff();
             });
             graphics.position.set(x, 0);
@@ -53,7 +55,9 @@ export class Buffs {
 
             this.sprites.push(sprite);
             this.sprites.push(graphics);
-            this.container.addChild(sprite);
+            buffContainer.addChild(sprite);
+            this.container.addChild(buffContainer);
+
 
             if (buff.severity > 0) {
                 const text = new Text({ text: buff.severity.toString(), style: { fontFamily: "monospace", fontSize: 30, fill: 0xffffff, stroke: {color: 0x000000, width: 2} } });
