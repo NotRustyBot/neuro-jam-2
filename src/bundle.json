@@ -2,6 +2,8 @@
     "past_fg": "./bg/past_fg.png",
     "past_bg": "./bg/past_bg.png",
     "menu": "./bg/menu.png",
+    "skyGradient": "./bg/skyGradient.png",
+
     "spiderbot_body": "./spiderbot/body.png",
     "spiderbot_head": "./spiderbot/head.png",
     "spiderbot_leg1": "./spiderbot/leg1.png",
@@ -10,25 +12,31 @@
     "spider_head": "./spider/head.png",
     "spider_leg1": "./spider/leg1.png",
     "spider_leg2": "./spider/leg2.png",
+
     "enemy1_f": "./enemy1_f.png",
     "enemy1_p": "./enemy1_p.png",
-    "Burn": "./buffs/Burn.png",
-    "Extra attack damage": "./buffs/Extra attack damage.png",
-    "Immune": "./buffs/Immune.png",
-    "Strength": "./buffs/Strength.png",
-    "Stun": "./buffs/Stun.png",
-    "Vulnerable": "./buffs/Vulnerable.png",
-    "Weak": "./buffs/Weak.png",
-    "Pyromaniac": "./buffs/Pyromaniac.png",
+
+    "bonusAttackDamage": "./buffs/bonusAttackDamage.png",
+    "burn": "./buffs/burn.png",
+    "pyromaniac": "./buffs/pyromaniac.png",
+    "immune": "./buffs/immune.png",
+    "vulnerable": "./buffs/vulnerable.png",
+    "strength": "./buffs/strength.png",
+    "weak": "./buffs/weak.png",
+    "stun": "./buffs/stun.png",
+
     "cursor": "./cursor.png",
     "player": "./player.png",
+
     "block": "./block.png",
-    "skyGradient": "./bg/skyGradient.png",
+
     "basicCard": "./cards/basicCard.png",
     "hitechCard": "./cards/hitechCard.png",
     "arcaneCard": "./cards/arcaneCard.png",
+
     "cardCostOutline": "./cards/cardCostOutline.png",
     "cardCost": "./cards/cardCost.png",
+
     "attackType": "./cards/attackType.png",
     "skillType": "./cards/skillType.png"
 }

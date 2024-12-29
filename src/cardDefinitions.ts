@@ -279,7 +279,7 @@ export function createCardDefinitions() {
             let damage = 3;
             damage = player.modifyAttackDamage(damage);
             enemy.takeDamage(damage);
-            enemy.buffs.add(BuffType.vuenerable, 2);
+            enemy.buffs.add(BuffType.vulnerable, 2);
         },
     });
 
@@ -294,7 +294,7 @@ export function createCardDefinitions() {
             let damage = 6;
             damage = player.modifyAttackDamage(damage);
             enemy.takeDamage(damage);
-            enemy.buffs.add(BuffType.vuenerable, 1);
+            enemy.buffs.add(BuffType.vulnerable, 1);
             game.soundManager.play("explosion");
         },
     });

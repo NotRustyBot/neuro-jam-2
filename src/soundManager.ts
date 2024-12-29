@@ -1,7 +1,7 @@
 import { Howl } from "howler";
 
 export class SoundManager {
-    masterVolume = 1;
+    masterVolume = 0.5;
     sounds = {
         electronic_field: new Howl({ src: "./sounds/electronic_field.wav" }),
         explosion: new Howl({ src: "./sounds/explosion.wav" }),

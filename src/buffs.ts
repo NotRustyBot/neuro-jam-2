@@ -30,28 +30,33 @@ export class Buffs {
             graphics.lineTo(size / 2, -size / 2);
             graphics.lineTo(0, 0);
             graphics.fill(0xffffff);
+            graphics.alpha = 0.5;
+            graphics.stroke({ color: 0x000000, width: 3 });
 
             this.container.addChild(graphics);
 
-            graphics.interactive = true;
-            graphics.on("mouseenter", () => {
+            this.container.interactive = true;
+            this.container.on("mouseenter", () => {
                 game.uiManager.showBuff(buff, this.container.position);
             });
 
-            graphics.on("mouseleave", () => {
+            this.container.on("mouseleave", () => {
                 game.uiManager.hideBuff();
             });
             graphics.position.set(x, 0);
 
-            const sprite = new Sprite(Assets.get(buff.definition.name));
+            const sprite = new Sprite(Assets.get(BuffType[buff.type]));
             sprite.anchor.set(0.5);
             sprite.position.set(x + size / 2, 0);
+            sprite.texture.source.scaleMode = "nearest";
+            sprite.scale.set(1.5);
+
             this.sprites.push(sprite);
             this.sprites.push(graphics);
             this.container.addChild(sprite);
 
             if (buff.severity > 0) {
-                const text = new Text({ text: buff.severity.toString(), style: { fontFamily: "monospace", fontSize: 24, fill: 0x000000 } });
+                const text = new Text({ text: buff.severity.toString(), style: { fontFamily: "monospace", fontSize: 30, fill: 0xffffff, stroke: {color: 0x000000, width: 2} } });
                 text.position.set(x + size / 2, 0);
                 text.anchor.set(0.5);
                 this.container.addChild(text);
@@ -178,7 +183,7 @@ export enum BuffType {
     pyromaniac,
     bonusAttackDamage,
     strength,
-    vuenerable,
+    vulnerable,
     immune,
     voicesOfThePast,
     alchemist,
@@ -216,7 +221,7 @@ export function createBuffDefinitions() {
 
     buffDefinitions.set(BuffType.weak, {
         type: BuffType.weak,
-        name: "Weak",
+        name: "Weakness",
         description: `Reduces damage by 50%`,
         modifySeverity: -1,
         stacks: true,
@@ -262,8 +267,8 @@ export function createBuffDefinitions() {
         stacks: true,
     });
 
-    buffDefinitions.set(BuffType.vuenerable, {
-        type: BuffType.vuenerable,
+    buffDefinitions.set(BuffType.vulnerable, {
+        type: BuffType.vulnerable,
         name: "Vulnerable",
         description: `Incoming damage is increased by 50%`,
         modifySeverity: -1,
@@ -281,13 +286,13 @@ export function createBuffDefinitions() {
     buffDefinitions.set(BuffType.voicesOfThePast, {
         type: BuffType.voicesOfThePast,
         name: "Voices of the past",
-        description: `Every 5th skill played, gain 1 Strength`, 
+        description: `Every 5th skill played, gain 1 Strength`,
         onCardPlayed(buff, target, card) {
             if(card.definition.family === CardType.skill) {
                 buff.severity += 1;
                 if(buff.severity === 5) {
                     target.buffs.add(BuffType.strength, 1);
-                    buff.severity = 0; 
+                    buff.severity = 0;
                     target.buffs.render();
                 }
             }
@@ -298,30 +303,13 @@ export function createBuffDefinitions() {
     buffDefinitions.set(BuffType.alchemist, {
         type: BuffType.alchemist,
         name: "Alchemist",
-        description: `Every 5th skill played, gain 1 energy`, 
+        description: `Every 5th skill played, gain 1 energy`,
         onCardPlayed(buff, target, card) {
             if(card.definition.family === CardType.skill) {
                 buff.severity += 1;
                 if(buff.severity === 5) {
                     game.player.stamina += 1;
-                    buff.severity = 0; 
-                    target.buffs.render();
-                }
-            }
-        },
-        stacks: true,
-    });
-
-    buffDefinitions.set(BuffType.alchemist, {
-        type: BuffType.alchemist,
-        name: "Alchemist",
-        description: `Every 5th skill played, gain 1 energy`, 
-        onCardPlayed(buff, target, card) {
-            if(card.definition.family === CardType.skill) {
-                buff.severity += 1;
-                if(buff.severity === 5) {
-                    game.player.stamina += 1;
-                    buff.severity = 0; 
+                    buff.severity = 0;
                     target.buffs.render();
                 }
             }
@@ -332,13 +320,13 @@ export function createBuffDefinitions() {
     buffDefinitions.set(BuffType.persistency, {
         type: BuffType.persistency,
         name: "Persistency",
-        description: `Every 10th attack inflicts stun`, 
+        description: `Every 10th attack inflicts stun`,
         onCardPlayed(buff, target, card) {
             if(card.definition.family === CardType.attack) {
                 buff.severity += 1;
                 if(buff.severity === 10) {
                     target.buffs.add(BuffType.stun);
-                    buff.severity = 0; 
+                    buff.severity = 0;
                     target.buffs.render();
                 }
             }

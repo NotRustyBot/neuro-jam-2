@@ -84,7 +84,7 @@ export class Card {
         const cardOutline = new Graphics();
         originCircle.roundRect(-5, -5, 10, 10);
         originCircle.stroke({ color: 0x000000, width: 3 });
-        originCircle.fill(0xb0b0b0);
+        originCircle.fill(0xffffff);
 
         cardOutline.roundRect(this.cardSprite.position.x, this.cardSprite.position.y, this.cardSprite.width + 1, this.cardSprite.height + 1, 2);
         cardOutline.stroke({ color: 0x808080, width: 3 });
