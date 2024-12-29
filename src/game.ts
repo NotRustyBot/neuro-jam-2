@@ -73,6 +73,8 @@ export class Game {
         this.uiManager = new UIManager();
         this.uiManager.initKeywords();
 
+        this.soundManager.setMusic("menu");
+
 
         // mouse
         this.app.stage.interactive = true;
@@ -115,7 +117,7 @@ export class Game {
             this.player.addEquipment(selectedEquipment);
             this.startGame();
         };
-        //this.selectionScreen.onSelectionComplete([equipmentDefinitions.get(EquipmentTemplate.pepperSpray)!]);
+        //this.selectionScreen.onSelectionComplete([equipmentDefinitions.get(EquipmentTemplate.pepperSpray)!, equipmentDefinitions.get(EquipmentTemplate.quantumTeleporter)!]);
         this.menu.show();
     }
 

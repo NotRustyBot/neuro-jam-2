@@ -44,9 +44,18 @@ export class Encounter {
     }
 
     begin() {
+        this.inPast = true;
         game.player.startBattle(this.instance);
         game.player.startTurn();
         this.instance.enemy.show();
+
+        if (this.inPast) {
+            game.soundManager.setMusic("past");
+        } else {
+            game.soundManager.setMusic("future");
+        }
+
+        game.background.updateAssets();
     }
 
     nextTurn() {
@@ -65,6 +74,14 @@ export class Encounter {
         game.player.instance.enemy.hide();
         game.player.instance = this.inPast ? this.past : this.future;
         game.player.instance.enemy.show();
+
+        if (this.inPast) {
+            game.soundManager.setMusic("past");
+        } else {
+            game.soundManager.setMusic("future");
+        }
+
+        game.background.updateAssets();
     }
 
     win() {
