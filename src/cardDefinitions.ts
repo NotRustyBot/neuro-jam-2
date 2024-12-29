@@ -181,7 +181,7 @@ export function createCardDefinitions() {
         keywords: [KeywordType.strength, KeywordType.weakness],
         name: "Ancestor's Call",
         cost: 1,
-        description: `Gain 2 #strength\n inflict 1 #weakness`,
+        description: `Gain 2 #strength\nInflict 1 #weakness`,
         onPlayed: (player: Player, enemy: Enemy) => {
             player.buffs.add(BuffType.strength, 2);
             enemy.buffs.add(BuffType.weak, 1);
@@ -235,7 +235,7 @@ export function createCardDefinitions() {
         name: "Nanite Repair",
         keywords: [KeywordType.strength],
         cost: 1,
-        description: `Heal 3 health\ngain 1 #strength`,
+        description: `Heal 3 health\nGain 1 #strength`,
         onPlayed: (player: Player, enemy: Enemy) => {
             player.heal(3);
             player.buffs.add(BuffType.strength, 1);

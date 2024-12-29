@@ -269,7 +269,7 @@ export class SelectionScreen {
             card.container.position.set(xOffset + card.container.width / 2, card.container.height - 50);
 
             // display card counts
-            const cardCountText = new Text({text: `${cardCounts[cardTemplate]}x`, style: { fontFamily: "monospace", fontSize: 30, fill: 0xffffff, stroke: 0x000000 }});
+            const cardCountText = new Text({text: `${cardCounts[cardTemplate]}x`, style: { fontFamily: "monospace", fontSize: 30, fill: 0xffffff, stroke: { color: 0x000000, width: 5 } }});
             cardCountText.position.set(xOffset, -35);
 
             // offset for next card

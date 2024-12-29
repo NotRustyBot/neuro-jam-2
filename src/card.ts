@@ -1,16 +1,18 @@
-import { Container, Graphics, HTMLText, Text } from "pixi.js";
+import { Assets, Sprite, Container, Graphics, HTMLText, Text } from "pixi.js";
 import { CardDefinition, cardDefinitions, CardTemplate } from "./cardDefinitions";
 import { game } from "./game";
 import { BattleInstance } from "./player";
+import { EquipmentCategory, equipmentDefinitions } from "./equipment";
 
 export class Card {
     type: CardTemplate;
     container: Container;
     graphic: Graphics;
+    sprite: Sprite;
     inHand = true;
     name: Text;
     description: HTMLText;
-    usageCost: HTMLText;
+    usageCost: Text;
 
     containerPosition = { x: 0, y: 0 };
 
@@ -32,59 +34,95 @@ export class Card {
         this.type = type;
         this.definition = cardDefinitions.get(this.type)!;
         this.container = new Container();
+
+        // hacky implementation to get category of card (first occurence)
+        let asset!: string;
+        const equipment = Array.from(equipmentDefinitions.values()).find(equipment => equipment.cards.includes(this.type));
+        if (equipment) {
+            switch (equipment.category) {
+                case EquipmentCategory.starting:
+                    asset = "basicCard";
+                    break;
+                case EquipmentCategory.arcane:
+                    asset = "arcaneCard";
+                    break;
+                case EquipmentCategory.hitech:
+                    asset = "hitechCard";
+                    break;
+            }
+        }
+
+        this.sprite = new Sprite(Assets.get(asset ?? "basicCard"));
+        this.sprite.position.set(-100, -250)
+        this.sprite.scale.set(0.55);
+        //this.sprite.anchor.set(0.5, 0.8);
+
         this.graphic = new Graphics();
         this.container.addChild(this.graphic);
         this.graphic.clear();
-        this.graphic.rect(-100, -250, 200, 300);
-        this.graphic.fill(0xffffff);
-        this.graphic.stroke({ color: 0xffaa00, width: 2 });
+        this.graphic.rect(this.sprite.position.x, this.sprite.position.y, this.sprite.width+1, this.sprite.height+1);
+        //this.graphic.fill(0xffffff);
+        this.graphic.stroke({ color: 0x404040, width: 3 });
         this.container.visible = false;
         game.cardContainer.addChild(this.container);
 
+
+        this.container.addChild(this.sprite);
+        this.container.addChild(this.graphic);
+        game.cardContainer.addChild(this.container);
+
         this.container.interactive = true;
+
 
         this.name = new Text({
             text: this.definition.name,
             style: {
                 fontFamily: "Arial",
-                fontSize: 24,
-                fill: 0x000000,
+                fontSize: 20,
+                fill: 0xffffff,
+                stroke: { color: 0x000000, width: 5 },
+                wordWrap: true,
+                wordWrapWidth: 180,
+                align: "center",
             },
         });
-
-        this.name.position.set(-90, -240);
+        this.name.anchor.set(0.5, 0.5);
+        this.name.position.set(0, -120);
 
         this.description = new HTMLText({
             text: this.definition.description,
             style: {
                 fontFamily: "Arial",
-                fontSize: 16,
-                fill: 0x000000,
+                fontSize: 18,
+                fill: 0xffffff,
+                stroke: { color: 0x000000, width: 2 },
                 wordWrap: true,
-                wordWrapWidth: 200,
+                wordWrapWidth: 180,
                 align: "center",
             },
         });
-
-        this.description.anchor.set(0.5, 0);
-        this.description.position.y = -100;
+        this.description.anchor.set(0.5, 0.5);
+        this.description.position.set(0, -40);
 
         // show stamina cost
-        this.usageCost = new HTMLText({
+        this.usageCost = new Text({
             text: this.definition.cost,
             style: {
                 fontFamily: "Arial",
                 fontSize: 30,
-                fill: 0x0000f0,
+                fill: 0xffffff,
+                stroke: { color: 0x000000, width: 3 },
                 wordWrap: true,
                 wordWrapWidth: 200,
                 align: "center",
             },
         });
+        //this.usageCost.anchor.set(0.5, 0.5);
+        this.usageCost.position.set(-95, -250);
 
-        this.usageCost.position.set(-90, -210);
-
-        this.container.addChild(this.usageCost, this.description, this.name);
+        this.container.addChild(this.usageCost);
+        this.container.addChild(this.description);
+        this.container.addChild(this.name);
 
         this.container.addEventListener("pointerover", () => (this.isHovered = true));
         this.container.addEventListener("pointerout", () => (this.isHovered = false));

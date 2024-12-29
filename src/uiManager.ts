@@ -166,7 +166,18 @@ class UiKeywordDefinition {
     constructor(type: KeywordType) {
         this.keyword = keywordDefinitions.get(type)!;
         this.container = new Container();
-        this.name = new Text({ text: this.keyword.name, style: { fontFamily: "Arial", fontSize: 24, fill: this.keyword.color, wordWrap: true, wordWrapWidth: 300 } });
+        this.name = new Text({
+            text: this.keyword.name,
+            style: {
+                fontFamily: "Arial",
+                fontSize: 24,
+                fill: this.keyword.color,
+                stroke: { color: 0x000000, width: 2 },
+                wordWrap: true,
+                wordWrapWidth: 300
+            }
+        });
+
         this.name.anchor.set(1, 0);
         this.name.x = 300;
         this.description = new Text({
@@ -175,6 +186,7 @@ class UiKeywordDefinition {
                 fontFamily: "Arial",
                 fontSize: 24,
                 fill: 0xffffff,
+                stroke: { color: 0x000000, width: 2 },
                 wordWrap: true,
                 wordWrapWidth: 300,
                 align: "right",

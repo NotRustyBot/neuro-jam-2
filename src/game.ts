@@ -61,7 +61,7 @@ export class Game {
         this.camera = new Camera();
         this.background = new Background();
         this.uiManager = new UIManager();
-        this.uiManager.initKeywords();    
+        this.uiManager.initKeywords();
 
 
         // mouse
