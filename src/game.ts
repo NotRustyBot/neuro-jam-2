@@ -1,6 +1,6 @@
 import { Application, Assets, Container, Graphics, Sprite, Text } from "pixi.js";
 import { Player } from "./player";
-import { createCardDefinitions } from "./cardDefinitions";
+import { cardDefinitions, createCardDefinitions } from "./cardDefinitions";
 import { createEquipmentDefinitions, equipmentDefinitions, EquipmentTemplate } from "./equipment";
 import { UIManager } from "./uiManager";
 import { Background } from "./background";
@@ -13,6 +13,7 @@ import { Equipment } from "./equipment";
 import { Camera } from "./camera";
 import { TimeManager } from "./timeManager";
 import { SoundManager } from "./soundManager";
+import { getDescriptionTexture } from "./card";
 
 export let game: Game;
 export class Game {
@@ -59,6 +60,7 @@ export class Game {
 
     init() {
         createCardDefinitions();
+        cardDefinitions.forEach((card) => getDescriptionTexture(card.description));
         createEquipmentDefinitions();
         createBuffDefinitions();
         this.player = new Player();

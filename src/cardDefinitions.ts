@@ -5,6 +5,7 @@ import { Player } from "./player";
 import { roll } from "./utils";
 
 export enum CardTemplate {
+    exhaustion,
     blindshot,
     sweepStrike,
     zap,
@@ -47,6 +48,14 @@ export const cardDefinitions: Map<CardTemplate, CardDefinition> = new Map();
 
 export function createCardDefinitions() {
     createKeywordDefinitions();
+    cardDefinitions.set(CardTemplate.exhaustion, {
+        template: CardTemplate.exhaustion,
+        family: CardType.skill,
+        startingUses: 0,
+        name: "Exhaustion",
+        cost: 0,
+        description: `does nothing.\n<i>Sometimes you just need to chill out</i>`,
+    })
     cardDefinitions.set(CardTemplate.blindshot, {
         template: CardTemplate.blindshot,
         family: CardType.attack,
@@ -173,9 +182,9 @@ export function createCardDefinitions() {
         name: "Frost Shield",
         keywords: [KeywordType.block],
         cost: 1,
-        description: `Gain 8 #block`,
+        description: `Gain 10 #block`,
         onPlayed: (player: Player, enemy: Enemy) => {
-            player.block += 8;
+            player.block += 10;
         },
     });
 

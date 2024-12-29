@@ -1,4 +1,4 @@
-import { Assets, Sprite, Container, Graphics, HTMLText, Text } from "pixi.js";
+import { Assets, Sprite, Container, Graphics, HTMLText, Text, RenderTexture } from "pixi.js";
 import { CardDefinition, cardDefinitions, CardTemplate } from "./cardDefinitions";
 import { game } from "./game";
 import { BattleInstance } from "./player";
@@ -12,7 +12,7 @@ export class Card {
     inHand = true;
     name: Text;
     usageCost: Text;
-    description!: HTMLText;
+    description!: Sprite;
 
     containerPosition = { x: 0, y: 0 };
 
@@ -122,19 +122,9 @@ export class Card {
     }
 
     createDescription() {
-        this.description = new HTMLText({
-            text: this.definition.description,
-            style: {
-                fontFamily: "Arial",
-                fontSize: 18,
-                fill: 0x000000,
-                wordWrap: true,
-                wordWrapWidth: 180,
-                align: "center",
-            },
-        });
+        this.description = new Sprite(getDescriptionTexture(this.definition.description));
         this.description.anchor.set(0.5, 0.5);
-        this.description.position.set(0, -50);
+        this.description.position.set(0, 10);
 
         this.container.addChild(this.description);
     }
@@ -229,8 +219,6 @@ export class Card {
     }
 
     show() {
-        this.description.destroy();
-        this.createDescription();
         this.container.visible = true;
         this.inHand = true;
         this.container.position.x = 0;
@@ -240,4 +228,40 @@ export class Card {
     destroy(): void {
         this.container.destroy();
     }
+}
+
+const descriptionRenderCache = new Map<string, RenderTexture>();
+
+export function getDescriptionTexture(text: string): RenderTexture {
+    if (descriptionRenderCache.has(text)) return descriptionRenderCache.get(text)!;
+    const container = new Container();
+    const width = 180;
+    const description = new HTMLText({
+        text: text,
+        style: {
+            fontFamily: "Arial",
+            fontSize: 18,
+            fill: 0x000000,
+            wordWrap: true,
+            wordWrapWidth: 180,
+            align: "center",
+        },
+    });
+
+    container.addChild(description);
+    description.anchor.set(0.5, 0);
+    description.position.set(width / 2, 0);
+    const texture = RenderTexture.create({
+        width: width,
+        height: 200,
+    });
+
+    // the following is an unholy abomination. viewer discression is advised
+    setTimeout(() => { 
+        game.app.renderer.render({ target: texture, container });
+    }, 100);
+
+    game.app.renderer.render({ target: texture, container });
+    descriptionRenderCache.set(text, texture);
+    return texture;
 }

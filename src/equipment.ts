@@ -63,7 +63,7 @@ export function createEquipmentDefinitions() {
         category: EquipmentCategory.starting,
         name: "Stun Baton",
         template: EquipmentTemplate.stunBaton,
-        cards: [CardTemplate.zap, CardTemplate.zap],
+        cards: [CardTemplate.zap, CardTemplate.exhaustion, CardTemplate.exhaustion],
     });
 
     equipmentDefinitions.set(EquipmentTemplate.yogaMat, {
