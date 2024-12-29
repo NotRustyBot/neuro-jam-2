@@ -2,7 +2,7 @@ import { Assets, Sprite, Container, Graphics, HTMLText, Text, RenderTexture } fr
 import { CardDefinition, cardDefinitions, CardTemplate, CardType } from "./cardDefinitions";
 import { game } from "./game";
 import { BattleInstance } from "./player";
-import { EquipmentCategory, equipmentDefinitions } from "./equipment";
+import { EquipmentCategory, EquipmentTemplate, equipmentDefinitions } from "./equipment";
 
 export class Card {
     type: CardTemplate;
@@ -10,6 +10,7 @@ export class Card {
     cardSprite: Sprite;
     usageCostSprite: Sprite;
     cardTypeSprite: Sprite;
+    icon!: Sprite;
     inHand = true;
     name: Text;
     usageCost: Text;
@@ -54,15 +55,13 @@ export class Card {
         }
 
         let typeAsset!: string;
-        if (equipment) {
-            switch (this.definition.family) {
-                case CardType.attack:
-                    typeAsset = "attackType";
-                    break;
-                case CardType.skill:
-                    typeAsset = "skillType";
-                    break;
-            }
+        switch (this.definition.family) {
+            case CardType.attack:
+                typeAsset = "attackType";
+                break;
+            case CardType.skill:
+                typeAsset = "skillType";
+                break;
         }
 
         this.cardSprite = new Sprite(Assets.get(cardAsset ?? "basicCard"));
@@ -95,10 +94,18 @@ export class Card {
         this.cardTypeSprite.scale.set(0.7);
         this.cardTypeSprite.position.set(this.cardSprite.width/2 - this.cardTypeSprite.width/2 + 5, -230);
 
+        this.icon = new Sprite();
+        this.icon.texture = Assets.get(EquipmentTemplate[equipment!.template]) ?? Assets.get("null");
+        this.icon.texture.source.scaleMode = "nearest";
+        this.icon.scale.set(1.5);
+        this.icon.anchor.set(0.5);
+        this.icon.position.set(0, -185);
+
         this.container.addChild(this.cardSprite);
         this.container.addChild(originCircle, cardOutline);
         this.container.addChild(this.usageCostSprite, usageCostOutlineSprite);
         this.container.addChild(this.cardTypeSprite);
+        this.container.addChild(this.icon);
         game.cardContainer.addChild(this.container);
 
         const cardTypeString = CardType[this.definition.family]

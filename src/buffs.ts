@@ -47,7 +47,7 @@ export class Buffs {
             });
             graphics.position.set(x, 0);
 
-            const sprite = new Sprite(Assets.get(BuffType[buff.type]));
+            const sprite = new Sprite(Assets.get(BuffType[buff.type]) ?? Assets.get("null"));
             sprite.anchor.set(0.5);
             sprite.position.set(x + size / 2, 0);
             sprite.texture.source.scaleMode = "nearest";

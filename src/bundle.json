@@ -1,4 +1,6 @@
 {
+    "null": "./null.png",
+
     "past_fg": "./bg/past_fg.png",
     "past_bg": "./bg/past_bg.png",
     "menu": "./bg/menu.png",
@@ -24,8 +26,20 @@
     "strength": "./buffs/strength.png",
     "weak": "./buffs/weak.png",
     "stun": "./buffs/stun.png",
-    "persistency": "./buffs/persistency.png",
-    "voicesOfThePast": "./buffs/voicesOfThePast.png",
+
+    "fryingPan": "./equipment/starting/fryingPan.png",
+    "laserPointer": "./equipment/starting/laserPointer.png",
+    "pepperSpray": "./equipment/starting/pepperSpray.png",
+    "selfieStick": "./equipment/starting/selfieStick.png",
+    "stunBaton": "./equipment/starting/stunBaton.png",
+    "yogaMat": "./equipment/starting/yogaMat.png",
+
+    "antimatterGrenade": "./equipment/hitech/antimatterGrenade.png",
+    "emGauntlet": "./equipment/hitech/emGauntlet.png",
+    "forceField": "./equipment/hitech/forceField.png",
+    "healingBot": "./equipment/hitech/healingBot.png",
+    "laserGun": "./equipment/hitech/laserGun.png",
+    "quantumTeleporter": "./equipment/hitech/quantumTeleporter.png",
 
     "cursor": "./cursor.png",
     "player": "./player.png",

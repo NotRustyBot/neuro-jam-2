@@ -1,4 +1,4 @@
-import { Container, Graphics, Text } from "pixi.js";
+import { Assets, Sprite, Container, Graphics, Text } from "pixi.js";
 import { game } from "./game";
 import { Equipment, EquipmentCategory, EquipmentTemplate, equipmentDefinitions } from "./equipment";
 import { CardTemplate } from "./cardDefinitions";
@@ -35,8 +35,8 @@ export class SelectionScreen {
     selectContainer!: Container;
 
     // equipment buttons
-    buttonWidth = 200;
-    buttonHeight = 200;
+    buttonWidth = 180;
+    buttonHeight = 180;
     xPadding = 60;
     yPadding = 20;
 
@@ -202,8 +202,15 @@ export class SelectionScreen {
         button.cursor = "pointer";
 
         const buttonBackground = new Graphics();
-        buttonBackground.roundRect(0, 0, 200, 200);
+        buttonBackground.roundRect(0, 0, this.buttonWidth, this.buttonHeight);
         buttonBackground.fill(0x404040);
+
+        const icon = new Sprite();
+        icon.texture = Assets.get(EquipmentTemplate[equipment.template]) ?? Assets.get("null");
+        icon.texture.source.scaleMode = "nearest";
+        icon.scale.set(2.5);
+        icon.anchor.set(0.5);
+        icon.position.set(buttonBackground.width / 2, buttonBackground.height / 2 + 20);
 
         const buttonText = new Text({
             text: equipment.name,
@@ -217,12 +224,31 @@ export class SelectionScreen {
                 align: "center",
             }
         });
-        buttonText.position.set(100, 100);
+        buttonText.position.set(buttonBackground.width / 2, 30);
         buttonText.anchor.set(0.5);
 
-        button.addChild(buttonBackground, buttonText);
+        button.addChild(buttonBackground, buttonText, icon);
 
-        button.on("pointerdown", this.handleButtonPress.bind(this, buttonText, equipment));
+        button.on("pointerdown", () => {
+            if (this.selectedEquipment.includes(equipment)) {
+                buttonText.tint = 0xffffff;
+                buttonBackground.tint = 0xffffff;
+                this.selectedEquipment.splice(this.selectedEquipment.indexOf(equipment), 1);
+            }
+            else {
+                if (this.selectionMode === SelectionMode.STARTING_EQUIPMENT && this.selectedEquipment.length >= this.startingEquipmentMaximum) return;
+
+                if (this.selectionMode === SelectionMode.POST_ENCOUNTER) {
+                    const arcaneSelected = this.selectedEquipment.filter(eq => eq.category === EquipmentCategory.arcane).length;
+                    const hitechSelected = this.selectedEquipment.filter(eq => eq.category === EquipmentCategory.hitech).length;
+                    if ((equipment.category === EquipmentCategory.arcane && arcaneSelected >= this.equipmentMaximumPerPool) ||
+                        (equipment.category === EquipmentCategory.hitech && hitechSelected >= this.equipmentMaximumPerPool)) return;
+                }
+                buttonText.tint = 0x00ff00;
+                buttonBackground.tint = 0x55dd55;
+                this.selectedEquipment.push(equipment);
+            }
+        });
         button.on("pointerover", this.showTooltip.bind(this, equipment));
         button.on("pointerout", () => {
             this.tooltip.removeChildren();
@@ -244,25 +270,6 @@ export class SelectionScreen {
 
         return { background, text };
     };
-
-    handleButtonPress(buttonText: Text, equipment: Equipment) {
-        if (this.selectedEquipment.includes(equipment)) {
-            buttonText.tint = 0xffffff;
-            this.selectedEquipment.splice(this.selectedEquipment.indexOf(equipment), 1);
-        }
-        else {
-            if (this.selectionMode === SelectionMode.STARTING_EQUIPMENT && this.selectedEquipment.length >= this.startingEquipmentMaximum) return;
-
-            if (this.selectionMode === SelectionMode.POST_ENCOUNTER) {
-                const arcaneSelected = this.selectedEquipment.filter(eq => eq.category === EquipmentCategory.arcane).length;
-                const hitechSelected = this.selectedEquipment.filter(eq => eq.category === EquipmentCategory.hitech).length;
-                if ((equipment.category === EquipmentCategory.arcane && arcaneSelected >= this.equipmentMaximumPerPool) ||
-                    (equipment.category === EquipmentCategory.hitech && hitechSelected >= this.equipmentMaximumPerPool)) return;
-            }
-            buttonText.tint = 0x00ff00;
-            this.selectedEquipment.push(equipment);
-        }
-    }
 
     showTooltip(equipment: Equipment) {
 
