@@ -21,6 +21,7 @@ export class Game {
     clickableBg!: Graphics;
     backgroundContainer = new Container();
     enemyContainer = new Container();
+    playerContainer = new Container();
     cardContainer = new Container();
     uiContainer = new Container();
     screenReflectContainer = new Container();
@@ -62,12 +63,11 @@ export class Game {
         this.uiManager = new UIManager();
         this.uiManager.initKeywords();
 
-        /*
+        
         this.player.addEquipment([
             equipmentDefinitions.get(EquipmentTemplate.pepperSpray)!,
         ]);
-        this.startGame();
-        return;*/
+
 
         // mouse
         this.app.stage.interactive = true;
@@ -108,8 +108,16 @@ export class Game {
             this.player.addEquipment(selectedEquipment);
             this.startGame();
         };
-
+        //this.selectionScreen.onSelectionComplete([equipmentDefinitions.get(EquipmentTemplate.pepperSpray)!]);
         this.menu.show();
+    }
+
+    resize(){
+        this.clickableBg.clear();
+        this.clickableBg.rect(0, 0, window.innerWidth, window.innerHeight);
+        this.clickableBg.fill(0x000000);
+
+        this.uiManager.resize();
     }
 
 
@@ -123,6 +131,7 @@ export class Game {
         this.app.stage.addChild(this.clickableBg);
         this.app.stage.addChild(this.backgroundContainer);
         this.app.stage.addChild(this.enemyContainer);
+        this.app.stage.addChild(this.playerContainer);
         this.app.stage.addChild(this.uiContainer);
         this.app.stage.addChild(this.screenReflectContainer);
         this.app.stage.addChild(this.cardContainer);
@@ -130,6 +139,9 @@ export class Game {
         this.cursor.eventMode = "none";
         this.cursor.anchor.set(0.2);
         //this.app.stage.addChild(this.cursor);
+
+        window.addEventListener("contextmenu", (e) => e.preventDefault());
+        window.addEventListener("resize", () => this.resize());
 
         // debug encounter
         this.encounter = Encounter.createFirstEncounter();
@@ -167,18 +179,11 @@ export class Game {
 
             const deck = this.player.deck.map((card) => card.definition.name).join(", ");
             const used = this.player.usedPile.map((card) => card.definition.name).join(", ");
-            const buffs = [...this.player.buffs.buffs.values()].map((buff) => buff.definition.name + " " + buff.severity).join(", ");
-            const enemyBuffs = [...this.player.instance.enemy.buffs.buffs.values()].map((buff) => buff.definition.name + " " + buff.severity).join(", ");
 
             if (!this.debugText) return;
             this.debugText.text = "";
             this.debugText.text += `Deck: ${deck}\n`;
             this.debugText.text += `Used: ${used}\n`;
-            this.debugText.text += `Buffs: ${buffs}\n`;
-            this.debugText.text += `Stamina: ${this.player.stamina}\n`;
-            this.debugText.text += `Hp: ${this.player.health}\n`;
-            this.debugText.text += `EnemyHp: ${this.player.instance.enemy.health}/${this.player.instance.enemy.maxHealth}\n`;
-            this.debugText.text += `EnemyBuffs: ${enemyBuffs}\n`;
             this.debugText.text += `EnemyActions: ${this.player.instance.enemy.actions.map((action) => desribeAction(action)).join(", ")}\n`;
             this.debugText.text += `You are in the ${this.encounter.inPast ? "past" : "future"}. Switch in ${this.encounter.countdown} turns.`;
         }

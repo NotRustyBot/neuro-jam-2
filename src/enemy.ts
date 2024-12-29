@@ -88,7 +88,7 @@ export class Enemy {
 
     takeDamage(damage: number, quantity = 1, bypass = false) {
         const startingHealth = this.health;
-        if(this.health <= 0) return;
+        if (this.health <= 0) return;
         this.health -= damage * quantity;
         if (this.health <= 0) {
             game.camera.shakePower = 1000;
@@ -104,7 +104,7 @@ export class Enemy {
 
     update(dt: number) {
         this.container.position.x = (game.app.screen.width / 3) * 2;
-        this.container.position.y = game.app.screen.height / 2;
+        this.container.position.y = (game.app.screen.height / 5) * 3;
 
         this.uiContainer.position.x = this.container.position.x;
         this.uiContainer.position.y = this.container.position.y;
@@ -147,8 +147,8 @@ export class Enemy {
         this.sprites[1].rotation = game.phase * 0.2 + 0.1;
         this.sprites[1].scale.x = 1 + game.phase * 0.1;
 
-        if(this.template.name.includes("2")){
-            this.sprites.forEach(sprite => sprite.tint = 0xccffcc);
+        if (this.template.name.includes("2")) {
+            this.sprites.forEach((sprite) => (sprite.tint = 0xccffcc));
         }
     }
 

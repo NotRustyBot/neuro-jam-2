@@ -34,6 +34,9 @@ export class Camera {
         game.uiContainer.x = -this.position.x / 2;
         game.uiContainer.y = -this.position.y / 2;
 
+        game.playerContainer.x = -this.position.x / 3;
+        game.playerContainer.y = -this.position.y / 3;
+
         game.backgroundContainer.scale.set(1.1);
 
         this.shakePower *= 0.9;

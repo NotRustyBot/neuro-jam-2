@@ -1,3 +1,4 @@
+import { Assets, Sprite } from "pixi.js";
 import { Buff, Buffs, BuffType, Entity } from "./buffs";
 import { Card } from "./card";
 import { CardTemplate } from "./cardDefinitions";
@@ -13,6 +14,7 @@ export class Player {
     buffs: Buffs;
     instance!: BattleInstance;
     inBattle: boolean = false;
+    sprite: Sprite;
 
     library = new Array<CardTemplate>();
     deck = new Array<Card>();
@@ -32,6 +34,11 @@ export class Player {
     constructor() {
         this.buffs = new Buffs(this);
         game.uiContainer.addChild(this.buffs.container);
+        this.sprite = new Sprite(Assets.get("player"));
+        game.playerContainer.addChild(this.sprite);
+        this.sprite.anchor.set(0.5, 0.5);
+        this.sprite.tint = 0;
+        this.sprite.scale.set(2);
     }
 
     addEquipment(selectedEquipment: Equipment[]) {
@@ -72,7 +79,10 @@ export class Player {
     }
 
     update(dt: number) {
-        this.buffs.container.position.set(200, game.app.screen.height - 400);
+        const baseX = Math.max(200, game.app.screen.width / 5);
+
+        this.buffs.container.position.set(baseX, game.app.screen.height - 400);
+        this.sprite.position.set(baseX + 200, game.app.screen.height);
         if (this.inBattle) {
             this.hand.forEach((card) => card.update(dt));
         }
@@ -101,11 +111,16 @@ export class Player {
         this.stamina = this.maxStamina;
         this.block = 0;
         this.buffs.startTurn();
-        this.drawCards(2);
+        this.drawCards(5);
     }
 
     endTurn(): void {
         this.buffs.endTurn();
+        const count = this.hand.length;
+        for (let i = 0; i < count; i++) {
+            this.hand[0].discard();
+        }
+
         this.instance.enemy.startTurn();
     }
 

@@ -146,6 +146,12 @@ export class Card {
         this.definition.onPlayed?.(game.player, this.instance.enemy);
     }
 
+    discard() {
+        game.player.usedPile.push(this);
+        game.player.hand.splice(game.player.hand.indexOf(this), 1);
+        this.hide();
+    }
+
     hide() {
         game.cardContainer.removeChild(this.container);
         this.inHand = false;

@@ -22,12 +22,12 @@ export class UIManager {
             height: game.app.screen.height,
             resolution: 0.25,
         });
+        this.screenReflectionTexture.dynamic = true;
         this.reflectionSprite = new Sprite(this.screenReflectionTexture);
         game.screenReflectContainer.addChild(this.reflectionSprite);
         game.screenReflectContainer.interactiveChildren = false;
         this.reflectionSprite.alpha = 0.25;
         this.reflectionSprite.anchor.set(0.5);
-        this.reflectionSprite.scale.set(1.2);
         const filter = new ColorMatrixFilter();
         const brightness = 0.25;
         filter.matrix = [1, 0, 0, 0, brightness, 0, 1, 0, 0, brightness, 0, 0, 1, 0, brightness, 0, 0, 0, 1, 0];
@@ -104,20 +104,24 @@ export class UIManager {
     }
 
     update(dt: number) {
+        this.screenReflectionTexture.resize(window.innerWidth, window.innerHeight);
+        this.reflectionSprite.width = window.innerWidth + 200;
+        this.reflectionSprite.height = window.innerHeight + 200;
         game.app.renderer.render({ container: game.uiContainer, target: this.screenReflectionTexture });
         const pos = game.camera.movementDiff.result().mult(3);
-        pos.x += game.app.screen.width / 2;
-        pos.y += game.app.screen.height / 2;
+        pos.x += window.innerWidth / 2;
+        pos.y += window.innerHeight / 2;
         this.reflectionSprite.position.set(pos.x, pos.y);
 
         if (game.player.activeCard != null) {
             this.keywordContainer.position.set(game.player.activeCard.containerPosition.x, game.player.activeCard.containerPosition.y);
         }
         this.updatePlayerUi(dt);
-        this.buffText.position.set(game.mouse.x, game.mouse.y -10);
-
+        this.buffText.position.set(game.mouse.x, game.mouse.y - 10);
     }
 
+    resize() {
+    }
 
     initKeywords() {
         game.uiContainer.addChild(this.keywordContainer);

@@ -16,5 +16,6 @@
     "Weak": "./buffs/Weak.png",
     "Pyromaniac": "./buffs/Pyromaniac.png",
     "cursor": "./cursor.png",
+    "player": "./player.png",
     "skyGradient": "./bg/skyGradient.png"
 }
