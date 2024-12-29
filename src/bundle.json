@@ -28,5 +28,7 @@
     "hitechCard": "./cards/hitechCard.png",
     "arcaneCard": "./cards/arcaneCard.png",
     "cardCostOutline": "./cards/cardCostOutline.png",
-    "cardCost": "./cards/cardCost.png"
+    "cardCost": "./cards/cardCost.png",
+    "attackType": "./cards/attackType.png",
+    "skillType": "./cards/skillType.png"
 }

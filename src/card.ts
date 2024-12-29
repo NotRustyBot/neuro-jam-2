@@ -1,5 +1,5 @@
 import { Assets, Sprite, Container, Graphics, HTMLText, Text, RenderTexture } from "pixi.js";
-import { CardDefinition, cardDefinitions, CardTemplate } from "./cardDefinitions";
+import { CardDefinition, cardDefinitions, CardTemplate, CardType } from "./cardDefinitions";
 import { game } from "./game";
 import { BattleInstance } from "./player";
 import { EquipmentCategory, equipmentDefinitions } from "./equipment";
@@ -9,6 +9,7 @@ export class Card {
     container: Container;
     cardSprite: Sprite;
     usageCostSprite: Sprite;
+    cardTypeSprite: Sprite;
     inHand = true;
     name: Text;
     usageCost: Text;
@@ -36,22 +37,35 @@ export class Card {
         this.container = new Container();
 
         // hacky implementation to get category of card (first occurence)
-        let asset!: string;
+        let cardAsset!: string;
         const equipment = Array.from(equipmentDefinitions.values()).find((equipment) => equipment.cards.includes(this.type));
         if (equipment) {
             switch (equipment.category) {
                 case EquipmentCategory.starting:
-                    asset = "basicCard";
+                    cardAsset = "basicCard";
                     break;
                 case EquipmentCategory.arcane:
-                    asset = "arcaneCard";
+                    cardAsset = "arcaneCard";
                     break;
                 case EquipmentCategory.hitech:
-                    asset = "hitechCard";
+                    cardAsset = "hitechCard";
                     break;
             }
         }
-        this.cardSprite = new Sprite(Assets.get(asset ?? "basicCard"));
+
+        let typeAsset!: string;
+        if (equipment) {
+            switch (this.definition.family) {
+                case CardType.attack:
+                    typeAsset = "attackType";
+                    break;
+                case CardType.skill:
+                    typeAsset = "skillType";
+                    break;
+            }
+        }
+
+        this.cardSprite = new Sprite(Assets.get(cardAsset ?? "basicCard"));
         this.cardSprite.texture.source.scaleMode = "nearest";
         this.cardSprite.position.set(-100, -250);
         this.cardSprite.scale.set(3.15);
@@ -70,15 +84,40 @@ export class Card {
         const cardOutline = new Graphics();
         originCircle.roundRect(-5, -5, 10, 10)
         originCircle.stroke({ color: 0x000000, width: 3 });
-        originCircle.fill(0xffffff);
+        originCircle.fill(0xb0b0b0);
 
         cardOutline.roundRect(this.cardSprite.position.x, this.cardSprite.position.y, this.cardSprite.width + 1, this.cardSprite.height + 1, 2);
         cardOutline.stroke({ color: 0x808080, width: 3 });
 
+        this.cardTypeSprite = new Sprite(Assets.get(typeAsset ?? "attackType"));
+        this.cardTypeSprite.texture.source.scaleMode = "nearest";
+        this.cardTypeSprite.anchor.set(0.5, 0.5);
+        this.cardTypeSprite.scale.set(0.7);
+        this.cardTypeSprite.position.set(this.cardSprite.width/2 - this.cardTypeSprite.width/2 + 5, -230);
+
         this.container.addChild(this.cardSprite);
         this.container.addChild(originCircle, cardOutline);
         this.container.addChild(this.usageCostSprite, usageCostOutlineSprite);
+        this.container.addChild(this.cardTypeSprite);
         game.cardContainer.addChild(this.container);
+
+        const cardTypeString = CardType[this.definition.family]
+        const color = cardTypeString == "attack" ? 0xff8800 : 0x00cccc;
+        // weird offset for A
+        const offset = cardTypeString == "attack" ? 1 : 0;
+
+        const cardType = new Text({
+            text: cardTypeString[0].toUpperCase(),
+            style: {
+                fontFamily: "Arial",
+                fontSize: 24,
+                fill: color,
+                stroke: { color: 0x202020, width: 1 },
+                align: "center",
+            },
+        });
+        cardType.anchor.set(0.5, 0.5);
+        cardType.position.set(this.cardTypeSprite.position.x + offset, this.cardTypeSprite.position.y);
 
         this.name = new Text({
             text: this.definition.name,
@@ -113,6 +152,7 @@ export class Card {
         this.usageCost.anchor.set(0.5, 0.5);
         this.usageCost.position.set(this.usageCostSprite.position.x + this.usageCostSprite.width/2, this.usageCostSprite.position.y + this.usageCostSprite.height/2);
 
+        this.container.addChild(cardType);
         this.container.addChild(this.usageCost);
         this.container.addChild(this.description);
         this.container.addChild(this.name);
