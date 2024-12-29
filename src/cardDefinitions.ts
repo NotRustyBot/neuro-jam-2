@@ -225,7 +225,7 @@ export function createCardDefinitions() {
         family: CardType.attack,
         name: "Laser Beam",
         cost: 1,
-        description: `Deal 6 damage, ignore defense`,
+        description: `Deal 6 damage\nIgnore defense`,
         onPlayed: (player: Player, enemy: Enemy) => {
             let damage = 6;
             damage = player.modifyAttackDamage(damage);

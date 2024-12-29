@@ -65,7 +65,7 @@ export class SelectionScreen {
         selectButton.cursor = "pointer";
         selectButton.on("pointerdown", () => this.completeSelection());
 
-        const selectText = new Text({ text: "Select", style: { fontFamily: "monospace", fontSize: 24, fill: 0xffffff } });
+        const selectText = new Text({ text: "Select", style: { fontFamily: "monospace", fontSize: 24, fill: 0x000000 } });
         selectText.position.set(selectButton.width / 2, selectButton.height / 2);
         selectText.anchor.set(0.5);
         selectButton.addChild(selectText);
@@ -269,9 +269,12 @@ export class SelectionScreen {
             card.container.position.set(xOffset + card.container.width / 2, card.container.height - 50);
             card.container.visible = true;
 
+            console.log(card.definition.name);
+
             // display card counts
-            const cardCountText = new Text({text: `${cardCounts[cardTemplate]}x`, style: { fontFamily: "monospace", fontSize: 30, fill: 0xffffff, stroke: { color: 0x000000, width: 5 } }});
-            cardCountText.position.set(xOffset, -35);
+            const cardCountText = new Text({text: `${cardCounts[cardTemplate]}x`, style: { fontFamily: "monospace", fontSize: 30, fill: 0x00ffff, stroke: { color: 0x000000, width: 5 } }});
+            cardCountText.position.set(xOffset + card.container.width/2, -35);
+            cardCountText.anchor.set(0.5, 0)
 
             // offset for next card
             xOffset += card.container.width + 10;

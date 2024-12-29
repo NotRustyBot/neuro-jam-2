@@ -106,7 +106,6 @@ export class Game {
             this.selectionScreen.show(SelectionMode.STARTING_EQUIPMENT);
         };
 
-        var count = 0
         this.selectionScreen.onSelectionComplete = (selectedEquipment: Equipment[]) => {
             this.selectionScreen.hide();
             this.player.addEquipment(selectedEquipment);

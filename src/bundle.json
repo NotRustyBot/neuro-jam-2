@@ -23,7 +23,9 @@
     "player": "./player.png",
     "block": "./block.png",
     "skyGradient": "./bg/skyGradient.png",
-    "basicCard": "./basicCard.png",
-    "hitechCard": "./hitechCard.png",
-    "arcaneCard": "./arcaneCard.png"
+    "basicCard": "./cards/basicCard.png",
+    "hitechCard": "./cards/hitechCard.png",
+    "arcaneCard": "./cards/arcaneCard.png",
+    "cardCostOutline": "./cards/cardCostOutline.png",
+    "cardCost": "./cards/cardCost.png"
 }

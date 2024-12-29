@@ -7,8 +7,8 @@ import { EquipmentCategory, equipmentDefinitions } from "./equipment";
 export class Card {
     type: CardTemplate;
     container: Container;
-    graphic: Graphics;
-    sprite: Sprite;
+    cardSprite: Sprite;
+    usageCostSprite: Sprite;
     inHand = true;
     name: Text;
     usageCost: Text;
@@ -51,26 +51,34 @@ export class Card {
                     break;
             }
         }
+        this.cardSprite = new Sprite(Assets.get(asset ?? "basicCard"));
+        this.cardSprite.texture.source.scaleMode = "nearest";
+        this.cardSprite.position.set(-100, -250);
+        this.cardSprite.scale.set(3.15);
 
-        this.sprite = new Sprite(Assets.get(asset ?? "basicCard"));
-        this.sprite.position.set(-100, -250);
-        this.sprite.scale.set(0.55);
-        //this.sprite.anchor.set(0.5, 0.8);
+        const usageCostOutlineSprite = new Sprite(Assets.get("cardCostOutline"));
+        usageCostOutlineSprite.position.set(-101, -251);
 
-        this.graphic = new Graphics();
-        this.container.addChild(this.graphic);
-        this.graphic.clear();
-        this.graphic.rect(this.sprite.position.x, this.sprite.position.y, this.sprite.width + 1, this.sprite.height + 1);
-        //this.graphic.fill(0xffffff);
-        this.graphic.stroke({ color: 0x404040, width: 3 });
-        this.container.visible = false;
-        game.cardContainer.addChild(this.container);
-
-        this.container.addChild(this.sprite);
-        this.container.addChild(this.graphic);
-        game.cardContainer.addChild(this.container);
+        this.usageCostSprite = new Sprite(Assets.get("cardCost"));
+        this.usageCostSprite.position.set(-101, -251);
+        this.usageCostSprite.tint = 0xff6700;
 
         this.container.interactive = true;
+        this.container.visible = false;
+
+        const originCircle = new Graphics();
+        const cardOutline = new Graphics();
+        originCircle.roundRect(-5, -5, 10, 10)
+        originCircle.stroke({ color: 0x000000, width: 3 });
+        originCircle.fill(0xffffff);
+
+        cardOutline.rect(this.cardSprite.position.x, this.cardSprite.position.y, this.cardSprite.width + 1, this.cardSprite.height + 1);
+        cardOutline.stroke({ color: 0x404040, width: 3 });
+
+        this.container.addChild(this.cardSprite);
+        this.container.addChild(originCircle, cardOutline);
+        this.container.addChild(this.usageCostSprite, usageCostOutlineSprite);
+        game.cardContainer.addChild(this.container);
 
         this.name = new Text({
             text: this.definition.name,
@@ -94,16 +102,16 @@ export class Card {
             text: this.definition.cost,
             style: {
                 fontFamily: "Arial",
-                fontSize: 30,
+                fontSize: 25,
                 fill: 0xffffff,
-                stroke: { color: 0x000000, width: 3 },
+                stroke: { color: 0x000000, width: 2 },
                 wordWrap: true,
                 wordWrapWidth: 200,
                 align: "center",
             },
         });
-        //this.usageCost.anchor.set(0.5, 0.5);
-        this.usageCost.position.set(-95, -250);
+        this.usageCost.anchor.set(0.5, 0.5);
+        this.usageCost.position.set(this.usageCostSprite.position.x + this.usageCostSprite.width/2, this.usageCostSprite.position.y + this.usageCostSprite.height/2);
 
         this.container.addChild(this.usageCost);
         this.container.addChild(this.description);
@@ -119,14 +127,14 @@ export class Card {
             style: {
                 fontFamily: "Arial",
                 fontSize: 18,
-                fill: 0xffffff,
+                fill: 0x000000,
                 wordWrap: true,
                 wordWrapWidth: 180,
                 align: "center",
             },
         });
         this.description.anchor.set(0.5, 0.5);
-        this.description.position.set(0, -40);
+        this.description.position.set(0, -50);
 
         this.container.addChild(this.description);
     }
@@ -153,16 +161,18 @@ export class Card {
             game.cardContainer.setChildIndex(this.container, cardCount - myIndex - 1);
         }
 
-        if (this.isHovered && !this.wasHovered) {
-            if (!this.isActive) {
-                game.soundManager.play("select", 0.1);
-            }
-        }
+        //if (this.isHovered && !this.wasHovered) {
+        //    if (!this.isActive) {
+        //        game.soundManager.play("select", 0.1);
+        //    }
+        //}
 
         if (game.player.stamina < (this.definition.cost ?? 0)) {
             this.usageCost.style.fill = 0xff0000;
+            this.usageCostSprite.tint = 0x600000;
         } else {
             this.usageCost.style.fill = 0xffffff;
+            this.usageCostSprite.tint = 0xff6700;
         }
 
         this.wasHovered = this.isHovered;
