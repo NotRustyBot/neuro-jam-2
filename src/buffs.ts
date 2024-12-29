@@ -325,7 +325,7 @@ export function createBuffDefinitions() {
             if(card.definition.family === CardType.attack) {
                 buff.severity += 1;
                 if(buff.severity === 10) {
-                    target.buffs.add(BuffType.stun);
+                    target.opponent.buffs.add(BuffType.stun);
                     buff.severity = 0;
                     target.buffs.render();
                 }
