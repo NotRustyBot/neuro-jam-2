@@ -39,6 +39,7 @@ export class Enemy {
         this.actions = template.actions;
         this.container.visible = false;
         if (template.name.includes("spiderbot")) this.spiderBotSetup();
+        if (this.template.name == "spider") this.spiderSetup();
 
         this.hpText = new Text({
             text: ``,
@@ -111,7 +112,8 @@ export class Enemy {
         this.uiContainer.position.x = this.container.position.x;
         this.uiContainer.position.y = this.container.position.y;
 
-        if (this.template.name.includes("spiderbot")) this.updateSpiderBot(dt);
+        if (this.template.name.includes("spiderbot")) this.spiderBotUpdate(dt);
+        if (this.template.name == "spider") this.spiderUpdate();
 
         this.updateUi(dt);
     }
@@ -123,35 +125,59 @@ export class Enemy {
 
     sprites = new Array<Sprite>();
 
+    helperContainer = new Container();
+    spiderSetup() {
+        this.sprite.visible = false;
+        this.sprites[0] = new Sprite(Assets.get("spider_body"));
+        this.sprites[1] = new Sprite(Assets.get("spider_head"));
+        this.sprites[2] = new Sprite(Assets.get("spider_leg1"));
+        this.sprites[3] = new Sprite(Assets.get("spider_leg2"));
+        for (const sprite of this.sprites) {
+            sprite.texture.source.scaleMode = "nearest";
+            sprite.anchor.set(0.5);
+            sprite.scale.set(4);
+        }
+        this.helperContainer.addChild(this.sprites[2]);
+        this.helperContainer.addChild(this.sprites[0]);
+        this.helperContainer.addChild(this.sprites[3]);
+        this.helperContainer.addChild(this.sprites[1]);
+        this.helperContainer.position.set(50, 100);
+        this.container.addChild(this.helperContainer);
+    }
+
+    spiderUpdate() {
+        this.sprites[2].rotation = game.phase * 0.05 - 0.1;
+        this.sprites[3].rotation = -game.phase * 0.05 - 0.1;
+        this.sprites[1].position.y = -(Math.abs(game.phase) - 0.5) * 3;
+        this.sprites[1].rotation = game.phase * 0.05;
+        this.helperContainer.y = game.phase * 5;
+    }
+
     spiderBotSetup() {
         this.sprite.visible = false;
         this.sprites[0] = new Sprite(Assets.get("spiderbot_body"));
-        this.sprites[1] = new Sprite(Assets.get("spiderbot_cannon"));
-        this.sprites[1].anchor.set(0.6, 1);
-        this.sprites[1].position.set(70, 30);
+        this.sprites[1] = new Sprite(Assets.get("spiderbot_head"));
         this.sprites[2] = new Sprite(Assets.get("spiderbot_leg1"));
-        this.sprites[2].anchor.set(0.5, 1);
-        this.sprites[2].position.set(35, 180);
         this.sprites[3] = new Sprite(Assets.get("spiderbot_leg2"));
-        this.sprites[3].anchor.set(0.5, 1);
-        this.sprites[3].position.set(180, 180);
-        this.container.addChild(this.sprites[0]);
-        this.sprites[0].addChild(this.sprites[1]);
-        this.container.addChild(this.sprites[2]);
-        this.container.addChild(this.sprites[3]);
+        for (const sprite of this.sprites) {
+            sprite.texture.source.scaleMode = "nearest";
+            sprite.anchor.set(0.5);
+            sprite.scale.set(4);
+        }
+        this.helperContainer.addChild(this.sprites[2]);
+        this.helperContainer.addChild(this.sprites[0]);
+        this.helperContainer.addChild(this.sprites[3]);
+        this.helperContainer.addChild(this.sprites[1]);
+        this.helperContainer.position.set(50, 100);
+        this.container.addChild(this.helperContainer);
     }
 
-    time = 0;
-    updateSpiderBot(dt: number) {
-        this.sprites[2].rotation = game.phase * 0.1 - 0.2;
-        this.sprites[3].rotation = game.phase * 0.1 + 0.2;
-        this.sprites[0].x = game.phase * 20;
-        this.sprites[1].rotation = game.phase * 0.2 + 0.1;
-        this.sprites[1].scale.x = 1 + game.phase * 0.1;
-
-        if (this.template.name.includes("2")) {
-            this.sprites.forEach((sprite) => (sprite.tint = 0xccffcc));
-        }
+    spiderBotUpdate(dt: number) {
+        this.sprites[2].rotation = game.phase * 0.05 - 0.1;
+        this.sprites[3].rotation = -game.phase * 0.05 - 0.1;
+        this.sprites[1].position.y = -(Math.abs(game.phase) - 0.5) * 3;
+        this.sprites[1].rotation = game.phase * 0.05;
+        this.helperContainer.y = game.phase * 5;
     }
 
     doAction() {

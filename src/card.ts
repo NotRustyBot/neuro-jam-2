@@ -38,6 +38,8 @@ export class Card {
         this.graphic.rect(-100, -250, 200, 300);
         this.graphic.fill(0xffffff);
         this.graphic.stroke({ color: 0xffaa00, width: 2 });
+        this.container.visible = false;
+        game.cardContainer.addChild(this.container);
 
         this.container.interactive = true;
 
@@ -99,7 +101,7 @@ export class Card {
 
         if (this.isHovered && game.player.activeCard == null) {
             targetAngle = 0;
-            game.cardContainer.setChildIndex(this.container, cardCount - 1);
+            game.cardContainer.setChildIndex(this.container, game.cardContainer.children.length - 1);
             if (game.mouse.down) {
                 this.isActive = true;
                 if (this.definition.keywords) game.uiManager.showKeywords(this.definition.keywords);
@@ -153,18 +155,17 @@ export class Card {
     }
 
     hide() {
-        game.cardContainer.removeChild(this.container);
+        this.container.visible = false;
         this.inHand = false;
         this.isHovered = false;
         this.isActive = false;
     }
 
     show() {
-        game.cardContainer.addChild(this.container);
+        this.container.visible = true;
         this.inHand = true;
         this.container.position.x = 0;
         this.container.position.y = 1000;
-        this.description._didTextUpdate = true;
     }
 
     destroy(): void {

@@ -15,7 +15,7 @@ export class Encounter {
         skyColor: string;
         skyRotation: number;
     };
-    inPast = false;
+    inPast = true;
 
     countdown = 3;
 
@@ -96,7 +96,7 @@ type EncounterTemplate = {
 
 const firstEncounter: EncounterTemplate = {
     pastEnemy: {
-        name: "enemy1",
+        name: "spider",
         health: 15,
         sprite: "enemy1_p",
         actions: [

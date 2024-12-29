@@ -37,7 +37,6 @@ export class Player {
         this.sprite = new Sprite(Assets.get("player"));
         game.playerContainer.addChild(this.sprite);
         this.sprite.anchor.set(0.5, 0.5);
-        this.sprite.tint = 0;
         this.sprite.scale.set(2);
     }
 

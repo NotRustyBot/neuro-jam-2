@@ -61,10 +61,7 @@ export class Game {
         this.camera = new Camera();
         this.background = new Background();
         this.uiManager = new UIManager();
-        this.uiManager.initKeywords();
-
-        
-
+        this.uiManager.initKeywords();    
 
 
         // mouse
@@ -93,6 +90,9 @@ export class Game {
         this.menu.init();
         this.selectionScreen = new SelectionScreen();
         this.selectionScreen.init();
+
+        //this.startGame();
+        //return;
 
         // functions
         this.menu.onStart = () => {
