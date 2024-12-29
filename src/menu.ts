@@ -60,15 +60,14 @@ export class Menu {
 
     createButton(text: string, color: number, y: number, onClick: () => void) {
         const buttonContainer = new Container();
+        buttonContainer.interactive = true;
+        buttonContainer.cursor = "pointer";
+        buttonContainer.on("pointerdown", onClick);
 
         const button = new Graphics();
         button.roundRect(0, 0, 200, 75);
         button.fill(color);
         button.stroke({ color: 0x000000, width: 5 });
-
-        button.interactive = true;
-        button.cursor = "pointer";
-        button.on("pointerdown", onClick);
 
         const buttonText = new Text({ text: text, style: { fontFamily: "monospace", fontSize: 30, fill: 0xffffff, stroke: {color: 0x000000, width: 3} } });
         buttonText.position.set(button.width / 2, button.height / 2 - 3);

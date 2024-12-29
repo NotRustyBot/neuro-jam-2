@@ -67,18 +67,17 @@ export class SelectionScreen {
 
         // select button
         this.selectContainer = new Container();
+        this.selectContainer.interactive = true;
+        this.selectContainer.cursor = "pointer";
+        this.selectContainer.on("pointerdown", () => this.completeSelection());
 
         const selectButton = new Graphics();
         selectButton.roundRect(0, 0, 200, 75);
         selectButton.fill(0x00ff00);
-        selectButton.interactive = true;
-        selectButton.cursor = "pointer";
-        selectButton.on("pointerdown", () => this.completeSelection());
 
         const selectText = new Text({ text: "Select", style: { fontFamily: "monospace", fontSize: 24, fill: 0x000000 } });
         selectText.position.set(selectButton.width / 2, selectButton.height / 2);
         selectText.anchor.set(0.5);
-
 
         this.selectContainer.position.set((game.app.screen.width - selectButton.width) / 2, 800);
         this.selectContainer.addChild(selectButton, selectText);
