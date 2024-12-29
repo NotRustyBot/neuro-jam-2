@@ -24,6 +24,8 @@
     "strength": "./buffs/strength.png",
     "weak": "./buffs/weak.png",
     "stun": "./buffs/stun.png",
+    "persistency": "./buffs/persistency.png",
+    "voicesOfThePast": "./buffs/voicesOfThePast.png",
 
     "cursor": "./cursor.png",
     "player": "./player.png",
