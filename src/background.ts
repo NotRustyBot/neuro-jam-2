@@ -42,6 +42,20 @@ export class Background {
         this.graphics.mask = this.skyMask;
     }
 
+    updateAssets() {
+        if (game.encounter.inPast) {
+            this.spriteForeground.texture = Assets.get("past_fg");
+            this.spriteForeground.texture.source.scaleMode = "nearest";
+            this.spriteBackground.texture = Assets.get("past_bg");
+            this.spriteBackground.texture.source.scaleMode = "nearest";
+        } else {
+            this.spriteForeground.texture = Assets.get("future_fg");
+            this.spriteForeground.texture.source.scaleMode = "nearest";
+            this.spriteBackground.texture = Assets.get("future_bg");
+            this.spriteBackground.texture.source.scaleMode = "nearest";
+        }
+    }
+
     update(dt: number) {
         this.resize();
         this.spriteForeground.position.x = game.app.screen.width / 2;
