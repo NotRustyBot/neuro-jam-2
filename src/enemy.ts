@@ -30,6 +30,8 @@ export class Enemy {
         game.uiContainer.addChild(this.uiContainer);
         this.uiContainer.addChild(this.hpBar);
         this.sprite = new Sprite(Assets.get(template.sprite));
+        this.sprite.anchor.set(0.5);
+        this.sprite.x = 100;
         this.container.addChild(this.sprite);
         game.enemyContainer.addChild(this.container);
         this.health = template.health;

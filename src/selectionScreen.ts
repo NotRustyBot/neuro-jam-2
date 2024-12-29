@@ -102,8 +102,8 @@ export class SelectionScreen {
         if (this.selectionMode === SelectionMode.STARTING_EQUIPMENT) {
             // equipment filtering
             const MAX_PER_ROW = 6;
-            const startingEquipmentPool = Array.from(equipmentDefinitions.values()).filter((equipment) => equipment.category === EquipmentCategory.starting);
-            const equipmentArray = startingEquipmentPool.sort(() => Math.random() - 0.5).slice(0, this.startingEquipmentPoolSize);
+            const startingEquipmentPool = Array.from(equipmentDefinitions.values())//.filter((equipment) => equipment.category === EquipmentCategory.starting);
+            const equipmentArray = startingEquipmentPool//.sort(() => Math.random() - 0.5).slice(0, this.startingEquipmentPoolSize);
 
             this.title.text = `Select your starting equipment (${this.startingEquipmentMaximum})`;
             // button settings

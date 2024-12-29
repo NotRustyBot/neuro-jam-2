@@ -81,7 +81,7 @@ export class Player {
     update(dt: number) {
         const baseX = Math.max(200, game.app.screen.width / 5);
 
-        this.buffs.container.position.set(baseX, game.app.screen.height - 400);
+        this.buffs.container.position.set(baseX - 200, game.app.screen.height - 400);
         this.sprite.position.set(baseX + 200, game.app.screen.height);
         if (this.inBattle) {
             this.hand.forEach((card) => card.update(dt));
