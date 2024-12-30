@@ -315,9 +315,11 @@ export function getDescriptionTexture(text: string): RenderTexture {
             fontFamily: "Arial",
             fontSize: 16,
             fill: 0xffffff,
-            stroke: {
+            dropShadow: {
+                distance: 1,
+                angle: 0,
                 color: 0x000000,
-                width: 3
+                blur: 10
             },
             wordWrap: true,
             wordWrapWidth: 160,

@@ -63,7 +63,7 @@ export function createCardDefinitions() {
         name: "Blindshot",
         keywords: [KeywordType.burn, KeywordType.weakness],
         cost: 2,
-        description: `-Deal 2 damage\n-Inflict 2 #burn\n-Inflict 1 #weakness`,
+        description: `Deal 2 damage\nInflict 2 #burn\nInflict 1 #weakness`,
         onPlayed: (player: Player, enemy: Enemy) => {
             let damage = 2;
             damage = player.modifyAttackDamage(damage);
@@ -81,7 +81,7 @@ export function createCardDefinitions() {
         startingUses: 0,
         name: "Sweep Strike",
         cost: 1,
-        description: `-Deal 2 damage\n-50% chance to inflict #stun`,
+        description: `Deal 2 damage\n50% chance to inflict #stun`,
         onPlayed: (player: Player, enemy: Enemy) => {
             let damage = 2;
             damage = player.modifyAttackDamage(damage);
@@ -98,7 +98,7 @@ export function createCardDefinitions() {
         startingUses: 0,
         name: "Zap",
         cost: 2,
-        description: `-Deal 3 damage\n-Inflict #stun`,
+        description: `Deal 3 damage\nInflict #stun`,
         onPlayed: (player: Player, enemy: Enemy) => {
             let damage = 3;
             damage = player.modifyAttackDamage(damage);
@@ -113,7 +113,7 @@ export function createCardDefinitions() {
         family: CardType.skill,
         name: "Meditate",
         cost: 1,
-        description: `-Gain 4 #block and draw a card`,
+        description: `Gain 4 #block and draw a card`,
         keywords: [KeywordType.block],
         onPlayed: (player: Player, enemy: Enemy) => {
             player.block += 4;
@@ -128,7 +128,7 @@ export function createCardDefinitions() {
         name: "Slam",
         keywords: [KeywordType.stun, KeywordType.weakness],
         cost: 2,
-        description: `-Deal 4 damage\n-If the enemy has #weakness or #stun, deal 6 extra damage `,
+        description: `Deal 4 damage\nIf the enemy has #weakness or #stun, deal 6 extra damage `,
         onPlayed: (player: Player, enemy: Enemy) => {
             let damage = 4;
             damage = player.modifyAttackDamage(damage);
@@ -144,7 +144,7 @@ export function createCardDefinitions() {
         name: "Distract",
         keywords: [KeywordType.weakness],
         cost: 1,
-        description: `-Inflict 2 #weakness`,
+        description: `Inflict 2 #weakness`,
         onPlayed: (player: Player, enemy: Enemy) => {
             enemy.buffs.add(BuffType.weak, 2);
             game.soundManager.play("laser");
@@ -158,7 +158,7 @@ export function createCardDefinitions() {
         name: "Ignite",
         keywords: [KeywordType.burn],
         cost: 2,
-        description: `-Deal 4 damage\n-If the enemy has #burn, deal 4 extra damage\n-Inflict 2 #burn`,
+        description: `Deal 4 damage\nIf the enemy has #burn, deal 4 extra damage\nInflict 2 #burn`,
         onPlayed: (player: Player, enemy: Enemy) => {
             let damage = 4;
             damage = player.modifyAttackDamage(damage);
@@ -174,7 +174,7 @@ export function createCardDefinitions() {
         family: CardType.attack,
         name: "Magic Bolt",
         cost: 1,
-        description: `-Deal 4 damage`,
+        description: `Deal 4 damage`,
         onPlayed: (player: Player, enemy: Enemy) => {
             let damage = 4;
             damage = player.modifyAttackDamage(damage);
@@ -189,7 +189,7 @@ export function createCardDefinitions() {
         name: "Frost Shield",
         keywords: [KeywordType.block],
         cost: 2,
-        description: `-Gain 10 #block`,
+        description: `Gain 10 #block`,
         onPlayed: (player: Player, enemy: Enemy) => {
             player.block += 10;
             game.soundManager.play("shield_up");
@@ -202,7 +202,7 @@ export function createCardDefinitions() {
         keywords: [KeywordType.strength, KeywordType.weakness],
         name: "Ancestor's Call",
         cost: 1,
-        description: `-Gain 2 #strength\n-Inflict 1 #weakness`,
+        description: `Gain 2 #strength\nInflict 1 #weakness`,
         onPlayed: (player: Player, enemy: Enemy) => {
             player.buffs.add(BuffType.strength, 2);
             enemy.buffs.add(BuffType.weak, 1);
@@ -215,7 +215,7 @@ export function createCardDefinitions() {
         family: CardType.attack,
         name: "Bloodthirsty Backstab",
         cost: 1,
-        description: `-Deal 3 damage\n-Heal for damage dealt`,
+        description: `Deal 3 damage\nHeal for damage dealt`,
         onPlayed: (player: Player, enemy: Enemy) => {
             let damage = 3;
             damage = player.modifyAttackDamage(damage);
@@ -231,7 +231,7 @@ export function createCardDefinitions() {
         family: CardType.skill,
         name: "Big Bang",
         cost: 2,
-        description: `-Deal 8 damage\n-Take 8 damage`,
+        description: `Deal 8 damage\nTake 8 damage`,
         onPlayed: (player: Player, enemy: Enemy) => {
             let damage = 8;
             enemy.takeDamage(damage);
@@ -246,7 +246,7 @@ export function createCardDefinitions() {
         family: CardType.attack,
         name: "Laser Beam",
         cost: 1,
-        description: `-Deal 6 damage\n-Ignore defense`,
+        description: `Deal 6 damage\nIgnore defense`,
         onPlayed: (player: Player, enemy: Enemy) => {
             let damage = 6;
             damage = player.modifyAttackDamage(damage);
@@ -261,7 +261,7 @@ export function createCardDefinitions() {
         name: "Nanite Repair",
         keywords: [KeywordType.strength],
         cost: 1,
-        description: `-Heal 3 health\n-Gain 1 #strength`,
+        description: `Heal 3 health\nGain 1 #strength`,
         onPlayed: (player: Player, enemy: Enemy) => {
             player.heal(3);
             player.buffs.add(BuffType.strength, 1);
@@ -275,7 +275,7 @@ export function createCardDefinitions() {
         name: "EM Strike",
         keywords: [KeywordType.vulnerable],
         cost: 2,
-        description: `-Deal 3 damage\n-Inflict 2 #vulnerable`,
+        description: `Deal 3 damage\nInflict 2 #vulnerable`,
         onPlayed: (player: Player, enemy: Enemy) => {
             let damage = 3;
             damage = player.modifyAttackDamage(damage);
@@ -290,7 +290,7 @@ export function createCardDefinitions() {
         name: "Antimatter Explosion",
         keywords: [KeywordType.vulnerable],
         cost: 2,
-        description: `-Deal 6 damage\n-Inflict 1 #vulnerable`,
+        description: `Deal 6 damage\nInflict 1 #vulnerable`,
         onPlayed: (player: Player, enemy: Enemy) => {
             let damage = 6;
             damage = player.modifyAttackDamage(damage);
@@ -306,7 +306,7 @@ export function createCardDefinitions() {
         keywords: [KeywordType.block],
         name: "Electronic Field",
         cost: 1,
-        description: `-Gain 4 #block`,
+        description: `Gain 4 #block`,
         onPlayed: (player: Player, enemy: Enemy) => {
             player.block += 4;
             game.soundManager.play("electronic_field");
@@ -319,7 +319,7 @@ export function createCardDefinitions() {
         name: "Quantum Jump",
         keywords: [KeywordType.immune],
         cost: 2,
-        description: `-Gain #immune until next turn`,
+        description: `Gain #immune until next turn`,
         onPlayed: (player: Player, enemy: Enemy) => {
             player.buffs.add(BuffType.immune);
             game.soundManager.play("quantum_jump");
