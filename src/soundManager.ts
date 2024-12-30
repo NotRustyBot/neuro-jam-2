@@ -20,6 +20,7 @@ export class SoundManager {
         ancestors_call: new Howl({ src: "./sounds/ancestors_call.wav" }),
         backstab: new Howl({ src: "./sounds/backstab.wav" }),
         nanite: new Howl({ src: "./sounds/nanite.wav" }),
+        player_damage: new Howl({ src: "./sounds/player_damage.wav" }),
     };
 
     currentMusic: keyof typeof this.music | null = null;

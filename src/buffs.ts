@@ -7,6 +7,7 @@ import { game } from "./game";
 
 export type Entity = Player | Enemy;
 export class Buffs {
+
     buffs = new Set<Buff>();
     target: Entity;
     container: Container;
@@ -14,6 +15,11 @@ export class Buffs {
     constructor(target: Entity) {
         this.target = target;
         this.container = new Container();
+    }
+
+    clear() {
+        this.buffs.clear();
+        this.render();
     }
 
     render() {
@@ -235,7 +241,7 @@ export function createBuffDefinitions() {
         type: BuffType.stun,
         name: "Stun",
         description: `Skip a turn`,
-        onTurnEnd(buff, target) {
+        onTurnStart(buff, target) {
             target.buffs.delete(buff);
             target.handleStun();
         },

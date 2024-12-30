@@ -55,7 +55,7 @@ export function createCardDefinitions() {
         name: "Exhaustion",
         cost: 0,
         description: `<i>Sometimes you just need to chill out</i>`,
-    })
+    });
     cardDefinitions.set(CardTemplate.blindshot, {
         template: CardTemplate.blindshot,
         family: CardType.attack,
@@ -188,7 +188,7 @@ export function createCardDefinitions() {
         family: CardType.skill,
         name: "Frost Shield",
         keywords: [KeywordType.block],
-        cost: 1,
+        cost: 2,
         description: `-Gain 10 #block`,
         onPlayed: (player: Player, enemy: Enemy) => {
             player.block += 10;
@@ -219,8 +219,9 @@ export function createCardDefinitions() {
         onPlayed: (player: Player, enemy: Enemy) => {
             let damage = 3;
             damage = player.modifyAttackDamage(damage);
-            player.heal(damage);
+            const oldHealth = enemy.health;
             enemy.takeDamage(damage);
+            player.heal(oldHealth - enemy.health);
             game.soundManager.play("backstab");
         },
     });
@@ -249,7 +250,7 @@ export function createCardDefinitions() {
         onPlayed: (player: Player, enemy: Enemy) => {
             let damage = 6;
             damage = player.modifyAttackDamage(damage);
-            enemy.takeDamage(damage, 1, true);
+            enemy.takeDamage(damage, true);
             game.soundManager.play("laser");
         },
     });
@@ -341,7 +342,7 @@ export enum KeywordType {
     strength,
     vulnerable,
     immune,
-    block
+    block,
 }
 
 export type KeywordDefinition = {

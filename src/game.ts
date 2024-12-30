@@ -38,6 +38,7 @@ export class Game {
     selectionScreen!: SelectionScreen;
 
     uiManager!: UIManager;
+    encounterIndex = 0;
 
     constructor(app: Application) {
         this.app = app;
@@ -76,7 +77,6 @@ export class Game {
 
         this.soundManager.setMusic("menu");
 
-
         // mouse
         this.app.stage.interactive = true;
         this.app.stage.on("pointermove", (e) => {
@@ -96,7 +96,6 @@ export class Game {
 
         this.app.stage.on("pointerdown", (e) => (this.mouse.down = true));
         this.app.stage.on("pointerup", (e) => (this.mouse.down = false));
-
 
         // menu
         this.menu = new Menu();
@@ -122,14 +121,13 @@ export class Game {
         this.menu.show();
     }
 
-    resize(){
+    resize() {
         this.clickableBg.clear();
         this.clickableBg.rect(0, 0, window.innerWidth, window.innerHeight);
         this.clickableBg.fill(0x000000);
 
         this.uiManager.resize();
     }
-
 
     cursor!: Sprite;
     startGame() {
@@ -177,7 +175,7 @@ export class Game {
         this.buttonContainer.cursor = "pointer";
         this.buttonContainer.interactive = true;
         this.buttonContainer.on("pointerdown", () => {
-            this.player.endTurn()
+            this.player.endTurn();
             button.tint = clickTint;
             setTimeout(() => (button.tint = idleTint), 500);
         });
@@ -200,6 +198,7 @@ export class Game {
         this.app.stage.addChild(this.debugText);
         this.debugText.position.x = 0;
         this.debugText.position.y = 110;
+        this.debugText.visible = false;
     }
 
     update(dt: number) {
@@ -221,7 +220,7 @@ export class Game {
 
             const deck = this.player.deck.map((card) => card.definition.name).join(", ");
             const used = this.player.usedPile.map((card) => card.definition.name).join(", ");
-
+            
             if (!this.debugText) return;
             this.debugText.text = "";
             this.debugText.text += `Deck: ${deck}\n`;

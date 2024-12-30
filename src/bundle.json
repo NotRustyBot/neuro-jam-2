@@ -35,6 +35,8 @@
     "strength": "./buffs/strength.png",
     "weak": "./buffs/weak.png",
     "stun": "./buffs/stun.png",
+    "persistency": "./equipment/hitech/emGauntlet.png",
+    "voicesOfThePast": "./equipment/arcane/summoningSigil.png",
 
     "fryingPan": "./equipment/starting/fryingPan.png",
     "laserPointer": "./equipment/starting/laserPointer.png",

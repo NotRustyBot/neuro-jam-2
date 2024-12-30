@@ -35,7 +35,7 @@ export type Equipment = {
     name: string;
     template: EquipmentTemplate;
     cards: CardTemplate[];
-    onGameStart?: () => void;
+    onEncounterStart?: () => void;
     category: EquipmentCategory;
 };
 
@@ -47,7 +47,7 @@ export function createEquipmentDefinitions() {
         name: "Pepper Spray",
         template: EquipmentTemplate.pepperSpray,
         cards: [CardTemplate.blindshot, CardTemplate.blindshot],
-        onGameStart() {
+        onEncounterStart() {
             game.player.buffs.add(BuffType.pyromaniac);
         },
     });
@@ -111,7 +111,7 @@ export function createEquipmentDefinitions() {
 
     equipmentDefinitions.set(EquipmentTemplate.summoningSigil, {
         category: EquipmentCategory.arcane,
-        onGameStart() {
+        onEncounterStart() {
             game.player.buffs.add(BuffType.voicesOfThePast);
         },
         name: "Summoning Sigil",
@@ -131,7 +131,7 @@ export function createEquipmentDefinitions() {
         name: "Unstable Alchemy Bomb",
         template: EquipmentTemplate.unstableAlchemyBomb,
         cards: [CardTemplate.bigBang],
-        onGameStart() {
+        onEncounterStart() {
             game.player.buffs.add(BuffType.alchemist);
         },
     });
@@ -156,7 +156,7 @@ export function createEquipmentDefinitions() {
         name: "EM Gauntlet",
         template: EquipmentTemplate.emGauntlet,
         cards: [CardTemplate.emStrike, CardTemplate.emStrike],
-        onGameStart() {
+        onEncounterStart() {
             game.player.buffs.add(BuffType.persistency);
         },
     });

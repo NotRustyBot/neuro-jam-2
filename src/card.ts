@@ -92,15 +92,14 @@ export class Card {
         this.cardTypeSprite.texture.source.scaleMode = "nearest";
         this.cardTypeSprite.anchor.set(0.5, 0.5);
         this.cardTypeSprite.scale.set(0.7);
-        this.cardTypeSprite.position.set(this.cardSprite.width/2 - this.cardTypeSprite.width/2 + 5, -230);
+        this.cardTypeSprite.position.set(this.cardSprite.width / 2 - this.cardTypeSprite.width / 2 + 5, -230);
 
         this.icon = new Sprite();
         // do not add an icon to this
         let iconAsset: Texture;
         if (this.definition.template == CardTemplate.exhaustion) {
             iconAsset = Assets.get("null");
-        }
-        else {
+        } else {
             iconAsset = Assets.get(EquipmentTemplate[equipment!.template]) ?? Assets.get("null");
         }
 
@@ -117,7 +116,7 @@ export class Card {
         this.container.addChild(this.icon);
         game.cardContainer.addChild(this.container);
 
-        const cardTypeString = CardType[this.definition.family]
+        const cardTypeString = CardType[this.definition.family];
         const color = cardTypeString == "attack" ? 0xff8800 : 0x00cccc;
         // weird offset for A
         const offset = cardTypeString == "attack" ? 1 : 0;
@@ -225,13 +224,13 @@ export class Card {
 
         const idleTint = 0xffffff;
         const playableTint = 0x77ff77;
-        const unplayableTint = 0xff7777
+        const unplayableTint = 0xff7777;
 
         if (this.isActive && !game.mouse.down) {
             this.container.tint = idleTint;
             this.isActive = false;
             game.uiManager.hideKeywords();
-            if (game.mouse.y < game.app.canvas.height / 2) {
+            if (game.mouse.y < game.app.canvas.height - 200) {
                 if (this.definition.cost == undefined || game.player.stamina >= this.definition.cost) {
                     game.player.stamina -= this.definition.cost ?? 0;
                     this.play();
@@ -244,15 +243,13 @@ export class Card {
             this.containerPosition.x = game.mouse.x;
             this.containerPosition.y = game.mouse.y;
 
-            if (game.mouse.y < game.app.canvas.height / 2) {
+            if (game.mouse.y < game.app.canvas.height - 200) {
                 if (this.definition.cost == undefined || game.player.stamina >= this.definition.cost) {
                     this.container.tint = playableTint;
-                }
-                else {
+                } else {
                     this.container.tint = unplayableTint;
                 }
-            }
-            else {
+            } else {
                 this.container.tint = idleTint;
             }
         } else {

@@ -12,6 +12,8 @@ export class Enemy {
     buffs: Buffs;
 
     enemyName: Text;
+    intent: Text;
+    intentSprite: Sprite;
     hpText: Text;
     hpBar = new Graphics();
     uiContainer = new Container();
@@ -53,6 +55,24 @@ export class Enemy {
             },
         });
 
+        this.intentSprite = new Sprite();
+        this.intentSprite.anchor.set(0, 1);
+        this.intentSprite.position.set(0, -170);
+        this.intentSprite.scale.set(0.5);
+        this.uiContainer.addChild(this.intentSprite);
+
+
+        this.intent = new Text({
+            text: ``,
+            style: {
+                fontFamily: "Arial",
+                fontSize: 24,
+                fill: 0xffffff,
+            },
+        });
+
+
+
         this.hpText.anchor.set(0.5, 1);
 
         this.uiContainer.addChild(this.hpText);
@@ -67,13 +87,19 @@ export class Enemy {
             },
         });
 
-        this.enemyName.anchor.set(0.5, 1);
-        this.enemyName.position.set(100, -200);
+        this.enemyName.anchor.set(0, 1);
+        this.enemyName.position.set(0, -200);
 
         this.uiContainer.addChild(this.enemyName);
 
+
+        this.intent.anchor.set(0, 1);
+        this.intent.position.set(40, -170);
+        this.uiContainer.addChild(this.intent);
+
         this.uiContainer.addChild(this.buffs.container);
         this.buffs.container.y = -300;
+        this.updateIntent();
     }
 
     hide() {
@@ -91,10 +117,17 @@ export class Enemy {
         this.uiContainer.destroy();
     }
 
-    takeDamage(damage: number, quantity = 1, bypass = false) {
+    takeDamage(damage: number, bypass = false) {
         const startingHealth = this.health;
         if (this.health <= 0) return;
-        this.health -= damage * quantity;
+        if (this.buffs.has(BuffType.immune)) {
+            if (!bypass) {
+                return;
+            }
+        }
+
+        this.health -= damage;
+        
         if (this.health <= 0) {
             game.camera.shakePower = 1000;
             this.health = 0;
@@ -110,7 +143,7 @@ export class Enemy {
     update(dt: number) {
         if (this.isDead) return;
         this.container.position.x = (game.app.screen.width / 3) * 2;
-        this.container.position.y = (game.app.screen.height / 5) * 3;
+        this.container.position.y = (game.app.screen.height / 7) * 4;
 
         this.uiContainer.position.x = this.container.position.x;
         this.uiContainer.position.y = this.container.position.y;
@@ -122,8 +155,13 @@ export class Enemy {
 
         this.updateUi(dt);
 
-        this.helperContainer.tint = interpolateColors(0xffffff, 0xff0000, this.recentDamage / 3);
-        this.sprite.tint = interpolateColors(0xffffff, 0xff0000, this.recentDamage / 3);
+        if (this.recentDamage > 0) {
+            this.helperContainer.tint = interpolateColors(0xffffff, 0xff0000, this.recentDamage / 3);
+            this.sprite.tint = interpolateColors(0xffffff, 0xff0000, this.recentDamage / 3);
+        } else {
+            this.helperContainer.tint = interpolateColors(0xffffff, 0x00ff00, -this.recentDamage / 3);
+            this.sprite.tint = interpolateColors(0xffffff, 0x00ff00, -this.recentDamage / 3);
+        }
 
         if (this.isDying) {
             this.dyingProgress -= dt / 1000;
@@ -215,7 +253,7 @@ export class Enemy {
     droneUpdate() {
         this.sprites[0].rotation = game.phase * 0.2;
         this.helperContainer.x = Math.cos(game.phase * Math.PI * 2) * 10 + 50;
-        this.helperContainer.y = Math.sin(game.phase * Math.PI * 2) * 10 -50;
+        this.helperContainer.y = Math.sin(game.phase * Math.PI * 2) * 10 - 50;
     }
 
     spiderBotSetup() {
@@ -252,13 +290,7 @@ export class Enemy {
 
         const action = this.actions.shift()!;
 
-        if (action.type === "attack") {
-            game.player.takeDamage(action.damage, action.quantity);
-        } else if (action.type === "buff") {
-            this.buffs.add(action.buff, action.severity);
-        } else if (action.type === "debuff") {
-            game.player.buffs.add(action.buff, action.severity);
-        }
+        await action.action(this);
 
         this.actions.push(action);
     }
@@ -289,9 +321,30 @@ export class Enemy {
         this.hpText.position.set(positon.x, positon.y);
         this.hpText.rotation = hpAngle + Math.PI / 2;
         this.hpText.scale.set(1 + this.recentDamage * 0.5);
-        this.hpText.style.fill = interpolateColors(0xffaaaa, 0xff0000, this.recentDamage / 3);
+        if (this.recentDamage > 0) {
+            this.hpText.style.fill = interpolateColors(0xffaaaa, 0xff0000, this.recentDamage / 3);
+        } else {
+            this.hpText.style.fill = interpolateColors(0xffaaaa, 0x00ff00, -this.recentDamage / 3);
+        }
 
         this.uiContainer.alpha = 0.75 + this.recentDamage * 0.5;
+    }
+
+    attack(damage: number) {
+        if (this.buffs.has(BuffType.strength)) {
+            damage = Math.floor(damage * 1.5);
+        }
+
+        if (this.buffs.has(BuffType.weak)) {
+            damage = Math.floor(damage * 0.5);
+        }
+
+        this.opponent.takeDamage(damage);
+    }
+
+    updateIntent() {
+        this.intent.text = this.actions[0].description;
+        this.intentSprite.texture = Assets.get(intentTextureLookup[this.actions[0].type]);
     }
 
     myTurn = false;
@@ -313,6 +366,7 @@ export class Enemy {
             game.player.startTurn();
             this.myTurn = false;
         }
+        this.updateIntent();
     }
 }
 
@@ -324,31 +378,17 @@ export type EnemyTemplate = {
 };
 
 export function desribeAction(action: EnemyAction) {
-    if (action.type === "attack") {
-        return `Attack for ${action.damage} x ${action.quantity} damage`;
-    } else if (action.type === "buff") {
-        return `Buff ${buffDefinitions.get(action.buff)!.name} by ${action.severity}`;
-    } else if (action.type === "debuff") {
-        return `Debuff ${buffDefinitions.get(action.buff)!.name} by ${action.severity}`;
-    }
+    return action.description;
 }
 
-type EnemyAction = EnemyAttack | EnemyBuff | EnemyDebuff;
-
-type EnemyAttack = {
-    type: "attack";
-    damage: number;
-    quantity: number;
+type EnemyAction = {
+    type: "attack" | "skill" ;
+    action: (enemy: Enemy) => Promise<void>;
+    description: string;
 };
 
-type EnemyBuff = {
-    type: "buff";
-    buff: BuffType;
-    severity: number;
-};
 
-type EnemyDebuff = {
-    type: "debuff";
-    buff: BuffType;
-    severity: number;
+const intentTextureLookup = {
+    attack: "attackType",
+    skill: "skillType",
 };

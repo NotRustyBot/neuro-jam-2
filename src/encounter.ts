@@ -40,10 +40,11 @@ export class Encounter {
     }
 
     static createFirstEncounter(): Encounter {
-        return new Encounter(firstEncounter);
+        return new Encounter(encounters[0]);
     }
 
     begin() {
+        game.player.buffs.clear();
         this.inPast = true;
         game.player.startBattle(this.instance);
         game.player.startTurn();
@@ -86,6 +87,7 @@ export class Encounter {
 
     win() {
         game.selectionScreen.show(SelectionMode.POST_ENCOUNTER);
+        game.soundManager.setMusic("menu");
 
         game.selectionScreen.onSelectionComplete = (newEquipment) => {
             game.player.addEquipment(newEquipment);
@@ -93,7 +95,13 @@ export class Encounter {
             this.future.destroy();
             this.past.destroy();
 
-            game.encounter = new Encounter(secondEncounter);
+            game.encounterIndex++;
+
+            if (game.encounterIndex == encounters.length) {
+                // win game here
+            }
+
+            game.encounter = new Encounter(encounters[game.encounterIndex]);
             game.encounter.begin();
         };
     }
@@ -114,95 +122,202 @@ type EncounterTemplate = {
     };
 };
 
-const firstEncounter: EncounterTemplate = {
-    pastEnemy: {
-        name: "spider",
-        health: 15,
-        sprite: "enemy1_p",
-        actions: [
-            {
-                type: "attack",
-                damage: 2,
-                quantity: 1,
-            },
-            {
-                type: "debuff",
-                severity: 1,
-                buff: BuffType.burn,
-            },
-        ],
-    },
-    futureEnemy: {
-        name: "spiderbot",
-        health: 20,
-        sprite: "enemy1_f",
-        actions: [
-            {
-                type: "attack",
-                damage: 4,
-                quantity: 1,
-            },
-            {
-                type: "debuff",
-                severity: 2,
-                buff: BuffType.burn,
-            },
-        ],
-    },
+const encounters: EncounterTemplate[] = [
+    // encounter 1
+    {
+        pastEnemy: {
+            name: "spider",
+            health: 15,
+            sprite: "enemy1_p",
+            actions: [
+                {
+                    type: "attack",
+                    description: "Attack for 2",
+                    async action(enemy: Enemy) {
+                        enemy.attack(2);
+                    },
+                },
+                {
+                    type: "skill",
+                    description: "Inflict weakness",
+                    async action(enemy: Enemy) {
+                        enemy.opponent.buffs.add(BuffType.weak, 1);
+                        game.soundManager.play("ancestors_call", 0.25);
+                    },
+                },
+                {
+                    type: "skill",
+                    description: "Heal 1",
+                    async action(enemy: Enemy) {
+                        enemy.takeDamage(-1);
+                    },
+                },
+            ],
+        },
+        futureEnemy: {
+            name: "spiderbot",
+            health: 20,
+            sprite: "enemy1_f",
+            actions: [
+                {
+                    type: "attack",
+                    description: "Attack for 3",
+                    async action(enemy: Enemy) {
+                        enemy.attack(3);
+                    },
+                },
+                {
+                    type: "skill",
+                    description: "Inflict weakness",
+                    async action(enemy: Enemy) {
+                        enemy.opponent.buffs.add(BuffType.weak, 1);
+                        game.soundManager.play("ancestors_call", 0.25);
+                    },
+                },
+                {
+                    type: "skill",
+                    description: "Heal 1",
+                    async action(enemy: Enemy) {
+                        enemy.takeDamage(-1);
+                    },
+                },
+            ],
+        },
 
-    pastBackground: {
-        skyColor: "#5075EF",
-        skyRotation: 0.05,
-    },
+        pastBackground: {
+            skyColor: "#5075EF",
+            skyRotation: 0.05,
+        },
 
-    futureBackground: {
-        skyColor: "#ccaa96",
-        skyRotation: -0.05,
+        futureBackground: {
+            skyColor: "#ccaa96",
+            skyRotation: -0.05,
+        },
     },
-};
+    // encounter 2
+    {
+        pastEnemy: {
+            name: "bee",
+            health: 20,
+            sprite: "enemy1_p",
+            actions: [
+                {
+                    type: "skill",
+                    description: "Inflict burn",
+                    async action(enemy: Enemy) {
+                        enemy.opponent.buffs.add(BuffType.burn, 1);
+                    },
+                },
+                {
+                    type: "attack",
+                    description: "Gain vunerable, attack for 5",
+                    async action(enemy: Enemy) {
+                        enemy.buffs.add(BuffType.vulnerable, 1);
+                        await game.timeManager.wait(200);
+                        enemy.attack(5);
+                    },
+                },
+                {
+                    type: "skill",
+                    description: "Heal 1",
+                    async action(enemy: Enemy) {
+                        enemy.takeDamage(-1);
+                    },
+                },
+            ],
+        },
+        futureEnemy: {
+            name: "drone",
+            health: 30,
+            sprite: "drone",
+            actions: [
+                {
+                    type: "skill",
+                    description: "Inflict burn",
+                    async action(enemy: Enemy) {
+                        enemy.opponent.buffs.add(BuffType.burn, 1);
+                    },
+                },
+                {
+                    type: "attack",
+                    description: "Gain vunerable, attack for 8",
+                    async action(enemy: Enemy) {
+                        enemy.buffs.add(BuffType.vulnerable, 1);
+                        await game.timeManager.wait(200);
+                        enemy.attack(8);
+                    },
+                },
+                {
+                    type: "skill",
+                    description: "Heal 1",
+                    async action(enemy: Enemy) {
+                        enemy.takeDamage(-1);
+                    },
+                },
+            ],
+        },
+        pastBackground: {
+            skyColor: "#4065DF",
+            skyRotation: 0.1,
+        },
 
-const secondEncounter: EncounterTemplate = {
-    pastEnemy: {
-        name: "bee",
-        health: 20,
-        sprite: "enemy1_p",
-        actions: [
-            {
-                type: "attack",
-                damage: 2,
-                quantity: 1,
-            },
-            {
-                type: "debuff",
-                severity: 1,
-                buff: BuffType.burn,
-            },
-        ],
+        futureBackground: {
+            skyColor: "#666633",
+            skyRotation: -0.1,
+        },
     },
-    futureEnemy: {
-        name: "drone",
-        health: 50,
-        sprite: "drone",
-        actions: [
-            {
-                type: "attack",
-                damage: 4,
-                quantity: 1,
-            },
-            {
-                type: "debuff",
-                severity: 2,
-                buff: BuffType.burn,
-            },
-        ],
-    },
-    pastBackground: {
-        skyColor: "#4065DF",
-        skyRotation: 0.1,
-    },
+    // encounter 3
+    {
+        pastEnemy: {
+            name: "turtle",
+            health: 30,
+            sprite: "enemy1_p",
+            actions: [
+                {
+                    type: "skill",
+                    description: "Hide in shell",
+                    async action(enemy: Enemy) {
+                        enemy.buffs.add(BuffType.immune);
+                    },
+                },
+                {
+                    type: "attack",
+                    description: "Attack for 6",
+                    async action(enemy: Enemy) {
+                        enemy.attack(6);
+                    },
+                }
+            ],
+        },
+        futureEnemy: {
+            name: "turtle bot",
+            health: 35,
+            sprite: "drone",
+            actions: [
+                {
+                    type: "skill",
+                    description: "Hide in shell",
+                    async action(enemy: Enemy) {
+                        enemy.buffs.add(BuffType.immune);
+                    },
+                },
+                {
+                    type: "attack",
+                    description: "Attack for 6",
+                    async action(enemy: Enemy) {
+                        enemy.attack(6);
+                    },
+                }
+            ],
+        },
+        pastBackground: {
+            skyColor: "#4065DF",
+            skyRotation: 0.1,
+        },
 
-    futureBackground: {
-        skyColor: "#666633",
-        skyRotation: -0.1,
+        futureBackground: {
+            skyColor: "#666633",
+            skyRotation: -0.1,
+        },
     },
-};
+];

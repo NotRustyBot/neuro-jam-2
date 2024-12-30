@@ -5,6 +5,7 @@ import { CardTemplate } from "./cardDefinitions";
 import { Enemy } from "./enemy";
 import { Equipment, equipmentDefinitions, EquipmentTemplate } from "./equipment";
 import { game } from "./game";
+import { interpolateColors } from "./utils";
 
 export class Player {
     health: number = 20;
@@ -61,7 +62,7 @@ export class Player {
         this.shuffleDeck();
 
         for (const eq of this.equipment) {
-            eq.onGameStart?.();
+            eq.onEncounterStart?.();
         }
     }
 
@@ -85,6 +86,8 @@ export class Player {
         if (this.inBattle) {
             this.hand.forEach((card) => card.update(dt));
         }
+
+        this.sprite.tint = interpolateColors(0xffffff, 0xff0000, game.uiManager.recentPlayerDamage / 3);
     }
 
     modifyAttackDamage(damage: number) {
@@ -121,20 +124,21 @@ export class Player {
         game.encounter.nextTurn();
     }
 
-    takeDamage(damage: number, quantity = 1) {
+    takeDamage(damage: number, ) {
         if (game.player.buffs.has(BuffType.immune)) return;
-        for (let i = 0; i < quantity; i++) {
-            if (this.block > damage) {
-                this.block -= damage;
-                continue;
-            }
-
-            damage -= this.block;
-            this.block = 0;
-            game.camera.shakePower += 100 * damage;
-            game.uiManager.recentPlayerDamage += damage;
-            this.health -= damage;
+        if (this.block > damage) {
+            this.block -= damage;
+            game.soundManager.play("shield_up", 0.1);
+            return;
         }
+
+        game.soundManager.play("player_damage");
+
+        damage -= this.block;
+        this.block = 0;
+        game.camera.shakePower += 100 * damage;
+        game.uiManager.recentPlayerDamage += damage;
+        this.health -= damage;
     }
 
     drawCards(count: number) {

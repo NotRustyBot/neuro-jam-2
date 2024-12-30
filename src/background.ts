@@ -63,7 +63,7 @@ export class Background {
         this.spriteBackground.position.x = game.app.screen.width / 2 + game.camera.position.x / 3;
         this.spriteBackground.position.y = (game.app.screen.height / 3) * 2 + game.camera.position.y / 3;
         const coverRatio = Math.min(this.spriteForeground.texture.width / game.app.screen.width, this.spriteForeground.texture.height / game.app.screen.height);
-        this.spriteForeground.scale.set(1 / coverRatio);
+        this.spriteForeground.scale.set(1 / coverRatio * 1.3);
         this.spriteBackground.scale.set(1 / coverRatio);
     }
 }
