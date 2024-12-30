@@ -57,7 +57,7 @@ export class Menu {
             this.onStart();
         });
 
-        this.introButton = this.createButton("Intro", 400, 0x00ff00, 0x00ffaa, () => {
+        this.introButton = this.createButton("Intro",  0x00ff00, 0x00ffaa, () => {
             game.effectsManager.playIntro();
             game.app.stage.addChild(game.temporaryContainer);
         });
@@ -123,6 +123,7 @@ export class Menu {
 
         this.titleContainer.position.set(game.app.screen.width / 2, 400);
         this.startButton.position.set((game.app.screen.width) / 2 - 100, game.app.screen.height/2 + 100);
+        this.introButton.position.set((game.app.screen.width) / 2 - 100, game.app.screen.height/2 + 200);
         //this.settingsButton.position.set((game.app.screen.width) / 2 - 100, this.settingsButton.position.y);
         //this.quitButton.position.set((game.app.screen.width) / 2 - 100, this.quitButton.position.y);
     }
