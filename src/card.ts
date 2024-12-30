@@ -1,4 +1,4 @@
-import { Assets, Sprite, Container, Graphics, HTMLText, Text, RenderTexture } from "pixi.js";
+import { Assets, Sprite, Container, Graphics, HTMLText, Text, RenderTexture, Texture } from "pixi.js";
 import { CardDefinition, cardDefinitions, CardTemplate, CardType } from "./cardDefinitions";
 import { game } from "./game";
 import { BattleInstance } from "./player";
@@ -79,12 +79,12 @@ export class Card {
         this.container.interactive = true;
         this.container.visible = false;
 
-        const originCircle = new Graphics();
-        const cardOutline = new Graphics();
-        originCircle.roundRect(-5, -5, 10, 10);
-        originCircle.stroke({ color: 0x000000, width: 3 });
-        originCircle.fill(0xffffff);
+        //const originCircle = new Graphics();
+        //originCircle.roundRect(-5, -5, 10, 10);
+        //originCircle.stroke({ color: 0x000000, width: 3 });
+        //originCircle.fill(0xffffff);
 
+        const cardOutline = new Graphics();
         cardOutline.roundRect(this.cardSprite.position.x, this.cardSprite.position.y, this.cardSprite.width + 1, this.cardSprite.height + 1, 2);
         cardOutline.stroke({ color: 0x808080, width: 3 });
 
@@ -95,14 +95,23 @@ export class Card {
         this.cardTypeSprite.position.set(this.cardSprite.width/2 - this.cardTypeSprite.width/2 + 5, -230);
 
         this.icon = new Sprite();
-        this.icon.texture = Assets.get(EquipmentTemplate[equipment!.template]) ?? Assets.get("null");
+        // do not add an icon to this
+        let iconAsset: Texture;
+        if (this.definition.template == CardTemplate.exhaustion) {
+            iconAsset = Assets.get("null");
+        }
+        else {
+            iconAsset = Assets.get(EquipmentTemplate[equipment!.template]) ?? Assets.get("null");
+        }
+
+        this.icon.texture = iconAsset;
         this.icon.texture.source.scaleMode = "nearest";
         this.icon.scale.set(1.5);
         this.icon.anchor.set(0.5);
         this.icon.position.set(0, -185);
 
         this.container.addChild(this.cardSprite);
-        this.container.addChild(originCircle, cardOutline);
+        this.container.addChild(cardOutline);
         this.container.addChild(this.usageCostSprite, usageCostOutlineSprite);
         this.container.addChild(this.cardTypeSprite);
         this.container.addChild(this.icon);
@@ -303,7 +312,7 @@ export function getDescriptionTexture(text: string): RenderTexture {
 
     container.addChild(description);
     description.anchor.set(0.5, 0);
-    description.position.set(width / 2, 0);
+    description.position.set(width / 2, 10);
     const texture = RenderTexture.create({
         width: width,
         height: 200,

@@ -116,8 +116,8 @@ export class SelectionScreen {
     displayEquipmentOptions() {
         if (this.selectionMode === SelectionMode.STARTING_EQUIPMENT) {
             // equipment filtering
-            const startingEquipmentPool = Array.from(equipmentDefinitions.values())//.filter((equipment) => equipment.category === EquipmentCategory.starting);
-            const equipmentArray = startingEquipmentPool//.sort(() => Math.random() - 0.5).slice(0, this.startingEquipmentPoolSize);
+            const startingEquipmentPool = Array.from(equipmentDefinitions.values()).filter((equipment) => equipment.category === EquipmentCategory.starting);
+            const equipmentArray = startingEquipmentPool.sort(() => Math.random() - 0.5).slice(0, this.startingEquipmentPoolSize);
 
             this.title.text = `Select your starting equipment (${this.startingEquipmentMaximum})`;
             // button settings
@@ -129,7 +129,7 @@ export class SelectionScreen {
 
             // create background
             const { background, text } = this.createEquipmentBackground(
-                "Starting Equipment Pool", 0, 200,
+                "Modern-Day Equipment", 0, 200,
                 equipmentPerRow * this.buttonWidth + (equipmentPerRow - 1) * this.xPadding,
                 equipmentColumns * this.buttonHeight + (equipmentColumns - 1) * this.yPadding
             );
@@ -166,12 +166,12 @@ export class SelectionScreen {
 
             // create background for each pool
             const { background: arcaneBackground, text: arcaneText } = this.createEquipmentBackground(
-                "Arcane Pool", 0, 200,
+                "Arcane Equipment", 0, 200,
                 arcanePerRow * this.buttonWidth + (arcanePerRow - 1) * this.xPadding,
                 arcaneColumns * this.buttonHeight + (arcaneColumns - 1) * this.yPadding
             );
             const { background: hitechBackground, text: hitechText } = this.createEquipmentBackground(
-                "High-Tech Pool", game.app.screen.width - this.equipmentContainer.position.x, 200,
+                "High-Tech Equipment", game.app.screen.width - this.equipmentContainer.position.x, 200,
                 hitechPerRow * this.buttonWidth + (hitechPerRow - 1) * this.xPadding,
                 hitechColumns * this.buttonHeight + (hitechColumns - 1) * this.yPadding
             );

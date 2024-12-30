@@ -68,5 +68,8 @@
     "cardCost": "./cards/cardCost.png",
 
     "attackType": "./cards/attackType.png",
-    "skillType": "./cards/skillType.png"
+    "skillType": "./cards/skillType.png",
+
+    "nextTurn": "./nextTurn.png",
+    "nextTurnOuter": "./nextTurnOuter.png"
 }

@@ -1,4 +1,4 @@
-import { Application, Assets, Container, Graphics, Sprite, Text } from "pixi.js";
+import { Application, Assets, assignWithIgnore, Container, Graphics, Sprite, Text } from "pixi.js";
 import { Player } from "./player";
 import { cardDefinitions, createCardDefinitions } from "./cardDefinitions";
 import { createEquipmentDefinitions, equipmentDefinitions, EquipmentTemplate } from "./equipment";
@@ -32,6 +32,7 @@ export class Game {
     uiKeywordsContainer = new Container();
     containerToReflect = new Container();
     screenReflectContainer = new Container();
+    buttonContainer!: Container;
 
     menu!: Menu;
     selectionScreen!: SelectionScreen;
@@ -156,21 +157,46 @@ export class Game {
         window.addEventListener("contextmenu", (e) => e.preventDefault());
         window.addEventListener("resize", () => this.resize());
 
+        // next turn button
+        const idleTint = 0xff2222;
+        const hoverTint = 0x22ff22;
+        const clickTint = 0x00ffff;
+
+        this.buttonContainer = new Container();
+        const button = new Sprite(Assets.get("nextTurn"));
+        button.texture.source.scaleMode = "nearest";
+        button.scale.set(5);
+        button.anchor.set(1);
+        button.tint = idleTint;
+
+        const buttonOuter = new Sprite(Assets.get("nextTurnOuter"));
+        buttonOuter.texture.source.scaleMode = "nearest";
+        buttonOuter.scale.set(button.scale.x, button.scale.y);
+        buttonOuter.anchor.set(button.anchor.x, button.anchor.y);
+        buttonOuter.position.set(button.position.x, button.position.y);
+
+        this.buttonContainer.cursor = "pointer";
+        this.buttonContainer.interactive = true;
+        this.buttonContainer.on("pointerdown", () => {
+            this.player.endTurn()
+            button.tint = clickTint;
+            setTimeout(() => (button.tint = idleTint), 500);
+        });
+        this.buttonContainer.on("pointerover", () => {
+            if (button.tint === idleTint) button.tint = hoverTint;
+        });
+        this.buttonContainer.on("pointerout", () => {
+            if (button.tint === hoverTint) button.tint = idleTint;
+        });
+
+        this.buttonContainer.addChild(button, buttonOuter);
+        this.app.stage.addChild(this.buttonContainer);
+
         // debug encounter
         this.encounter = Encounter.createFirstEncounter();
         this.encounter.begin();
 
-        // debug button
-        const button = new Graphics();
-        button.rect(0, 0, 200, 100);
-        button.fill(0x00ff00);
-        button.position.x = 0;
-        button.position.y = 0;
-        this.app.stage.addChild(button);
-
-        button.interactive = true;
-        button.on("pointerdown", () => this.player.endTurn());
-
+        // debug text
         this.debugText = new Text({ text: "debug", style: { fontFamily: "monospace", fontSize: 24, fill: 0xffffff } });
         this.app.stage.addChild(this.debugText);
         this.debugText.position.x = 0;
@@ -186,6 +212,8 @@ export class Game {
         this.timeManager.update(dt);
         this.menu.update(dt);
         //this.cursor.position.set(this.mouse.x, this.mouse.y);
+
+        this.buttonContainer.position.set(this.app.screen.width - 50, this.app.screen.height - 50);
 
         // encounter
         if (this.encounter) {
