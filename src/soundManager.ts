@@ -36,6 +36,11 @@ export class SoundManager {
         emStrike: new Howl({ src: "./sounds/emStrike.wav" }),
         operationalFailure: new Howl({ src: "./sounds/operationalFailure.wav" }),
         uncontrolledBot: new Howl({ src: "./sounds/uncontrolledBot.wav" }),
+        soulWakeUpCall: new Howl({ src: "./sounds/soulWakeUpCall.wav" }),
+        huntedHeretic: new Howl({ src: "./sounds/huntedHeretic.wav" }),
+
+        enemyBotDeath: new Howl({ src: "./sounds/enemyBotDeath.wav" }),
+        enemyBugDeath: new Howl({ src: "./sounds/enemyBugDeath.wav" }),
 
         player_damage: new Howl({ src: "./sounds/player_damage.wav" }),
         ticking: new Howl({ src: "./sounds/ticking.wav" }),
@@ -46,6 +51,9 @@ export class SoundManager {
         drawCards: new Howl({ src: "./sounds/drawCards.wav" }),
         button: new Howl({ src: "./sounds/button.wav" }),
         button2: new Howl({ src: "./sounds/button2.wav" }),
+        button3: new Howl({ src: "./sounds/button3.wav" }),
+        button4: new Howl({ src: "./sounds/button4.wav" }),
+        click: new Howl({ src: "./sounds/click.wav" }),
     };
 
     currentMusic: keyof typeof this.music | null = null;

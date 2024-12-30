@@ -188,11 +188,21 @@ export class Game {
 
         this.buttonContainer.cursor = "pointer";
         this.buttonContainer.interactive = true;
+
+        let debounce = false;
         this.buttonContainer.on("pointerdown", () => {
+            if (debounce) return;
+            debounce = true;
+
             this.player.endTurn();
             button.tint = clickTint;
-            setTimeout(() => (button.tint = idleTint), 500);
+            setTimeout(() => {
+                button.tint = idleTint;
+                debounce = false;
+            }, 500);
+            game.soundManager.play("button4");
         });
+
         this.buttonContainer.on("pointerover", () => {
             if (button.tint === idleTint) button.tint = hoverTint;
         });

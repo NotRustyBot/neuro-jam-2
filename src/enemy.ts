@@ -136,6 +136,10 @@ export class Enemy {
             game.camera.shakePower = 1000;
             this.health = 0;
             this.die();
+            if (this.template.name.includes("spiderbot")) game.soundManager.play("enemyBotDeath", 0.5);
+            if (this.template.name == "drone") game.soundManager.play("enemyBotDeath", 0.5);
+            if (this.template.name == "spider") game.soundManager.play("enemyBugDeath");
+            if (this.template.name == "bee") game.soundManager.play("enemyBugDeath");
             game.encounter.countdown = 0;
         }
 

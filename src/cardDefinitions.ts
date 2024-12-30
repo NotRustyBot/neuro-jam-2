@@ -112,6 +112,9 @@ export function createCardDefinitions() {
         name: "Soul with Wake-Up Call",
         cost: 0,
         description: `Soothe your ancestors before you get their help`,
+        onPlayed: (player: Player, enemy: Enemy) => {
+            game.soundManager.play("soulWakeUpCall", 0.5);
+        },
     });
 
     cardDefinitions.set(CardTemplate.huntedHeretic, {
@@ -121,6 +124,9 @@ export function createCardDefinitions() {
         name: "Hunted Heretic",
         cost: 0,
         description: `<i>Try to evade the Order before using this evil dagger again</i>`,
+        onPlayed: (player: Player, enemy: Enemy) => {
+            game.soundManager.play("huntedHeretic");
+        },
     });
 
     cardDefinitions.set(CardTemplate.smallBang, {
@@ -341,7 +347,7 @@ export function createCardDefinitions() {
         template: CardTemplate.laserBeam,
         family: CardType.attack,
         name: "Laser Beam",
-        cost: 1,
+        cost: 2,
         description: `Deal 6 damage\nIgnore defense`,
         onPlayed: (player: Player, enemy: Enemy) => {
             let damage = 6;

@@ -90,12 +90,13 @@ export class SelectionScreen {
         const selectButton = new Graphics();
         selectButton.roundRect(0, 0, 200, 75);
         selectButton.fill(0x00ff00);
+        selectButton.stroke({ color: 0x000000, width: 4 });
 
         const selectText = new Text({ text: "Select", style: { fontFamily: "monospace", fontSize: 26, fill: 0x000000 } });
-        selectText.position.set(selectButton.width / 2, selectButton.height / 2);
+        selectText.position.set(selectButton.width / 2, selectButton.height / 2 - 2);
         selectText.anchor.set(0.5);
 
-        this.selectContainer.position.set((game.app.screen.width - selectButton.width) / 2, 800);
+        //this.selectContainer.position.set((game.app.screen.width - selectButton.width) / 2, game.app.screen.height + 200);
         this.selectContainer.addChild(selectButton, selectText);
 
         this.container.addChild(this.background, this.title, this.equipmentContainer, this.selectContainer);
@@ -142,7 +143,7 @@ export class SelectionScreen {
 
             // create background
             const { backgroundContainer: background, text: text } = this.createEquipmentBackground(
-                EquipmentCategory.starting, "Modern-Day Equipment", 0xffffff, 0, 200,
+                EquipmentCategory.starting, "Modern-Day Equipment", 0xffffff, 0, 150,
                 equipmentPerRow * this.buttonWidth + (equipmentPerRow - 1) * this.xPadding,
                 equipmentColumns * this.buttonHeight + (equipmentColumns - 1) * this.yPadding
             );
@@ -298,6 +299,7 @@ export class SelectionScreen {
                 buttonText.tint = 0x00aaaa;
                 //buttonBackground.tint = 0xffffff;
                 this.selectedEquipment.splice(this.selectedEquipment.indexOf(equipment), 1);
+                game.soundManager.play("click", 0.3);
             }
             else {
                 if (this.atMaxSelected(equipment)) return;
@@ -306,6 +308,7 @@ export class SelectionScreen {
                 buttonText.tint = 0x00ff00;
                 //buttonBackground.tint = 0x55dd55;
                 this.selectedEquipment.push(equipment);
+                game.soundManager.play("click", 0.3);
             }
         });
         button.on("pointerover", () => {
@@ -365,6 +368,13 @@ export class SelectionScreen {
             frameSprite.height = background.height + yOffset;
 
             backgroundContainer.addChild(frameSprite);
+        }
+        else {
+            background.stroke({ color: 0x606060, width: 10 });
+            let width = background.strokeStyle.width+3;
+            background.width += width;
+            background.height += width;
+            background.position.set(-width/2, -width /2);
         }
 
         const text = new Text({ text: titleText, style: { fontFamily: "monospace", fontSize: 40, fill: color, stroke: {color: 0x000000, width: 3} } });
@@ -443,6 +453,7 @@ export class SelectionScreen {
 
     completeSelection() {
         if (this.selectionMode === SelectionMode.STARTING_EQUIPMENT && this.selectedEquipment.length === this.startingEquipmentMaximum) {
+            game.soundManager.play("button", 0.3);
             this.onSelectionComplete(this.selectedEquipment);
         }
         else if (this.selectionMode === SelectionMode.POST_ENCOUNTER) {
@@ -450,6 +461,7 @@ export class SelectionScreen {
             const hitechSelected = this.selectedEquipment.filter(eq => eq.category === EquipmentCategory.hitech).length;
 
             if (arcaneSelected === this.equipmentMaximumPerPool && hitechSelected === this.equipmentMaximumPerPool) {
+                game.soundManager.play("button", 0.3);
                 this.onSelectionComplete(this.selectedEquipment);
             }
         }
@@ -464,7 +476,7 @@ export class SelectionScreen {
         this.background.width = game.app.screen.width;
         this.background.height = game.app.screen.height;
         this.title.position.set(game.app.screen.width / 2, 100);
-        this.selectContainer.position.set((game.app.screen.width - this.selectContainer.width) / 2, 800);
+        this.selectContainer.position.set((game.app.screen.width - this.selectContainer.width) / 2, game.app.screen.height - 100);
         this.equipmentContainer.position.set(game.app.screen.width/2 - this.equipmentContainer.width/2, 100);
     }
 }
