@@ -33,6 +33,8 @@
     "cultist_turtle": "./cultist_turtle.png",
 
 
+    "failure": "./failure.png",
+
     "bonusAttackDamage": "./buffs/bonusAttackDamage.png",
     "burn": "./buffs/burn.png",
     "pyromaniac": "./buffs/pyromaniac.png",
@@ -79,6 +81,7 @@
 
     "attackType": "./cards/attackType.png",
     "skillType": "./cards/skillType.png",
+    "failureType": "./cards/failureType.png",
 
     "nextTurn": "./nextTurn.png",
     "nextTurnOuter": "./nextTurnOuter.png",

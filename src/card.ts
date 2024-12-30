@@ -54,6 +54,10 @@ export class Card {
             }
         }
 
+        if (this.definition.family == CardType.failure) {
+            cardAsset = "basicCard";
+        }
+
         let typeAsset!: string;
         switch (this.definition.family) {
             case CardType.attack:
@@ -61,6 +65,9 @@ export class Card {
                 break;
             case CardType.skill:
                 typeAsset = "skillType";
+                break;
+            case CardType.failure:
+                typeAsset = "failureType";
                 break;
         }
 
@@ -92,13 +99,13 @@ export class Card {
         this.cardTypeSprite.texture.source.scaleMode = "nearest";
         this.cardTypeSprite.anchor.set(0.5, 0.5);
         this.cardTypeSprite.scale.set(0.7);
-        this.cardTypeSprite.position.set(this.cardSprite.width / 2 - this.cardTypeSprite.width / 2 + 5, -230);
+        this.cardTypeSprite.position.set(this.cardSprite.width / 2 - this.cardTypeSprite.width / 2 + 3, -230);
 
         this.icon = new Sprite();
         // do not add an icon to this
         let iconAsset: Texture;
-        if (this.definition.template == CardTemplate.exhaustion) {
-            iconAsset = Assets.get("null");
+        if (this.definition.family == CardType.failure) {
+            iconAsset = Assets.get("failure");
         } else {
             iconAsset = Assets.get(EquipmentTemplate[equipment!.template]) ?? Assets.get("null");
         }
@@ -117,7 +124,7 @@ export class Card {
         game.cardContainer.addChild(this.container);
 
         const cardTypeString = CardType[this.definition.family];
-        const color = cardTypeString == "attack" ? 0xff8800 : 0x00cccc;
+        const color = cardTypeString == "attack" ? 0xff8800 : (cardTypeString == "skill" ? 0x00cccc : 0xffffff)
         // weird offset for A
         const offset = cardTypeString == "attack" ? 1 : 0;
 
@@ -132,7 +139,7 @@ export class Card {
             },
         });
         cardType.anchor.set(0.5, 0.5);
-        cardType.position.set(this.cardTypeSprite.position.x + offset, this.cardTypeSprite.position.y);
+        cardType.position.set(this.cardTypeSprite.position.x + offset, this.cardTypeSprite.position.y - 1);
 
         this.name = new Text({
             text: this.definition.name,

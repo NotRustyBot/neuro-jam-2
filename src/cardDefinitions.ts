@@ -5,7 +5,10 @@ import { Player } from "./player";
 import { roll } from "./utils";
 
 export enum CardTemplate {
+    // universal
     exhaustion,
+    operationalConfusion,
+    // starting
     blindshot,
     sweepStrike,
     zap,
@@ -31,6 +34,7 @@ export enum CardTemplate {
 export enum CardType {
     attack,
     skill,
+    failure
 }
 
 export type CardDefinition = {
@@ -48,14 +52,26 @@ export const cardDefinitions: Map<CardTemplate, CardDefinition> = new Map();
 
 export function createCardDefinitions() {
     createKeywordDefinitions();
+
+    // universal
     cardDefinitions.set(CardTemplate.exhaustion, {
         template: CardTemplate.exhaustion,
-        family: CardType.skill,
+        family: CardType.failure,
         startingUses: 0,
         name: "Exhaustion",
         cost: 0,
         description: `<i>Sometimes you just need to chill out</i>`,
     });
+    cardDefinitions.set(CardTemplate.operationalConfusion, {
+        template: CardTemplate.operationalConfusion,
+        family: CardType.failure,
+        startingUses: 0,
+        name: "Operational Confusion",
+        cost: 0,
+        description: `<i>Take some time to read the instructions before using this complex weapon</i>`,
+    });
+
+    // starting
     cardDefinitions.set(CardTemplate.blindshot, {
         template: CardTemplate.blindshot,
         family: CardType.attack,
@@ -81,9 +97,9 @@ export function createCardDefinitions() {
         startingUses: 0,
         name: "Sweep Strike",
         cost: 1,
-        description: `Deal 2 damage\n50% chance to inflict #stun`,
+        description: `Deal 1 damage\n50% chance to inflict #stun`,
         onPlayed: (player: Player, enemy: Enemy) => {
-            let damage = 2;
+            let damage = 1;
             damage = player.modifyAttackDamage(damage);
             game.soundManager.play("sweeping_strike");
             enemy.takeDamage(damage);
@@ -98,9 +114,9 @@ export function createCardDefinitions() {
         startingUses: 0,
         name: "Zap",
         cost: 2,
-        description: `Deal 3 damage\nInflict #stun`,
+        description: `Deal 1 damage\nInflict #stun`,
         onPlayed: (player: Player, enemy: Enemy) => {
-            let damage = 3;
+            let damage = 1;
             damage = player.modifyAttackDamage(damage);
             enemy.takeDamage(damage);
             enemy.buffs.add(BuffType.stun);
@@ -127,7 +143,7 @@ export function createCardDefinitions() {
         family: CardType.attack,
         name: "Slam",
         keywords: [KeywordType.stun, KeywordType.weakness],
-        cost: 2,
+        cost: 3,
         description: `Deal 4 damage\nIf the enemy has #weakness or #stun, deal 6 extra damage `,
         onPlayed: (player: Player, enemy: Enemy) => {
             let damage = 4;

@@ -141,7 +141,7 @@ export function createEquipmentDefinitions() {
         category: EquipmentCategory.hitech,
         name: "Laser Gun",
         template: EquipmentTemplate.laserGun,
-        cards: [CardTemplate.laserBeam, CardTemplate.laserBeam, CardTemplate.exhaustion, CardTemplate.exhaustion],
+        cards: [CardTemplate.laserBeam, CardTemplate.laserBeam, CardTemplate.operationalConfusion, CardTemplate.operationalConfusion],
     });
 
     equipmentDefinitions.set(EquipmentTemplate.healingBot, {
