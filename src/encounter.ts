@@ -71,7 +71,8 @@ export class Encounter {
     die() {
         game.soundManager.cutMusic();
         game.soundManager.play("defeat_theme");
-        //tf we gonna do
+
+        game.effectsManager.defeat();
     }
 
     switch() {

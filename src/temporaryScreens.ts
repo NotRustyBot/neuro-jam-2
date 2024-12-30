@@ -23,6 +23,7 @@ export class EffectsManager {
         if (this.inTimewarp) this.handleTimewarp(dt);
         if (this.inFadeout) this.handleFadeout(dt);
         if (this.isVictory) this.handleVictory(dt);
+        if (this.isDefeat) this.handleDefeat(dt);
     }
 
     blackBarsRatio = 0;
@@ -107,6 +108,8 @@ export class EffectsManager {
             color: 0x000000,
         });
 
+        game.soundManager.setMusic("menu");
+
         if (this.victoryProgress > 1 + outroLines[this.outroLineIndex].length * 0.1) {
             if (this.outroLineIndex + 1 < outroLines.length) this.outroLineIndex++;
         }
@@ -114,6 +117,33 @@ export class EffectsManager {
         this.subtitles.anchor.set(0.5, 0.5);
         this.subtitles.position.set(game.app.screen.width / 2, game.app.screen.height - 200);
         this.subtitles.text = outroLines[this.outroLineIndex];
+    }
+
+    isDefeat = false;
+    defeatProgress = 0;
+    defeat() {
+        this.subtitles.text = "Defeated";
+        this.subtitles.style.fontSize = 72;
+        this.subtitles.style.fill = 0xffaaaa;
+        this.subtitles.anchor.set(0.5, 0.5);
+        this.subtitles.position.set(game.app.screen.width / 2, game.app.screen.height / 3);
+
+        this.isDefeat = true;
+        this.defeatProgress = 0;
+    }
+
+    handleDefeat(dt: number) {
+        this.defeatProgress += dt / 1000;
+        this.graphics.rect(0, 0, game.app.screen.width, game.app.screen.height);
+        this.graphics.fill({
+            color: 0x000000,
+        });
+
+        this.subtitles.alpha = 1 - Math.abs(this.defeatProgress - 3) / 3;
+
+        if (this.defeatProgress > 6) {
+            game.restart();
+        }
     }
 }
 
@@ -124,4 +154,9 @@ const introLines = [
     `Now you need to defeat the Remnants of the Turtle empire, both in the past, and in the future, or humanity will serve under their reign once more.`,
 ];
 
-const outroLines = [``, `As the last of Remnants of the Turtle Empire are defeated, and Artefact pieces recombined, the threads of time fall back into their rightful places.`, `Now, you may rest.`, ``];
+const outroLines = [
+    ``,
+    `As the last of Remnants of the Turtle Empire are defeated, and Artefact pieces recombined, the threads of time fall back into their rightful places.`,
+    `Now, you may rest.`,
+    ``,
+];

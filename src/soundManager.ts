@@ -91,4 +91,14 @@ export class SoundManager {
 
         this.musicTargetRate = 1;
     }
+
+    destroy() {
+        for (const key in this.music) {
+            this.music[key as keyof typeof this.music].stop();
+        }
+
+        for (const key in this.sounds) {
+            this.sounds[key as keyof typeof this.sounds].stop();
+        }
+    }
 }

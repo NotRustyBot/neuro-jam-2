@@ -1,4 +1,4 @@
-import { Application, Assets, assignWithIgnore, Container, Graphics, Sprite, Text } from "pixi.js";
+import { Application, Assets, assignWithIgnore, Container, Graphics, Sprite, Text, TickerCallback } from "pixi.js";
 import { Player } from "./player";
 import { cardDefinitions, createCardDefinitions } from "./cardDefinitions";
 import { createEquipmentDefinitions, equipmentDefinitions, EquipmentTemplate } from "./equipment";
@@ -43,12 +43,14 @@ export class Game {
     uiManager!: UIManager;
     encounterIndex = 0;
 
+    private updateReference: TickerCallback<any>;
     constructor(app: Application) {
         this.app = app;
 
-        app.ticker.add((delta) => {
+        this.updateReference = (delta) => {
             this.update(delta.deltaMS);
-        });
+        };
+        app.ticker.add(this.updateReference);
 
         game = this;
     }
@@ -235,5 +237,14 @@ export class Game {
             this.debugText.text += `EnemyActions: ${this.player.instance.enemy.actions.map((action) => desribeAction(action)).join(", ")}\n`;
             this.debugText.text += `You are in the ${this.encounter.inPast ? "past" : "future"}. Switch in ${this.encounter.countdown} turns.`;
         }
+    }
+
+    restart() {
+        this.app.stage.removeChildren();
+        this.app.ticker.remove(this.updateReference);
+        this.soundManager.destroy();
+
+        const newGame = new Game(this.app);
+        newGame.init();
     }
 }
