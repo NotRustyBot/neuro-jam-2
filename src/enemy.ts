@@ -364,7 +364,7 @@ export class Enemy {
             this.isStunned = false;
             game.timeManager.delay(() => {
                 this.buffs.endTurn();
-                game.player.startTurn();
+                game.encounter.enemyEndTurn();
                 this.myTurn = false;
             }, 200);
         } else {
@@ -372,7 +372,7 @@ export class Enemy {
             await this.doAction();
             await game.timeManager.wait(200);
             this.buffs.endTurn();
-            game.player.startTurn();
+            game.encounter.enemyEndTurn();
             this.myTurn = false;
         }
         this.updateIntent();

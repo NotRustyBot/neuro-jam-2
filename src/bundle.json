@@ -86,6 +86,13 @@
     "nextTurn": "./nextTurn.png",
     "nextTurnOuter": "./nextTurnOuter.png",
 
+    "intro1": "./intro/story1.png",
+    "intro2": "./intro/story2.png",
+    "intro3": "./intro/story3.png",
+    "intro4": "./intro/story4.png",
+    "intro5": "./intro/story5.png",
+    "intro6": "./intro/story6.png",
+
     "arcaneFrame": "./ui/arcaneFrame.png",
     "hitechFrame": "./ui/hitechFrame.png",
     "arcaneSelect": "./ui/arcaneSelect.png",

@@ -60,11 +60,15 @@ export class Encounter {
     }
 
     nextTurn() {
+        this.instance.enemy.startTurn();
+    }
+
+    enemyEndTurn() {
         this.countdown -= 1;
         if (this.countdown <= 0 && this.otherInstance.enemy.health > 0) {
             this.switch();
         } else {
-            this.instance.enemy.startTurn();
+            this.instance.player.startTurn();
         }
     }
 

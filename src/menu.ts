@@ -11,6 +11,7 @@ export class Menu {
 
     //titleText!: Text;
     startButton!: Container;
+    introButton!: Container;
     settingsButton!: Container;
     quitButton!: Container;
 
@@ -56,6 +57,11 @@ export class Menu {
             this.onStart();
         });
 
+        this.introButton = this.createButton("Intro", 400, 0x00ff00, 0x00ffaa, () => {
+            game.effectsManager.playIntro();
+            game.app.stage.addChild(game.temporaryContainer);
+        });
+
         //this.settingsButton = this.createButton("Settings", 0x0000ff, 500, () => {
         //});
 
@@ -63,6 +69,7 @@ export class Menu {
         //});
 
         this.container.addChild(this.startButton);
+        this.container.addChild(this.introButton);
         //this.container.addChild(this.settingsButton);
         //this.container.addChild(this.quitButton);
     }

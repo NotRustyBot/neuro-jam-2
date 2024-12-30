@@ -1,18 +1,25 @@
-import { Graphics, Text } from "pixi.js";
+import { Assets, Graphics, Sprite, Text, Texture } from "pixi.js";
 import { game } from "./game";
 
 export class EffectsManager {
     blackBars: Graphics;
     graphics: Graphics;
     subtitles: Text;
+    gameoverText: Text;
+    slide: Sprite;
 
     constructor() {
         this.blackBars = new Graphics();
         this.graphics = new Graphics();
+        this.slide = new Sprite(Texture.EMPTY);
+        this.slide.visible = false;
         game.temporaryContainer.addChild(this.blackBars);
         game.temporaryContainer.addChild(this.graphics);
+        game.temporaryContainer.addChild(this.slide);
         this.subtitles = new Text({ text: "", style: { fontFamily: "FunnelDisplay", fontSize: 20, fill: 0xffffff } });
+        this.gameoverText = new Text({ text: "", style: { fontFamily: "FunnelDisplay", fontSize: 20, fill: 0xffffff } });
         game.temporaryContainer.addChild(this.subtitles);
+        game.temporaryContainer.addChild(this.gameoverText);
     }
 
     update(dt: number) {
@@ -24,6 +31,7 @@ export class EffectsManager {
         if (this.inFadeout) this.handleFadeout(dt);
         if (this.isVictory) this.handleVictory(dt);
         if (this.isDefeat) this.handleDefeat(dt);
+        if (this.isIntro) this.handleIntro(dt);
     }
 
     blackBarsRatio = 0;
@@ -92,30 +100,44 @@ export class EffectsManager {
     }
 
     isVictory = false;
-    victoryProgress = 0;
     outroLineIndex = 0;
-    victory() {
+    async victory() {
+
+        this.gameoverText.text = "Victory";
+        this.gameoverText.style.fontSize = 72;
+        this.gameoverText.style.fill = 0xcccc00;
+        this.gameoverText.anchor.set(0.5, 0.5);
+        this.gameoverText.position.set(game.app.screen.width / 2, game.app.screen.height / 3);
+
         this.isVictory = true;
-        this.victoryProgress = 0;
         game.buttonContainer.visible = false;
+        await game.timeManager.wait(3000);
+        this.outroLineIndex = 1;
+        await game.soundManager.voice("as_the_last", 0.9);
+        this.outroLineIndex = 2;
+        await game.soundManager.voice("you_may_rest_1", 0.9);
+        game.soundManager.setMusic("past");
+        this.outroLineIndex = 0;
     }
 
     handleVictory(dt: number) {
-        this.victoryProgress += dt / 1000;
-
         this.graphics.rect(0, 0, game.app.screen.width, game.app.screen.height);
         this.graphics.fill({
-            color: 0x000000,
+            color: 0xffffff,
         });
 
-        game.soundManager.setMusic("past");
-
-        if (this.victoryProgress > 1 + outroLines[this.outroLineIndex].length * 0.05) {
-            if (this.outroLineIndex + 1 < outroLines.length) {
-                this.outroLineIndex++;
-                this.victoryProgress = 0;
-            }
-        }
+        this.subtitles.style.fill = 0x000000;
+        this.subtitles.style.wordWrap = true;
+        this.subtitles.style.align = "center";
+        this.subtitles.style.fontSize = "24";
+        this.subtitles.style.dropShadow = {
+            distance: 2,
+            color: 0xffffff,
+            alpha: 1,
+            blur: 4,
+            angle: 0,
+        };
+        this.subtitles.style.wordWrapWidth = game.app.screen.width / 2;
 
         this.subtitles.anchor.set(0.5, 0.5);
         this.subtitles.position.set(game.app.screen.width / 2, game.app.screen.height - 200);
@@ -126,11 +148,11 @@ export class EffectsManager {
     defeatProgress = 0;
     defeat() {
         game.buttonContainer.visible = false;
-        this.subtitles.text = "Defeated";
-        this.subtitles.style.fontSize = 72;
-        this.subtitles.style.fill = 0xffaaaa;
-        this.subtitles.anchor.set(0.5, 0.5);
-        this.subtitles.position.set(game.app.screen.width / 2, game.app.screen.height / 3);
+        this.gameoverText.text = "Defeated";
+        this.gameoverText.style.fontSize = 72;
+        this.gameoverText.style.fill = 0xffaaaa;
+        this.gameoverText.anchor.set(0.5, 0.5);
+        this.gameoverText.position.set(game.app.screen.width / 2, game.app.screen.height / 3);
 
         this.isDefeat = true;
         this.defeatProgress = 0;
@@ -143,24 +165,90 @@ export class EffectsManager {
             color: 0x000000,
         });
 
-        this.subtitles.alpha = 1 - Math.abs(this.defeatProgress - 3) / 3;
+        this.gameoverText.alpha = 1 - Math.abs(this.defeatProgress - 3) / 3;
 
         if (this.defeatProgress > 6) {
             game.restart();
         }
     }
+
+    isIntro = false;
+    introLinesIndex = 0;
+    async playIntro() {
+        this.isIntro = true;
+        this.introLinesIndex = 0;
+        game.soundManager.cutMusic();
+        this.slide.texture = Assets.get("intro1");
+        this.slide.visible = true;
+        await game.soundManager.voice("a_long_time_ago", 0.9);
+        this.introLinesIndex++;
+        game.soundManager.voice("their_rule_lasted", 0.9).then(async () => {
+            this.introLinesIndex++;
+            game.soundManager.voice("after_a_millennia", 0.9).then(async () => {
+                this.introLinesIndex++;
+                this.slide.texture = Assets.get("intro1");
+                await game.soundManager.voice("now_you_need_1", 0.9);
+                game.timeManager.delay(() => this.skipIntro(), 100);
+                this.slide.visible = false;
+                game.soundManager.setMusic("menu");
+            });
+            await game.timeManager.wait(3000);
+            this.slide.texture = Assets.get("intro4");
+            await game.timeManager.wait(1000);
+            this.slide.texture = Assets.get("intro5");
+            await game.timeManager.wait(500);
+            this.slide.alpha = 0;
+            this.slide.texture = Assets.get("intro6");
+        });
+        await game.timeManager.wait(4000);
+        this.slide.texture = Assets.get("intro2");
+        await game.timeManager.wait(1000);
+        this.slide.texture = Assets.get("intro3");
+    }
+
+    handleIntro(dt: number) {
+        this.graphics.rect(0, 0, game.app.screen.width, game.app.screen.height);
+        this.graphics.fill({
+            color: 0xffffff,
+        });
+
+        this.subtitles.anchor.set(0.5, 0.5);
+        this.subtitles.position.set(game.app.screen.width / 2, game.app.screen.height - 50);
+        this.subtitles.style.fill = 0x000000;
+        this.subtitles.style.wordWrap = true;
+        this.subtitles.style.align = "center";
+        this.subtitles.style.fontSize = "24";
+        this.subtitles.style.dropShadow = {
+            distance: 2,
+            color: 0xffffff,
+            alpha: 1,
+            blur: 4,
+            angle: 0,
+        };
+        this.subtitles.style.wordWrapWidth = game.app.screen.width / 2;
+        this.subtitles.text = introData[this.introLinesIndex].text;
+        this.slide.position.x = game.app.screen.width / 2;
+        this.slide.position.y = game.app.screen.height / 2;
+        this.slide.anchor.set(0.5, 0.5);
+        const ratio = (game.app.screen.height - 200) / 720;
+        this.slide.scale.set(ratio);
+
+        if (this.slide.alpha < 1) {
+            this.slide.alpha = (this.slide.alpha * 99 + 1) / 100;
+        }
+    }
+
+    skipIntro() {
+        this.isIntro = false;
+        this.subtitles.text = "";
+    }
 }
 
-const introLines = [
-    `A long time ago, the Turtle Empire ruled the world, with an army of monsters they conjured.`,
-    `Their rule lasted a thousand years, until humans managed to seal them away, with a help of a powerful magical Artefact.`,
-    `After millennia, the Remnants of the Turtle Empire managed to break free, shattering the Artefact across the treads of time.`,
-    `Now you need to defeat the Remnants of the Turtle empire, both in the past, and in the future, or humanity will serve under their reign once more.`,
+const introData = [
+    { text: `A long time ago, the Turtle Empire ruled the world, with an army of monsters they conjured.` },
+    { text: `Their rule lasted a thousand years, until humans managed to seal them away, with a help of a powerful magical Artefact.` },
+    { text: `After millennia, the Remnants of the Turtle Empire managed to break free, shattering the Artefact across the treads of time.` },
+    { text: `Now you need to defeat the Remnants of the Turtle empire, both in the past, and in the future, or humanity will serve under their reign once more.` },
 ];
 
-const outroLines = [
-    ``,
-    `As the last of Remnants of the Turtle Empire are defeated, and Artefact pieces recombined, the threads of time fall back into their rightful places.`,
-    `Now, you may rest.`,
-    ``,
-];
+const outroLines = ["", `As the last of Remnants of the Turtle Empire are defeated, and Artefact pieces recombined, the threads of time fall back into their rightful places.`, `Now, you may rest.`];

@@ -129,6 +129,8 @@ export class Game {
         };
         //this.selectionScreen.onSelectionComplete([equipmentDefinitions.get(EquipmentTemplate.pepperSpray)!, equipmentDefinitions.get(EquipmentTemplate.quantumTeleporter)!]);
         this.menu.show();
+
+        //this.startGame();
     }
 
     resize() {
@@ -221,6 +223,8 @@ export class Game {
         this.camera.update(dt);
         this.timeManager.update(dt);
         this.menu.update(dt);
+        this.effectsManager.update(dt);
+
         //this.cursor.position.set(this.mouse.x, this.mouse.y);
 
         this.buttonContainer.position.set(this.app.screen.width - 50, this.app.screen.height - 50);
@@ -229,7 +233,6 @@ export class Game {
         if (this.encounter) {
             this.background.update(dt);
             this.player.instance.enemy.update(dt);
-            this.effectsManager.update(dt);
             this.soundManager.update();
 
             const deck = this.player.deck.map((card) => card.definition.name).join(", ");

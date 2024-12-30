@@ -3,6 +3,17 @@ import { Howl } from "howler";
 export class SoundManager {
     soundVolume = 0.5;
     musicVolume = 0.5;
+    voiceVolume = 0.5;
+
+    voicelines = {
+        a_long_time_ago: new Howl({ src: "./voicelines/a_long_time_ago.mp3" }),
+        their_rule_lasted: new Howl({ src: "./voicelines/their_rule_lasted.mp3" }),
+        after_a_millennia: new Howl({ src: "./voicelines/after_a_millennia.mp3" }),
+        now_you_need_1: new Howl({ src: "./voicelines/now_you_need_1.mp3" }),
+        as_the_last: new Howl({ src: "./voicelines/as_the_last.mp3" }),
+        you_may_rest_1: new Howl({ src: "./voicelines/you_may_rest_1.mp3" }),
+    };
+
     sounds = {
         electronic_field: new Howl({ src: "./sounds/electronic_field.wav" }),
         explosion: new Howl({ src: "./sounds/explosion.wav" }),
@@ -48,6 +59,14 @@ export class SoundManager {
     play(sound: keyof typeof this.sounds, volume = 1) {
         this.sounds[sound].volume(volume * this.soundVolume);
         this.sounds[sound].play();
+    }
+
+    async voice(voiceline: keyof typeof this.voicelines, volume: number) {
+        return new Promise((resolve) => {
+            this.voicelines[voiceline].volume(volume * this.voiceVolume);
+            this.voicelines[voiceline].play();
+            this.voicelines[voiceline].once("end", resolve);
+        });
     }
 
     constructor() {
