@@ -149,7 +149,7 @@ export class Card {
                 fill: 0xffffff,
                 stroke: { color: 0x000000, width: 5 },
                 wordWrap: true,
-                wordWrapWidth: 180,
+                wordWrapWidth: 150,
                 align: "center",
             },
         });

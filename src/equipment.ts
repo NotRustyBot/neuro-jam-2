@@ -63,7 +63,7 @@ export function createEquipmentDefinitions() {
         category: EquipmentCategory.starting,
         name: "Stun Baton",
         template: EquipmentTemplate.stunBaton,
-        cards: [CardTemplate.zap, CardTemplate.exhaustion, CardTemplate.exhaustion],
+        cards: [CardTemplate.zap, CardTemplate.operationalFailure, CardTemplate.operationalFailure],
     });
 
     equipmentDefinitions.set(EquipmentTemplate.yogaMat, {
@@ -84,7 +84,7 @@ export function createEquipmentDefinitions() {
         category: EquipmentCategory.starting,
         name: "Laser Pointer",
         template: EquipmentTemplate.laserPointer,
-        cards: [CardTemplate.distract, CardTemplate.distract],
+        cards: [CardTemplate.distract, CardTemplate.distract, CardTemplate.lightHisEyes, CardTemplate.lightHisEyes],
     });
 
     //arcane
@@ -116,21 +116,21 @@ export function createEquipmentDefinitions() {
         },
         name: "Summoning Sigil",
         template: EquipmentTemplate.summoningSigil,
-        cards: [CardTemplate.ancestorsCall, CardTemplate.ancestorsCall, CardTemplate.exhaustion, CardTemplate.exhaustion],
+        cards: [CardTemplate.ancestorsCall, CardTemplate.ancestorsCall, CardTemplate.soulWakeUpCall, CardTemplate.soulWakeUpCall],
     });
 
     equipmentDefinitions.set(EquipmentTemplate.vampiricDagger, {
         category: EquipmentCategory.arcane,
         name: "Vampiric Dagger",
         template: EquipmentTemplate.vampiricDagger,
-        cards: [CardTemplate.backstab, CardTemplate.exhaustion, CardTemplate.exhaustion],
+        cards: [CardTemplate.backstab, CardTemplate.huntedHeretic, CardTemplate.huntedHeretic],
     });
 
     equipmentDefinitions.set(EquipmentTemplate.unstableAlchemyBomb, {
         category: EquipmentCategory.arcane,
         name: "Unstable Alchemy Bomb",
         template: EquipmentTemplate.unstableAlchemyBomb,
-        cards: [CardTemplate.bigBang],
+        cards: [CardTemplate.bigBang, CardTemplate.smallBang, CardTemplate.smallBang],
         onEncounterStart() {
             game.player.buffs.add(BuffType.alchemist);
         },
@@ -148,7 +148,7 @@ export function createEquipmentDefinitions() {
         category: EquipmentCategory.hitech,
         name: "Healing Bot",
         template: EquipmentTemplate.healingBot,
-        cards: [CardTemplate.naniteRepair, CardTemplate.naniteRepair],
+        cards: [CardTemplate.naniteRepair, CardTemplate.naniteRepair, CardTemplate.uncontrolledBot, CardTemplate.uncontrolledBot],
     });
 
     equipmentDefinitions.set(EquipmentTemplate.emGauntlet, {
@@ -179,6 +179,6 @@ export function createEquipmentDefinitions() {
         category: EquipmentCategory.hitech,
         name: "Quantum Teleporter",
         template: EquipmentTemplate.quantumTeleporter,
-        cards: [CardTemplate.quantumJump, CardTemplate.exhaustion, CardTemplate.exhaustion, CardTemplate.exhaustion],
+        cards: [CardTemplate.quantumJump, CardTemplate.wrongExit, CardTemplate.wrongExit, CardTemplate.wrongExit, CardTemplate.correctExit],
     });
 }

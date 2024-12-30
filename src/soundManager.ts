@@ -20,10 +20,21 @@ export class SoundManager {
         ancestors_call: new Howl({ src: "./sounds/ancestors_call.wav" }),
         backstab: new Howl({ src: "./sounds/backstab.wav" }),
         nanite: new Howl({ src: "./sounds/nanite.wav" }),
+        correctExit: new Howl({ src: "./sounds/correctExit.wav" }),
+        wrongExit: new Howl({ src: "./sounds/wrongExit.wav" }),
+        emStrike: new Howl({ src: "./sounds/emStrike.wav" }),
+        operationalFailure: new Howl({ src: "./sounds/operationalFailure.wav" }),
+        uncontrolledBot: new Howl({ src: "./sounds/uncontrolledBot.wav" }),
+
         player_damage: new Howl({ src: "./sounds/player_damage.wav" }),
         ticking: new Howl({ src: "./sounds/ticking.wav" }),
+
         defeat_theme: new Howl({ src: "./sounds/defeat_theme.mp3" }),
         victory_theme: new Howl({ src: "./sounds/victory_theme.mp3" }),
+
+        drawCards: new Howl({ src: "./sounds/drawCards.wav" }),
+        button: new Howl({ src: "./sounds/button.wav" }),
+        button2: new Howl({ src: "./sounds/button2.wav" }),
     };
 
     currentMusic: keyof typeof this.music | null = null;

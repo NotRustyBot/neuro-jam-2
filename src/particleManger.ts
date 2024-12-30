@@ -108,7 +108,7 @@ export class ParticleManager {
                 }
             }
         }
-           
+
 }
 
 class Particles {

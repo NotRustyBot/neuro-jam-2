@@ -117,6 +117,7 @@ export class Player {
         this.block = 0;
         this.buffs.startTurn();
         this.drawCards(5);
+        game.soundManager.play("drawCards");
     }
 
     endTurn(): void {
