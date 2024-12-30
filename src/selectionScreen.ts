@@ -27,8 +27,11 @@ export class SelectionScreen {
     equipmentMaximumPerPool = 1;
     equipmentPoolSize = 2;
 
+    keywordsPositionX: number = 0;
     tooltip!: Container;
-    tooltipSide: number = 0;
+    tooltipSideRight: boolean = false;
+    tooltipOffset: number = 1;
+    tooltipHover: boolean = false;
 
     title!: Text;
     background!: Graphics;
@@ -272,6 +275,13 @@ export class SelectionScreen {
     };
 
     showTooltip(equipment: Equipment) {
+        // tooltip positioning right/left
+        if (game.mouse.x > game.app.screen.width / 2) {
+            this.tooltipSideRight = true;
+        }
+        else {
+            this.tooltipSideRight = false;
+        }
 
         const equipmentCards = new Set<CardTemplate>();
         const keywords = new Set<KeywordType>();
@@ -296,11 +306,11 @@ export class SelectionScreen {
 
             // positioning
             let xPosition: number = 0;
-            if (this.tooltipSide === 0) {
+            if (this.tooltipSideRight == false) {
                 // left side
                 xPosition = card.container.width/2 + xOffset;
             }
-            else if (this.tooltipSide === 1) {
+            else {
                 // right side
                 xPosition = -card.container.width/2 - xOffset;
             }
@@ -318,6 +328,15 @@ export class SelectionScreen {
 
             this.tooltip.addChild(card.container, cardCountText);
         });
+
+        if (this.tooltipSideRight == false) {
+            this.tooltipOffset = 20;
+            this.keywordsPositionX = 0;
+        }
+        else {
+            this.tooltipOffset = -20;
+            this.keywordsPositionX = -this.tooltip.width;
+        }
 
         game.uiManager.showKeywords(Array.from(keywords));
     }
@@ -338,25 +357,9 @@ export class SelectionScreen {
 
     update(dt: number) {
         if (!this.visible) return;
-        let offset: number = 20;
-        let keywordsPositionX: number = 0;
 
-        // tooltip positioning right/left
-        if (game.mouse.x > game.app.screen.width / 2) {
-            // right side
-            this.tooltipSide = 1;
-            offset = -20;
-            keywordsPositionX = this.tooltip.position.x - this.tooltip.width;
-        }
-        else {
-            // left side
-            this.tooltipSide = 0;
-            offset = 20;
-            keywordsPositionX = this.tooltip.position.x;
-        }
-
-        this.tooltip.position.set(game.mouse.x + offset, game.mouse.y + 20);
-        game.uiManager.updateKeywords(new Vector(keywordsPositionX + 100, this.tooltip.position.y + 250));
+        this.tooltip.position.set(game.mouse.x + this.tooltipOffset, game.mouse.y + 20);
+        game.uiManager.updateKeywords(new Vector(this.tooltip.position.x + this.keywordsPositionX + 100, this.tooltip.position.y + 250));
 
         this.background.width = game.app.screen.width;
         this.background.height = game.app.screen.height;
