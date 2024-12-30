@@ -49,11 +49,12 @@ export class UIManager {
         game.uiContainer.addChild(this.buffText);
 
         this.blockContainer = new Container();
-        this.blockText = new Text({ text: "", style: { fontFamily: "Arial", fontSize: 40, fill: 0xffffff } });
+        this.blockText = new Text({ text: "", style: { fontFamily: "Arial", fontSize: 40, fill: 0x000000 } });
         this.blockText.anchor.set(0.5, 0.5);
         this.blockSprite = new Sprite(Assets.get("block"));
+        this.blockSprite.texture.source.scaleMode = "nearest";
         this.blockSprite.anchor.set(0.5);
-        this.blockSprite.scale.set(0.5);
+        this.blockSprite.scale.set(2.25);
         this.blockSprite.position.x = -80;
         this.blockText.position.x = -80;
         this.blockContainer.addChild(this.blockSprite);

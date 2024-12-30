@@ -46,6 +46,13 @@
     "laserGun": "./equipment/hitech/laserGun.png",
     "quantumTeleporter": "./equipment/hitech/quantumTeleporter.png",
 
+    "arcaneStaff": "./equipment/arcane/arcaneStaff.png",
+    "flameWand": "./equipment/arcane/flameWand.png",
+    "frostGem": "./equipment/arcane/frostGem.png",
+    "summoningSigil": "./equipment/arcane/summoningSigil.png",
+    "unstableAlchemyBomb": "./equipment/arcane/unstableAlchemyBomb.png",
+    "vampiricDagger": "./equipment/arcane/vampiricDagger.png",
+
     "cursor": "./cursor.png",
     "player": "./player.png",
 
