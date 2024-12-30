@@ -358,14 +358,14 @@ function createKeywordDefinitions() {
         template: KeywordType.burn,
         name: "Burn",
         description: `At the end of turn, deal 1 damage`,
-        color: "#990000",
+        color: "#ff2a00",
     });
 
     keywordDefinitions.set(KeywordType.weakness, {
         template: KeywordType.weakness,
         name: "Weakness",
         description: `Reduces damage by 50%`,
-        color: "#000099",
+        color: "#0044ff",
     });
 
     keywordDefinitions.set(KeywordType.stun, {
@@ -379,7 +379,7 @@ function createKeywordDefinitions() {
         template: KeywordType.strength,
         name: "Strength",
         description: `Increases damage by 50%`,
-        color: "#cc9900",
+        color: "#ff7700",
     });
 
     keywordDefinitions.set(KeywordType.vulnerable, {
@@ -393,13 +393,13 @@ function createKeywordDefinitions() {
         template: KeywordType.immune,
         name: "Immune",
         description: `Ignore incoming damage`,
-        color: "#339999",
+        color: "#20e8de",
     });
 
     keywordDefinitions.set(KeywordType.block, {
         template: KeywordType.block,
         name: "Block",
         description: `Blocks incoming damage, lasts one turn`,
-        color: "#5599ff",
+        color: "#30ff6e",
     });
 }

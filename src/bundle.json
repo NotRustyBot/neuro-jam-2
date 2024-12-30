@@ -23,6 +23,8 @@
     "enemy1_f": "./enemy1_f.png",
     "enemy1_p": "./enemy1_p.png",
 
+    "drone": "./drone.png",
+
     "bonusAttackDamage": "./buffs/bonusAttackDamage.png",
     "burn": "./buffs/burn.png",
     "pyromaniac": "./buffs/pyromaniac.png",

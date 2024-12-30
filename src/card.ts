@@ -289,10 +289,14 @@ export function getDescriptionTexture(text: string): RenderTexture {
         text: text,
         style: {
             fontFamily: "Arial",
-            fontSize: 18,
-            fill: 0x000000,
+            fontSize: 16,
+            fill: 0xffffff,
+            stroke: {
+                color: 0x000000,
+                width: 3
+            },
             wordWrap: true,
-            wordWrapWidth: 180,
+            wordWrapWidth: 160,
             align: "center",
         },
     });

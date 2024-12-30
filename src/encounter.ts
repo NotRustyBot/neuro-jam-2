@@ -182,7 +182,7 @@ const secondEncounter: EncounterTemplate = {
     futureEnemy: {
         name: "drone",
         health: 50,
-        sprite: "healingBot",
+        sprite: "drone",
         actions: [
             {
                 type: "attack",

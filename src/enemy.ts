@@ -201,7 +201,7 @@ export class Enemy {
 
     droneSetup() {
         this.sprite.visible = false;
-        this.sprites[0] = new Sprite(Assets.get("healingBot"));
+        this.sprites[0] = new Sprite(Assets.get("drone"));
         for (const sprite of this.sprites) {
             sprite.texture.source.scaleMode = "nearest";
             sprite.anchor.set(0.5);
