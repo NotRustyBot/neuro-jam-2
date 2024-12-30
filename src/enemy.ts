@@ -48,7 +48,7 @@ export class Enemy {
         this.hpText = new Text({
             text: ``,
             style: {
-                fontFamily: "Arial",
+                fontFamily: "FunnelDisplay",
                 fontSize: 24,
                 fill: 0xffffff,
                 align: "center",
@@ -65,7 +65,7 @@ export class Enemy {
         this.intent = new Text({
             text: ``,
             style: {
-                fontFamily: "Arial",
+                fontFamily: "FunnelDisplay",
                 fontSize: 24,
                 fill: 0xffffff,
             },
@@ -80,7 +80,7 @@ export class Enemy {
         this.enemyName = new Text({
             text: template.name,
             style: {
-                fontFamily: "Arial",
+                fontFamily: "FunnelDisplay",
                 fontSize: 60,
                 fill: 0xffffff,
                 align: "center",
@@ -126,6 +126,10 @@ export class Enemy {
             }
         }
 
+        if(this.buffs.has(BuffType.vulnerable)) {
+            damage = Math.floor(damage * 1.5);
+        }
+
         this.health -= damage;
         
         if (this.health <= 0) {
@@ -165,12 +169,14 @@ export class Enemy {
 
         if (this.isDying) {
             this.dyingProgress -= dt / 1000;
+            game.effectsManager.setBars(this.dyingProgress);
             this.container.alpha = this.dyingProgress;
             if (this.dyingProgress <= 0) {
                 this.destroy();
                 this.isDead = true;
                 if (game.encounter.otherInstance.enemy.health <= 0) {
-                    game.encounter.win();
+                    game.effectsManager.fadeout();
+                    game.timeManager.delay(() => game.encounter.win(), 800);
                 }
             }
         }

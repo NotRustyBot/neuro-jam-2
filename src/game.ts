@@ -14,6 +14,7 @@ import { Camera } from "./camera";
 import { TimeManager } from "./timeManager";
 import { SoundManager } from "./soundManager";
 import { getDescriptionTexture } from "./card";
+import { EffectsManager } from "./temporaryScreens";
 
 export let game: Game;
 export class Game {
@@ -21,6 +22,7 @@ export class Game {
     player!: Player;
     camera!: Camera;
     timeManager!: TimeManager;
+    effectsManager!: EffectsManager;
     soundManager!: SoundManager;
     background!: Background;
     clickableBg!: Graphics;
@@ -33,6 +35,7 @@ export class Game {
     containerToReflect = new Container();
     screenReflectContainer = new Container();
     buttonContainer = new Container();
+    temporaryContainer = new Container();
 
     menu!: Menu;
     selectionScreen!: SelectionScreen;
@@ -73,6 +76,7 @@ export class Game {
         this.timeManager = new TimeManager();
         this.soundManager = new SoundManager();
         this.uiManager = new UIManager();
+        this.effectsManager = new EffectsManager();
         this.uiManager.initKeywords();
 
         this.soundManager.setMusic("menu");
@@ -143,6 +147,7 @@ export class Game {
         this.app.stage.addChild(this.containerToReflect);
         this.app.stage.addChild(this.screenReflectContainer);
         this.app.stage.addChild(this.cardContainer);
+        this.app.stage.addChild(this.temporaryContainer);
 
         this.containerToReflect.addChild(this.uiContainer);
         this.containerToReflect.addChild(this.uiKeywordsContainer);
@@ -217,10 +222,11 @@ export class Game {
         if (this.encounter) {
             this.background.update(dt);
             this.player.instance.enemy.update(dt);
+            this.effectsManager.update(dt);
 
             const deck = this.player.deck.map((card) => card.definition.name).join(", ");
             const used = this.player.usedPile.map((card) => card.definition.name).join(", ");
-            
+
             if (!this.debugText) return;
             this.debugText.text = "";
             this.debugText.text += `Deck: ${deck}\n`;

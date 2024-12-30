@@ -63,29 +63,48 @@ export class Encounter {
         this.countdown -= 1;
         if (this.countdown <= 0 && this.otherInstance.enemy.health > 0) {
             this.switch();
-            this.countdown = 3;
-            this.instance.player.startTurn();
         } else {
             this.instance.enemy.startTurn();
         }
     }
 
+    die() {
+        game.soundManager.cutMusic();
+        game.soundManager.play("defeat_theme");
+        //tf we gonna do
+    }
+
     switch() {
-        this.inPast = !this.inPast;
-        game.player.instance.enemy.hide();
-        game.player.instance = this.inPast ? this.past : this.future;
-        game.player.instance.enemy.show();
+        game.effectsManager.startTimewarp();
+        game.timeManager.delay(() => {
+            this.inPast = !this.inPast;
+            game.player.instance.enemy.hide();
+            game.player.instance = this.inPast ? this.past : this.future;
+            game.player.instance.enemy.show();
 
-        if (this.inPast) {
-            game.soundManager.setMusic("past");
-        } else {
-            game.soundManager.setMusic("future");
-        }
+            if (this.inPast) {
+                game.soundManager.setMusic("past");
+            } else {
+                game.soundManager.setMusic("future");
+            }
 
-        game.background.updateAssets();
+            game.background.updateAssets();
+            this.countdown = 3;
+            this.instance.player.startTurn();
+        }, 500);
     }
 
     win() {
+        if (this.instance.player.isDead) return;
+        game.encounterIndex++;
+
+        if (game.encounterIndex == encounters.length) {
+            game.effectsManager.victory();
+            game.soundManager.cutMusic();
+            game.soundManager.play("victory_theme");
+            return;
+        }
+
         game.selectionScreen.show(SelectionMode.POST_ENCOUNTER);
         game.soundManager.setMusic("menu");
 
@@ -94,12 +113,6 @@ export class Encounter {
             game.selectionScreen.hide();
             this.future.destroy();
             this.past.destroy();
-
-            game.encounterIndex++;
-
-            if (game.encounterIndex == encounters.length) {
-                // win game here
-            }
 
             game.encounter = new Encounter(encounters[game.encounterIndex]);
             game.encounter.begin();
@@ -127,29 +140,21 @@ const encounters: EncounterTemplate[] = [
     {
         pastEnemy: {
             name: "spider",
-            health: 15,
+            health: 18,
             sprite: "enemy1_p",
             actions: [
                 {
                     type: "attack",
-                    description: "Attack for 2",
+                    description: "Attack for 6",
                     async action(enemy: Enemy) {
-                        enemy.attack(2);
+                        enemy.attack(6);
                     },
                 },
                 {
                     type: "skill",
-                    description: "Inflict weakness",
+                    description: "Heal 6",
                     async action(enemy: Enemy) {
-                        enemy.opponent.buffs.add(BuffType.weak, 1);
-                        game.soundManager.play("ancestors_call", 0.25);
-                    },
-                },
-                {
-                    type: "skill",
-                    description: "Heal 1",
-                    async action(enemy: Enemy) {
-                        enemy.takeDamage(-1);
+                        enemy.takeDamage(-6);
                     },
                 },
             ],
@@ -161,24 +166,17 @@ const encounters: EncounterTemplate[] = [
             actions: [
                 {
                     type: "attack",
-                    description: "Attack for 3",
+                    description: "Attack for 6",
                     async action(enemy: Enemy) {
-                        enemy.attack(3);
+                        enemy.attack(6);
                     },
                 },
                 {
                     type: "skill",
                     description: "Inflict weakness",
                     async action(enemy: Enemy) {
-                        enemy.opponent.buffs.add(BuffType.weak, 1);
+                        enemy.opponent.buffs.add(BuffType.weak, 3);
                         game.soundManager.play("ancestors_call", 0.25);
-                    },
-                },
-                {
-                    type: "skill",
-                    description: "Heal 1",
-                    async action(enemy: Enemy) {
-                        enemy.takeDamage(-1);
                     },
                 },
             ],
@@ -205,30 +203,23 @@ const encounters: EncounterTemplate[] = [
                     type: "skill",
                     description: "Inflict burn",
                     async action(enemy: Enemy) {
-                        enemy.opponent.buffs.add(BuffType.burn, 1);
+                        enemy.opponent.buffs.add(BuffType.burn, 4);
                     },
                 },
                 {
                     type: "attack",
-                    description: "Gain vunerable, attack for 5",
+                    description: "Gain vunerable, attack for 10",
                     async action(enemy: Enemy) {
                         enemy.buffs.add(BuffType.vulnerable, 1);
                         await game.timeManager.wait(200);
-                        enemy.attack(5);
-                    },
-                },
-                {
-                    type: "skill",
-                    description: "Heal 1",
-                    async action(enemy: Enemy) {
-                        enemy.takeDamage(-1);
+                        enemy.attack(10);
                     },
                 },
             ],
         },
         futureEnemy: {
             name: "drone",
-            health: 30,
+            health: 25,
             sprite: "drone",
             actions: [
                 {
@@ -240,18 +231,11 @@ const encounters: EncounterTemplate[] = [
                 },
                 {
                     type: "attack",
-                    description: "Gain vunerable, attack for 8",
+                    description: "Gain strength, attack for 4",
                     async action(enemy: Enemy) {
-                        enemy.buffs.add(BuffType.vulnerable, 1);
+                        enemy.buffs.add(BuffType.strength, 3);
                         await game.timeManager.wait(200);
                         enemy.attack(8);
-                    },
-                },
-                {
-                    type: "skill",
-                    description: "Heal 1",
-                    async action(enemy: Enemy) {
-                        enemy.takeDamage(-1);
                     },
                 },
             ],
@@ -286,7 +270,7 @@ const encounters: EncounterTemplate[] = [
                     async action(enemy: Enemy) {
                         enemy.attack(6);
                     },
-                }
+                },
             ],
         },
         futureEnemy: {
@@ -307,7 +291,7 @@ const encounters: EncounterTemplate[] = [
                     async action(enemy: Enemy) {
                         enemy.attack(6);
                     },
-                }
+                },
             ],
         },
         pastBackground: {

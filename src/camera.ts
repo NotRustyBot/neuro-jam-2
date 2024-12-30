@@ -27,7 +27,7 @@ export class Camera {
         targetPosition.sub(this.screenCenter);
 
         if (game.encounter != undefined) {
-            if (game.encounter.instance.enemy.myTurn) {
+            if (game.encounter.instance.enemy.myTurn || (game.encounter.instance.enemy.isDying && !game.encounter.instance.enemy.isDead)) {
                 this.targetZoom = 1.3;
                 //targetPosition.x += 3 * window.innerWidth;
                 targetPosition.y += 3 * window.innerHeight;

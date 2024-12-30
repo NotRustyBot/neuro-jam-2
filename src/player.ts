@@ -124,7 +124,7 @@ export class Player {
         game.encounter.nextTurn();
     }
 
-    takeDamage(damage: number, ) {
+    takeDamage(damage: number) {
         if (game.player.buffs.has(BuffType.immune)) return;
         if (this.block > damage) {
             this.block -= damage;
@@ -139,7 +139,18 @@ export class Player {
         game.camera.shakePower += 100 * damage;
         game.uiManager.recentPlayerDamage += damage;
         this.health -= damage;
+
+        if (!this.isDead) {
+            if (this.health <= 0) {
+                this.health = 0;
+                this.isDead = true;
+                game.effectsManager.fadeout();
+                game.timeManager.delay(() => game.encounter.die(), 600);
+            }
+        }
     }
+
+    isDead = false;
 
     drawCards(count: number) {
         for (let i = 0; i < count; i++) {

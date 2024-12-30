@@ -1,4 +1,4 @@
-import { Assets, BlurFilter, ColorMatrixFilter, Container, Graphics, RenderTexture, Sprite, Text } from "pixi.js";
+import { Assets, BlurFilter, ColorMatrixFilter, Container, Graphics, RenderTexture, Sprite, Text, TilingSprite } from "pixi.js";
 import { KeywordDefinition, keywordDefinitions, KeywordType } from "./cardDefinitions";
 import { game } from "./game";
 import { interpolateColors } from "./utils";
@@ -20,6 +20,11 @@ export class UIManager {
     blockSprite: Sprite;
 
     buffText: Text;
+
+    timeWarpWarningContainer = new Container();
+    timeWarpWarningGraphics: Graphics;
+    timeWarpWarningText: TilingSprite;
+
     constructor() {
         this.screenReflectionTexture = RenderTexture.create({
             width: game.app.screen.width,
@@ -39,17 +44,17 @@ export class UIManager {
 
         this.playerGraphics = new Graphics();
         this.playerUiContainer.addChild(this.playerGraphics);
-        this.playerHpText = new Text({ text: "hp", style: { fontFamily: "Arial", fontSize: 24, fill: 0xffffff } });
+        this.playerHpText = new Text({ text: "hp", style: { fontFamily: "FunnelDisplay", fontSize: 24, fill: 0xffffff } });
         this.playerHpText.anchor.set(0.5, 1);
         this.playerUiContainer.addChild(this.playerHpText);
         game.uiContainer.addChild(this.playerUiContainer);
 
-        this.buffText = new Text({ text: "", style: { fontFamily: "Arial", fontSize: 24, fill: 0xffffff, align: "center", wordWrap: true, wordWrapWidth: 300 } });
+        this.buffText = new Text({ text: "", style: { fontFamily: "FunnelDisplay", fontSize: 24, fill: 0xffffff, align: "center", wordWrap: true, wordWrapWidth: 300 } });
         this.buffText.anchor.set(0.5, 1);
         game.uiContainer.addChild(this.buffText);
 
         this.blockContainer = new Container();
-        this.blockText = new Text({ text: "", style: { fontFamily: "Arial", fontSize: 40, fill: 0x000000 } });
+        this.blockText = new Text({ text: "", style: { fontFamily: "FunnelDisplay", fontSize: 40, fill: 0x000000 } });
         this.blockText.anchor.set(0.5, 0.5);
         this.blockSprite = new Sprite(Assets.get("block"));
         this.blockSprite.texture.source.scaleMode = "nearest";
@@ -61,6 +66,18 @@ export class UIManager {
         this.blockContainer.addChild(this.blockText);
         this.playerUiContainer.addChild(this.blockContainer);
         this.blockContainer.visible = false;
+
+        this.timeWarpWarningContainer = new Container();
+        this.timeWarpWarningGraphics = new Graphics();
+        const textRendrTexture = RenderTexture.create({ width: 800, height: 50 });
+        const tempText = new Text({ text: "   TIME JUMP IMMINENT   ", style: { fontFamily: "FunnelDisplay", align: "center", letterSpacing: 10, fontSize: 40, fill: 0xffffff } });
+        game.app.renderer.render({ container: tempText, target: textRendrTexture });
+        this.timeWarpWarningText = new TilingSprite(textRendrTexture);
+        this.timeWarpWarningText.anchor.set(0.5);
+        this.timeWarpWarningContainer.addChild(this.timeWarpWarningGraphics);
+        this.timeWarpWarningContainer.addChild(this.timeWarpWarningText);
+        game.uiContainer.addChild(this.timeWarpWarningContainer);
+        this.timeWarpWarningContainer.visible = false;
     }
 
     recentPlayerDamage = 0;
@@ -70,7 +87,8 @@ export class UIManager {
 
         this.playerGraphics.clear();
 
-        const hpRatio = (game.player.health + this.recentPlayerDamage) / game.player.maxHealth;
+        let hpRatio = (game.player.health + this.recentPlayerDamage) / game.player.maxHealth;
+        if(hpRatio < 0) hpRatio = 0;
 
         const offset = 2.5;
         this.playerGraphics.arc(0, 0, 200, offset, 1.2 + offset);
@@ -144,6 +162,23 @@ export class UIManager {
         }
         this.updatePlayerUi(dt);
         this.buffText.position.set(game.mouse.x, game.mouse.y - 10);
+
+        //timewarp graphics
+        const isJumpImminent = game.encounter && game.encounter.countdown <= 1 && !game.encounter.instance.enemy.myTurn && game.encounter.otherInstance.enemy.health > 0;
+        if (isJumpImminent) {
+            const color = interpolateColors(0xffaaaa, 0xffffff, Math.abs(game.phase));
+            this.timeWarpWarningGraphics.clear();
+            const width = game.app.screen.width * 1.2;
+            this.timeWarpWarningGraphics.rect(-width / 2, -25, width, 50);
+            this.timeWarpWarningGraphics.fill({ color, alpha: 0.5 });
+            this.timeWarpWarningText.tint = color;
+            this.timeWarpWarningText.width = width;
+            this.timeWarpWarningText.tilePosition.x -= dt / 5;
+            this.timeWarpWarningContainer.visible = true;
+            this.timeWarpWarningContainer.position.set(game.app.screen.width / 2, 100);
+        } else {
+            this.timeWarpWarningContainer.visible = false;
+        }
     }
 
     resize() {}
@@ -194,7 +229,7 @@ class UiKeywordDefinition {
         this.name = new Text({
             text: this.keyword.name,
             style: {
-                fontFamily: "Arial",
+                fontFamily: "FunnelDisplay",
                 fontSize: 24,
                 fill: this.keyword.color,
                 stroke: { color: 0x000000, width: 2 },
@@ -208,7 +243,7 @@ class UiKeywordDefinition {
         this.description = new Text({
             text: this.keyword.description,
             style: {
-                fontFamily: "Arial",
+                fontFamily: "FunnelDisplay",
                 fontSize: 24,
                 fill: 0xffffff,
                 stroke: { color: 0x000000, width: 2 },

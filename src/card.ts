@@ -124,7 +124,7 @@ export class Card {
         const cardType = new Text({
             text: cardTypeString[0].toUpperCase(),
             style: {
-                fontFamily: "Arial",
+                fontFamily: "FunnelDisplay",
                 fontSize: 24,
                 fill: color,
                 stroke: { color: 0x202020, width: 1 },
@@ -137,7 +137,7 @@ export class Card {
         this.name = new Text({
             text: this.definition.name,
             style: {
-                fontFamily: "Arial",
+                fontFamily: "FunnelDisplay",
                 fontSize: 20,
                 fill: 0xffffff,
                 stroke: { color: 0x000000, width: 5 },
@@ -155,7 +155,7 @@ export class Card {
         this.usageCost = new Text({
             text: this.definition.cost,
             style: {
-                fontFamily: "Arial",
+                fontFamily: "FunnelDisplay",
                 fontSize: 25,
                 fill: 0xffffff,
                 stroke: { color: 0x000000, width: 2 },

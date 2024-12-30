@@ -21,6 +21,9 @@ export class SoundManager {
         backstab: new Howl({ src: "./sounds/backstab.wav" }),
         nanite: new Howl({ src: "./sounds/nanite.wav" }),
         player_damage: new Howl({ src: "./sounds/player_damage.wav" }),
+        ticking: new Howl({ src: "./sounds/ticking.wav" }),
+        defeat_theme: new Howl({ src: "./sounds/defeat_theme.mp3" }),
+        victory_theme: new Howl({ src: "./sounds/victory_theme.mp3" }),
     };
 
     currentMusic: keyof typeof this.music | null = null;
@@ -53,5 +56,22 @@ export class SoundManager {
         if (this.currentMusic) this.music[this.currentMusic].fade(this.musicVolume, 0, 1000);
         this.music[music].fade(0, this.musicVolume, 1000);
         this.currentMusic = music;
+    }
+
+    cutMusic() {
+        if (this.currentMusic) {
+            this.music[this.currentMusic].fade(this.musicVolume, 0, 1000);
+            this.currentMusic = null;
+        }
+    }
+
+    updateVolumes() {
+        for (const key in this.music) {
+            this.music[key as keyof typeof this.music].volume(this.musicVolume);
+        }
+
+        for (const key in this.sounds) {
+            this.sounds[key as keyof typeof this.sounds].volume(this.soundVolume);
+        }
     }
 }
