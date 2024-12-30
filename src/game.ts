@@ -15,6 +15,7 @@ import { TimeManager } from "./timeManager";
 import { SoundManager } from "./soundManager";
 import { getDescriptionTexture } from "./card";
 import { EffectsManager } from "./temporaryScreens";
+import { ParticleManager } from "./particleManger";
 
 export let game: Game;
 export class Game {
@@ -25,6 +26,7 @@ export class Game {
     effectsManager!: EffectsManager;
     soundManager!: SoundManager;
     background!: Background;
+    particleManager!: ParticleManager;
     clickableBg!: Graphics;
     backgroundContainer = new Container();
     enemyContainer = new Container();
@@ -36,6 +38,7 @@ export class Game {
     screenReflectContainer = new Container();
     buttonContainer = new Container();
     temporaryContainer = new Container();
+    particleContainer = new Container();
 
     menu!: Menu;
     selectionScreen!: SelectionScreen;
@@ -79,6 +82,7 @@ export class Game {
         this.soundManager = new SoundManager();
         this.uiManager = new UIManager();
         this.effectsManager = new EffectsManager();
+        this.particleManager = new ParticleManager();
         this.uiManager.initKeywords();
 
         this.soundManager.setMusic("menu");
@@ -146,6 +150,7 @@ export class Game {
         this.app.stage.addChild(this.backgroundContainer);
         this.app.stage.addChild(this.enemyContainer);
         this.app.stage.addChild(this.playerContainer);
+        this.app.stage.addChild(this.particleContainer);
         this.app.stage.addChild(this.containerToReflect);
         this.app.stage.addChild(this.screenReflectContainer);
         this.app.stage.addChild(this.cardContainer);

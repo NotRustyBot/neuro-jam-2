@@ -108,10 +108,13 @@ export class EffectsManager {
             color: 0x000000,
         });
 
-        game.soundManager.setMusic("menu");
+        game.soundManager.setMusic("past");
 
-        if (this.victoryProgress > 1 + outroLines[this.outroLineIndex].length * 0.1) {
-            if (this.outroLineIndex + 1 < outroLines.length) this.outroLineIndex++;
+        if (this.victoryProgress > 1 + outroLines[this.outroLineIndex].length * 0.05) {
+            if (this.outroLineIndex + 1 < outroLines.length) {
+                this.outroLineIndex++;
+                this.victoryProgress = 0;
+            }
         }
 
         this.subtitles.anchor.set(0.5, 0.5);
