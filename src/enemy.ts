@@ -367,10 +367,6 @@ export class Enemy {
 
     myTurn = false;
     async startTurn() {
-        if (this.isDying || this.isDead) {
-            game.encounter.enemyEndTurn();
-        }
-        
         this.myTurn = true;
         this.buffs.startTurn();
         if (this.isStunned) {

@@ -64,6 +64,8 @@ export class Player {
         for (const eq of this.equipment) {
             eq.onEncounterStart?.();
         }
+
+        this.heal(8);
     }
 
     clearCards() {
