@@ -3,6 +3,8 @@
 
     "past_fg": "./bg/past_fg.png",
     "past_bg": "./bg/past_bg.png",
+    "future_fg": "./bg/future_fg.png",
+    "future_bg": "./bg/future_bg.png",
     "menu": "./bg/menu.png",
     "skyGradient": "./bg/skyGradient.png",
 

@@ -339,7 +339,7 @@ export function getDescriptionTexture(text: string): RenderTexture {
     // the following is an unholy abomination. viewer discretion is advised     // fixed your comment for you ;)    // thanks
     setTimeout(() => {
         game.app.renderer.render({ target: texture, container });
-    }, 100);
+    }, 500);
 
     game.app.renderer.render({ target: texture, container });
     descriptionRenderCache.set(text, texture);
