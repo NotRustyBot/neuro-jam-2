@@ -116,8 +116,7 @@ export class EffectsManager {
         await game.soundManager.voice("as_the_last", 0.5);
         this.outroLineIndex = 2;
         await game.soundManager.voice("you_may_rest_1", 0.5);
-        game.soundManager.setMusic("past");
-        this.outroLineIndex = 0;
+        game.restart();
     }
 
     handleVictory(dt: number) {

@@ -124,6 +124,7 @@ export class SelectionScreen {
 
     hide() {
         game.app.stage.removeChild(this.container);
+        if (game.containerToReflect) game.containerToReflect.addChild(game.uiKeywordsContainer);
         this.visible = false;
     }
 

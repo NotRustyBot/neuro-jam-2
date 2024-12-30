@@ -8,8 +8,8 @@ import { game } from "./game";
 import { interpolateColors } from "./utils";
 
 export class Player {
-    health: number = 20;
-    maxHealth: number = 20;
+    health: number = 30;
+    maxHealth: number = 30;
     stamina: number = 3;
     maxStamina: number = 3;
     buffs: Buffs;

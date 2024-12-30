@@ -187,6 +187,8 @@ export class Enemy {
                     game.nextTurnDisabled = true;
                     game.effectsManager.fadeout();
                     game.timeManager.delay(() => game.encounter.win(), 800);
+                } else {
+                    game.encounter.countdown = 0;
                 }
             }
         }
@@ -365,6 +367,10 @@ export class Enemy {
 
     myTurn = false;
     async startTurn() {
+        if (this.isDying || this.isDead) {
+            game.encounter.enemyEndTurn();
+        }
+        
         this.myTurn = true;
         this.buffs.startTurn();
         if (this.isStunned) {
