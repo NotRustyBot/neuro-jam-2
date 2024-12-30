@@ -122,6 +122,7 @@ export class EffectsManager {
     isDefeat = false;
     defeatProgress = 0;
     defeat() {
+        game.buttonContainer.visible = false;
         this.subtitles.text = "Defeated";
         this.subtitles.style.fontSize = 72;
         this.subtitles.style.fill = 0xffaaaa;
