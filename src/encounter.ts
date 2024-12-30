@@ -80,6 +80,7 @@ export class Encounter {
     }
 
     switch() {
+        game.nextTurnDisabled = true;
         game.effectsManager.startTimewarp();
         game.timeManager.delay(() => {
             this.inPast = !this.inPast;
@@ -96,6 +97,7 @@ export class Encounter {
             game.background.updateAssets();
             this.countdown = 3;
             this.instance.player.startTurn();
+            game.nextTurnDisabled = false;
         }, 500);
     }
 
@@ -121,6 +123,7 @@ export class Encounter {
 
             game.encounter = new Encounter(encounters[game.encounterIndex]);
             game.encounter.begin();
+            game.nextTurnDisabled = false;
         };
     }
 }
@@ -144,7 +147,7 @@ const encounters: EncounterTemplate[] = [
     // encounter 1
     {
         pastEnemy: {
-            name: "spider",
+            name: "Spider",
             health: 18,
             sprite: "enemy1_p",
             actions: [
@@ -157,15 +160,15 @@ const encounters: EncounterTemplate[] = [
                 },
                 {
                     type: "skill",
-                    description: "Heal 6",
+                    description: "Heal 4",
                     async action(enemy: Enemy) {
-                        enemy.takeDamage(-6);
+                        enemy.takeDamage(-4);
                     },
                 },
             ],
         },
         futureEnemy: {
-            name: "spiderbot",
+            name: "Spider Bot",
             health: 20,
             sprite: "enemy1_f",
             actions: [
@@ -200,7 +203,7 @@ const encounters: EncounterTemplate[] = [
     // encounter 2
     {
         pastEnemy: {
-            name: "bee",
+            name: "Bee",
             health: 20,
             sprite: "enemy1_p",
             actions: [
@@ -213,17 +216,17 @@ const encounters: EncounterTemplate[] = [
                 },
                 {
                     type: "attack",
-                    description: "Gain vunerable, attack for 10",
+                    description: "Gain vulnerable, attack for 12",
                     async action(enemy: Enemy) {
                         enemy.buffs.add(BuffType.vulnerable, 1);
                         await game.timeManager.wait(200);
-                        enemy.attack(10);
+                        enemy.attack(12);
                     },
                 },
             ],
         },
         futureEnemy: {
-            name: "drone",
+            name: "Drone",
             health: 25,
             sprite: "drone",
             actions: [
@@ -231,16 +234,16 @@ const encounters: EncounterTemplate[] = [
                     type: "skill",
                     description: "Inflict burn",
                     async action(enemy: Enemy) {
-                        enemy.opponent.buffs.add(BuffType.burn, 1);
+                        enemy.opponent.buffs.add(BuffType.burn, 2);
                     },
                 },
                 {
                     type: "attack",
-                    description: "Gain strength, attack for 4",
+                    description: "Gain strength, attack for 6",
                     async action(enemy: Enemy) {
-                        enemy.buffs.add(BuffType.strength, 3);
+                        enemy.buffs.add(BuffType.strength, 2);
                         await game.timeManager.wait(200);
-                        enemy.attack(8);
+                        enemy.attack(6);
                     },
                 },
             ],
@@ -258,7 +261,7 @@ const encounters: EncounterTemplate[] = [
     // encounter 3
     {
         pastEnemy: {
-            name: "turtle",
+            name: "Turtle",
             health: 30,
             sprite: "cultist_turtle",
             actions: [
@@ -271,15 +274,24 @@ const encounters: EncounterTemplate[] = [
                 },
                 {
                     type: "attack",
-                    description: "Attack for 6",
+                    description: "Attack for 10",
                     async action(enemy: Enemy) {
-                        enemy.attack(6);
+                        enemy.attack(10);
                     },
                 },
+               {
+                    type: "skill",
+                    description: "Inflict weakness",
+                    async action(enemy: Enemy) {
+                        enemy.opponent.buffs.add(BuffType.weak, 3);
+                        game.soundManager.play("ancestors_call", 0.25);
+                    },
+                },
+
             ],
         },
         futureEnemy: {
-            name: "turtle bot",
+            name: "Turtle Bot",
             health: 35,
             sprite: "tech_turtle",
             actions: [
@@ -292,11 +304,20 @@ const encounters: EncounterTemplate[] = [
                 },
                 {
                     type: "attack",
-                    description: "Attack for 6",
+                    description: "Attack for 10",
                     async action(enemy: Enemy) {
-                        enemy.attack(6);
+                        enemy.attack(10);
                     },
                 },
+                 {
+                    type: "skill",
+                    description: "Inflict vulnerable",
+                    async action(enemy: Enemy) {
+                        enemy.opponent.buffs.add(BuffType.vulnerable, 3);
+                        game.soundManager.play("ancestors_call", 0.25);
+                    },
+                },
+
             ],
         },
         pastBackground: {

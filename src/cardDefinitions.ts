@@ -129,20 +129,6 @@ export function createCardDefinitions() {
         },
     });
 
-    cardDefinitions.set(CardTemplate.smallBang, {
-        template: CardTemplate.smallBang,
-        family: CardType.skill,
-        name: "Small Bang",
-        cost: 2,
-        description: `Deal 2 damage\nTake 2 damage`,
-        onPlayed: (player: Player, enemy: Enemy) => {
-            let damage = 2;
-            enemy.takeDamage(damage);
-            player.takeDamage(damage);
-            game.soundManager.play("explosion");
-        },
-    });
-
     cardDefinitions.set(CardTemplate.uncontrolledBot, {
         template: CardTemplate.uncontrolledBot,
         family: CardType.failure,
@@ -333,12 +319,28 @@ export function createCardDefinitions() {
         family: CardType.skill,
         name: "Big Bang",
         cost: 2,
-        description: `Deal 8 damage\nTake 8 damage`,
+        description: `Deal 8 damage\nTake 4 damage`,
         onPlayed: (player: Player, enemy: Enemy) => {
-            let damage = 8;
-            enemy.takeDamage(damage);
+            let enemyDamage = 8;
+            let damage = 4;
+            enemy.takeDamage(enemyDamage);
             player.takeDamage(damage);
-            game.soundManager.play("explosion");
+            game.soundManager.play("explosion", 0.5);
+        },
+    });
+
+    cardDefinitions.set(CardTemplate.smallBang, {
+        template: CardTemplate.smallBang,
+        family: CardType.skill,
+        name: "Small Bang",
+        cost: 0,
+        description: `Deal 2 damage\nTake 1 damage`,
+        onPlayed: (player: Player, enemy: Enemy) => {
+            let enemyDamage = 2;
+            let damage = 1;
+            enemy.takeDamage(enemyDamage);
+            player.takeDamage(damage);
+            game.soundManager.play("explosion", 0.5);
         },
     });
 
