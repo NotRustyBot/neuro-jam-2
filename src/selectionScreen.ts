@@ -34,7 +34,7 @@ export class SelectionScreen {
     tooltipHover: boolean = false;
 
     title!: Text;
-    background!: Graphics;
+    background!: Sprite;
     selectContainer!: Container;
 
     // equipment buttons
@@ -54,14 +54,20 @@ export class SelectionScreen {
         this.tooltip = new Container();
         this.tooltip.eventMode = "none";
         //this.tooltip.visible = false;
+
+        this.background = new Sprite(Assets.get("menu"));
+        this.background.width = game.app.screen.width;
+        this.background.height = game.app.screen.height;
+        this.background.texture.source.scaleMode = "nearest";
+        this.container.addChild(this.background);
     }
 
     init() {
-        this.background = new Graphics();
-        this.background.rect(0, 0, game.app.screen.width, game.app.screen.height);
-        this.background.fill(0x8B4513);
+        //this.background = new Graphics();
+        //this.background.rect(0, 0, game.app.screen.width, game.app.screen.height);
+        //this.background.fill(0x8B4513);
 
-        this.title = new Text({ text: "", style: { fontFamily: "monospace", fontSize: 48, fill: 0xffffff } });
+        this.title = new Text({ text: "", style: { fontFamily: "monospace", fontSize: 48, fill: 0xffffff, stroke: {color: 0x000000, width: 6} } });
         this.title.position.set(game.app.screen.width / 2, 100);
         this.title.anchor.set(0.5);
 
@@ -129,7 +135,7 @@ export class SelectionScreen {
 
             // create background
             const { background, text } = this.createEquipmentBackground(
-                "Modern-Day Equipment", 0, 200,
+                "Modern-Day Equipment", 0xffffff, 0, 200,
                 equipmentPerRow * this.buttonWidth + (equipmentPerRow - 1) * this.xPadding,
                 equipmentColumns * this.buttonHeight + (equipmentColumns - 1) * this.yPadding
             );
@@ -166,12 +172,12 @@ export class SelectionScreen {
 
             // create background for each pool
             const { background: arcaneBackground, text: arcaneText } = this.createEquipmentBackground(
-                "Arcane Equipment", 0, 200,
+                "Arcane Equipment", 0xff5555, 0, 200,
                 arcanePerRow * this.buttonWidth + (arcanePerRow - 1) * this.xPadding,
                 arcaneColumns * this.buttonHeight + (arcaneColumns - 1) * this.yPadding
             );
             const { background: hitechBackground, text: hitechText } = this.createEquipmentBackground(
-                "High-Tech Equipment", game.app.screen.width - this.equipmentContainer.position.x, 200,
+                "High-Tech Equipment", 0x55ffff,game.app.screen.width - this.equipmentContainer.position.x, 200,
                 hitechPerRow * this.buttonWidth + (hitechPerRow - 1) * this.xPadding,
                 hitechColumns * this.buttonHeight + (hitechColumns - 1) * this.yPadding
             );
@@ -232,42 +238,59 @@ export class SelectionScreen {
 
         button.addChild(buttonBackground, buttonText, icon);
 
+        let activated = false;
         button.on("pointerdown", () => {
             if (this.selectedEquipment.includes(equipment)) {
+                activated = false;
                 buttonText.tint = 0xffffff;
                 buttonBackground.tint = 0xffffff;
                 this.selectedEquipment.splice(this.selectedEquipment.indexOf(equipment), 1);
             }
             else {
-                if (this.selectionMode === SelectionMode.STARTING_EQUIPMENT && this.selectedEquipment.length >= this.startingEquipmentMaximum) return;
+                if (this.selectionMode === SelectionMode.STARTING_EQUIPMENT && this.selectedEquipment.length >= this.startingEquipmentMaximum) {
+                    return;
+                }
 
                 if (this.selectionMode === SelectionMode.POST_ENCOUNTER) {
                     const arcaneSelected = this.selectedEquipment.filter(eq => eq.category === EquipmentCategory.arcane).length;
                     const hitechSelected = this.selectedEquipment.filter(eq => eq.category === EquipmentCategory.hitech).length;
                     if ((equipment.category === EquipmentCategory.arcane && arcaneSelected >= this.equipmentMaximumPerPool) ||
-                        (equipment.category === EquipmentCategory.hitech && hitechSelected >= this.equipmentMaximumPerPool)) return;
+                        (equipment.category === EquipmentCategory.hitech && hitechSelected >= this.equipmentMaximumPerPool)) {
+                        return;
+                    }
                 }
+                activated = true;
                 buttonText.tint = 0x00ff00;
                 buttonBackground.tint = 0x55dd55;
                 this.selectedEquipment.push(equipment);
             }
         });
-        button.on("pointerover", this.showTooltip.bind(this, equipment));
+        button.on("pointerover", () => {
+            this.showTooltip(equipment);
+            if (!activated) {
+                buttonText.tint = 0x00aaaa;
+                buttonBackground.tint = 0x55aaaa;
+            }
+        });
         button.on("pointerout", () => {
             this.tooltip.removeChildren();
             game.uiManager.hideKeywords();
+            if (!activated) {
+                buttonText.tint = 0xffffff;
+                buttonBackground.tint = 0xffffff;
+            }
         });
 
         return button;
     }
 
-    createEquipmentBackground(titleText: string, x: number, y: number, width: number, height: number) {
+    createEquipmentBackground(titleText: string, color: number, x: number, y: number, width: number, height: number) {
         const background = new Graphics();
         background.roundRect(0, 0, width, height);
         background.position.set(x, y);
         background.fill(0x808080);
 
-        const text = new Text({ text: titleText, style: { fontFamily: "monospace", fontSize: 40, fill: 0xffffff } });
+        const text = new Text({ text: titleText, style: { fontFamily: "monospace", fontSize: 40, fill: color, stroke: {color: 0x000000, width: 3} } });
         text.position.set(x + width / 2, y - 50);
         text.anchor.set(0.5);
 
@@ -301,7 +324,7 @@ export class SelectionScreen {
             card.container.visible = true;
 
             // display card counts
-            const cardCountText = new Text({text: `${cardCounts[cardTemplate]}x`, style: { fontFamily: "monospace", fontSize: 30, fill: 0x00ffff, stroke: { color: 0x000000, width: 5 } }});
+            const cardCountText = new Text({text: `${cardCounts[cardTemplate]}x`, style: { fontFamily: "monospace", fontSize: 30, fill: 0xffffff, stroke: { color: 0x000000, width: 5 } }});
             cardCountText.anchor.set(0.5, 0)
 
             // positioning

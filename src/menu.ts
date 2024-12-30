@@ -26,26 +26,24 @@ export class Menu {
     }
 
     init() {
-        this.titleText = new Text({ text: "Game Title", style: { fontFamily: "monospace", fontSize: 48, fill: 0xffffff } });
+        this.titleText = new Text({ text: "Game Title", style: { fontFamily: "monospace", fontSize: 48, fill: 0xffffff, stroke: {color: 0x000000, width: 6} } });
         this.titleText.position.set(game.app.screen.width / 2, 200);
         this.titleText.anchor.set(0.5);
         this.container.addChild(this.titleText);
 
-        this.startButton = this.createButton("Start", 0x00ff00, 400, () => {
+        this.startButton = this.createButton("Start", 500, 0x0000ff, 0x00aaff, () => {
             this.onStart();
         });
 
-        this.settingsButton = this.createButton("Settings", 0x0000ff, 500, () => {
-            // nothing rn
-        });
+        //this.settingsButton = this.createButton("Settings", 0x0000ff, 500, () => {
+        //});
 
-        this.quitButton = this.createButton("Quit", 0xff0000, 600, () => {
-            // nothing rn
-        });
+        //this.quitButton = this.createButton("Quit", 0xff0000, 600, () => {
+        //});
 
         this.container.addChild(this.startButton);
-        this.container.addChild(this.settingsButton);
-        this.container.addChild(this.quitButton);
+        //this.container.addChild(this.settingsButton);
+        //this.container.addChild(this.quitButton);
     }
 
     show() {
@@ -58,7 +56,7 @@ export class Menu {
         this.visible = false;
     }
 
-    createButton(text: string, color: number, y: number, onClick: () => void) {
+    createButton(text: string, y: number, idleColor: number, hoverColor: number, onClick: () => void) {
         const buttonContainer = new Container();
         buttonContainer.interactive = true;
         buttonContainer.cursor = "pointer";
@@ -66,12 +64,20 @@ export class Menu {
 
         const button = new Graphics();
         button.roundRect(0, 0, 200, 75);
-        button.fill(color);
+        button.fill(0xffffff);
+        button.tint = idleColor;
         button.stroke({ color: 0x000000, width: 5 });
 
         const buttonText = new Text({ text: text, style: { fontFamily: "monospace", fontSize: 30, fill: 0xffffff, stroke: {color: 0x000000, width: 3} } });
         buttonText.position.set(button.width / 2, button.height / 2 - 3);
         buttonText.anchor.set(0.5);
+
+        buttonContainer.on("pointerover", () => {
+            button.tint = hoverColor;
+        })
+        buttonContainer.on("pointerout", () => {
+            button.tint = idleColor;
+        })
 
         buttonContainer.position.set((game.app.screen.width) / 2 - button.width/2, y)
         buttonContainer.addChild(button, buttonText);
@@ -85,7 +91,7 @@ export class Menu {
 
         this.titleText.position.set(game.app.screen.width / 2, 200);
         this.startButton.position.set((game.app.screen.width) / 2 - 100, this.startButton.position.y);
-        this.settingsButton.position.set((game.app.screen.width) / 2 - 100, this.settingsButton.position.y);
-        this.quitButton.position.set((game.app.screen.width) / 2 - 100, this.quitButton.position.y);
+        //this.settingsButton.position.set((game.app.screen.width) / 2 - 100, this.settingsButton.position.y);
+        //this.quitButton.position.set((game.app.screen.width) / 2 - 100, this.quitButton.position.y);
     }
 }
