@@ -1,6 +1,9 @@
 {
     "null": "./null.png",
 
+    "gameTitle": "./gameTitle.png",
+    "titleExtra": "./titleExtra.png",
+
     "past_fg": "./bg/past_fg.png",
     "past_bg": "./bg/past_bg.png",
     "future_fg": "./bg/future_fg.png",
@@ -75,5 +78,11 @@
     "skillType": "./cards/skillType.png",
 
     "nextTurn": "./nextTurn.png",
-    "nextTurnOuter": "./nextTurnOuter.png"
+    "nextTurnOuter": "./nextTurnOuter.png",
+
+    "arcaneFrame": "./ui/arcaneFrame.png",
+    "hitechFrame": "./ui/hitechFrame.png",
+    "arcaneSelect": "./ui/arcaneSelect.png",
+    "hitechSelect": "./ui/hitechSelect.png",
+    "startingSelect": "./ui/startingSelect.png"
 }

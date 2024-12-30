@@ -5,7 +5,11 @@ export class Menu {
     container: Container;
     background: Sprite;
 
-    titleText!: Text;
+    titleContainer: Container;
+    title!: Sprite;
+    titleExtra!: Sprite;
+
+    //titleText!: Text;
     startButton!: Container;
     settingsButton!: Container;
     quitButton!: Container;
@@ -22,14 +26,31 @@ export class Menu {
         this.background.width = game.app.screen.width;
         this.background.height = game.app.screen.height;
         this.background.texture.source.scaleMode = "nearest";
+
+        this.titleContainer = new Container();
+
+        this.container.addChild(this.titleContainer);
         this.container.addChild(this.background);
     }
 
     init() {
-        this.titleText = new Text({ text: "Game Title", style: { fontFamily: "monospace", fontSize: 48, fill: 0xffffff, stroke: {color: 0x000000, width: 6} } });
-        this.titleText.position.set(game.app.screen.width / 2, 200);
-        this.titleText.anchor.set(0.5);
-        this.container.addChild(this.titleText);
+        //this.titleText = new Text({ text: "Game Title", style: { fontFamily: "monospace", fontSize: 48, fill: 0xffffff, stroke: {color: 0x000000, width: 6} } });
+        //this.titleText.position.set(game.app.screen.width / 2, 200);
+        //this.titleText.anchor.set(0.5);
+        //this.container.addChild(this.titleText);
+
+        this.title = new Sprite(Assets.get("gameTitle"));
+        this.title.texture.source.scaleMode = "nearest";
+        this.title.scale.set(2.5);
+        this.title.anchor.set(0.5);
+
+        this.titleExtra = new Sprite(Assets.get("titleExtra"));
+        this.titleExtra.texture.source.scaleMode = "nearest";
+        this.titleExtra.scale = this.title.scale;
+        this.titleExtra.anchor = this.title.anchor;
+
+        this.titleContainer.addChild(this.title, this.titleExtra);
+        this.container.addChild(this.titleContainer);
 
         this.startButton = this.createButton("Start", 500, 0x0000ff, 0x00aaff, () => {
             this.onStart();
@@ -89,7 +110,7 @@ export class Menu {
         this.background.width = game.app.screen.width;
         this.background.height = game.app.screen.height
 
-        this.titleText.position.set(game.app.screen.width / 2, 200);
+        this.titleContainer.position.set(game.app.screen.width / 2, 400);
         this.startButton.position.set((game.app.screen.width) / 2 - 100, this.startButton.position.y);
         //this.settingsButton.position.set((game.app.screen.width) / 2 - 100, this.settingsButton.position.y);
         //this.quitButton.position.set((game.app.screen.width) / 2 - 100, this.quitButton.position.y);

@@ -79,12 +79,19 @@ export class SelectionScreen {
         this.selectContainer.interactive = true;
         this.selectContainer.cursor = "pointer";
         this.selectContainer.on("pointerdown", () => this.completeSelection());
+        this.selectContainer.on("pointerover", () => {
+            if (this.atMaxSelected()) this.selectContainer.tint = 0x00aa00;
+        });
+        this.selectContainer.on("pointerout", () => {
+            this.selectContainer.tint = 0x00ff00;
+        });
+
 
         const selectButton = new Graphics();
         selectButton.roundRect(0, 0, 200, 75);
         selectButton.fill(0x00ff00);
 
-        const selectText = new Text({ text: "Select", style: { fontFamily: "monospace", fontSize: 24, fill: 0x000000 } });
+        const selectText = new Text({ text: "Select", style: { fontFamily: "monospace", fontSize: 26, fill: 0x000000 } });
         selectText.position.set(selectButton.width / 2, selectButton.height / 2);
         selectText.anchor.set(0.5);
 
@@ -204,15 +211,53 @@ export class SelectionScreen {
         }
     }
 
+    atMaxSelected(equipment?: Equipment): boolean {
+        if (this.selectionMode === SelectionMode.STARTING_EQUIPMENT && this.selectedEquipment.length >= this.startingEquipmentMaximum) {
+            return true;
+        }
+
+        if (this.selectionMode === SelectionMode.POST_ENCOUNTER) {
+            const arcaneSelected = this.selectedEquipment.filter(eq => eq.category === EquipmentCategory.arcane).length;
+            const hitechSelected = this.selectedEquipment.filter(eq => eq.category === EquipmentCategory.hitech).length;
+
+            if (equipment) {
+                if ((equipment.category === EquipmentCategory.arcane && arcaneSelected >= this.equipmentMaximumPerPool) ||
+                    (equipment.category === EquipmentCategory.hitech && hitechSelected >= this.equipmentMaximumPerPool)) {
+                    return true;
+                }
+            }
+            else {
+                if (arcaneSelected >= this.equipmentMaximumPerPool && hitechSelected >= this.equipmentMaximumPerPool) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
     createEquipmentButton(equipment: Equipment, x: number, y: number): Container {
+        let selectAsset;
+        switch (equipment.category) {
+            case EquipmentCategory.starting:
+                selectAsset = "startingSelect";
+                break;
+            case EquipmentCategory.arcane:
+                selectAsset = "arcaneSelect";
+                break;
+            case EquipmentCategory.hitech:
+                selectAsset = "hitechSelect";
+                break;
+        }
+
         const button = new Container();
         button.position.set(x, y);
         button.interactive = true;
         button.cursor = "pointer";
 
         const buttonBackground = new Graphics();
-        buttonBackground.roundRect(0, 0, this.buttonWidth, this.buttonHeight);
+        buttonBackground.rect(0, 0, this.buttonWidth, this.buttonHeight);
         buttonBackground.fill(0x404040);
+        buttonBackground.stroke({ color: 0x000000, width: 2 });
 
         const icon = new Sprite();
         icon.texture = Assets.get(EquipmentTemplate[equipment.template]) ?? Assets.get("null");
@@ -221,15 +266,21 @@ export class SelectionScreen {
         icon.anchor.set(0.5);
         icon.position.set(buttonBackground.width / 2, buttonBackground.height / 2 + 20);
 
+        const select = new Sprite(Assets.get(selectAsset) ?? Assets.get("null"));
+        select.texture.source.scaleMode = "nearest";
+        select.width = buttonBackground.width;
+        select.height = buttonBackground.height;
+        select.visible = false;
+
         const buttonText = new Text({
             text: equipment.name,
             style: {
                 fontFamily: "monospace",
-                fontSize: 24,
+                fontSize: 20,
                 fill: 0xffffff,
                 stroke: { color: 0x000000, width: 2 },
                 wordWrap: true,
-                wordWrapWidth: 190,
+                wordWrapWidth: 150,
                 align: "center",
             }
         });
@@ -237,47 +288,41 @@ export class SelectionScreen {
         buttonText.anchor.set(0.5);
 
         button.addChild(buttonBackground, buttonText, icon);
+        button.addChild(select);
 
         let activated = false;
         button.on("pointerdown", () => {
             if (this.selectedEquipment.includes(equipment)) {
                 activated = false;
-                buttonText.tint = 0xffffff;
-                buttonBackground.tint = 0xffffff;
+                //select.visible = false;
+                buttonText.tint = 0x00aaaa;
+                //buttonBackground.tint = 0xffffff;
                 this.selectedEquipment.splice(this.selectedEquipment.indexOf(equipment), 1);
             }
             else {
-                if (this.selectionMode === SelectionMode.STARTING_EQUIPMENT && this.selectedEquipment.length >= this.startingEquipmentMaximum) {
-                    return;
-                }
-
-                if (this.selectionMode === SelectionMode.POST_ENCOUNTER) {
-                    const arcaneSelected = this.selectedEquipment.filter(eq => eq.category === EquipmentCategory.arcane).length;
-                    const hitechSelected = this.selectedEquipment.filter(eq => eq.category === EquipmentCategory.hitech).length;
-                    if ((equipment.category === EquipmentCategory.arcane && arcaneSelected >= this.equipmentMaximumPerPool) ||
-                        (equipment.category === EquipmentCategory.hitech && hitechSelected >= this.equipmentMaximumPerPool)) {
-                        return;
-                    }
-                }
+                if (this.atMaxSelected(equipment)) return;
                 activated = true;
+                select.visible = true;
                 buttonText.tint = 0x00ff00;
-                buttonBackground.tint = 0x55dd55;
+                //buttonBackground.tint = 0x55dd55;
                 this.selectedEquipment.push(equipment);
             }
         });
         button.on("pointerover", () => {
             this.showTooltip(equipment);
-            if (!activated) {
+            if (!activated && !this.atMaxSelected(equipment)) {
+                select.visible = true;
                 buttonText.tint = 0x00aaaa;
-                buttonBackground.tint = 0x55aaaa;
+                //buttonBackground.tint = 0x55aaaa;
             }
         });
         button.on("pointerout", () => {
             this.tooltip.removeChildren();
             game.uiManager.hideKeywords();
             if (!activated) {
+                select.visible = false;
                 buttonText.tint = 0xffffff;
-                buttonBackground.tint = 0xffffff;
+                //buttonBackground.tint = 0xffffff;
             }
         });
 
@@ -285,8 +330,10 @@ export class SelectionScreen {
     }
 
     createEquipmentBackground(titleText: string, color: number, x: number, y: number, width: number, height: number) {
+
+
         const background = new Graphics();
-        background.roundRect(0, 0, width, height);
+        background.rect(0, 0, width, height);
         background.position.set(x, y);
         background.fill(0x808080);
 
