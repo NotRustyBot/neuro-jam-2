@@ -52,7 +52,7 @@ export class Menu {
         this.titleContainer.addChild(this.title, this.titleExtra);
         this.container.addChild(this.titleContainer);
 
-        this.startButton = this.createButton("Start", 500, 0x0000ff, 0x00aaff, () => {
+        this.startButton = this.createButton("Start", 0x0000ff, 0x00aaff, () => {
             this.onStart();
         });
 
@@ -77,11 +77,15 @@ export class Menu {
         this.visible = false;
     }
 
-    createButton(text: string, y: number, idleColor: number, hoverColor: number, onClick: () => void) {
+    createButton(text: string, idleColor: number, hoverColor: number, onClick: () => void) {
         const buttonContainer = new Container();
         buttonContainer.interactive = true;
         buttonContainer.cursor = "pointer";
-        buttonContainer.on("pointerdown", onClick);
+        // play sound on press
+        buttonContainer.on("pointerdown", () => {
+            onClick();
+            game.soundManager.play("button3");
+        });
 
         const button = new Graphics();
         button.roundRect(0, 0, 200, 75);
@@ -100,7 +104,7 @@ export class Menu {
             button.tint = idleColor;
         })
 
-        buttonContainer.position.set((game.app.screen.width) / 2 - button.width/2, y)
+        buttonContainer.position.set((game.app.screen.width) / 2 - button.width/2, 0)
         buttonContainer.addChild(button, buttonText);
         return buttonContainer;
     }
@@ -111,7 +115,7 @@ export class Menu {
         this.background.height = game.app.screen.height
 
         this.titleContainer.position.set(game.app.screen.width / 2, 400);
-        this.startButton.position.set((game.app.screen.width) / 2 - 100, this.startButton.position.y);
+        this.startButton.position.set((game.app.screen.width) / 2 - 100, game.app.screen.height/2 + 100);
         //this.settingsButton.position.set((game.app.screen.width) / 2 - 100, this.settingsButton.position.y);
         //this.quitButton.position.set((game.app.screen.width) / 2 - 100, this.quitButton.position.y);
     }
