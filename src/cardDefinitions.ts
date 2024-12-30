@@ -246,9 +246,9 @@ export function createCardDefinitions() {
         name: "Ignite",
         keywords: [KeywordType.burn],
         cost: 2,
-        description: `Deal 4 damage\nIf the enemy has #burn, deal 4 extra damage\nInflict 2 #burn`,
+        description: `Deal 2 damage\nIf the enemy has #burn, deal 4 extra damage\nInflict 2 #burn`,
         onPlayed: (player: Player, enemy: Enemy) => {
-            let damage = 4;
+            let damage = 2;
             damage = player.modifyAttackDamage(damage);
             if (enemy.buffs.has(BuffType.burn)) damage += 4;
             enemy.takeDamage(damage);

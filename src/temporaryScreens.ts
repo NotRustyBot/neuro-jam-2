@@ -216,7 +216,7 @@ export class EffectsManager {
         this.subtitles.style.fill = 0x000000;
         this.subtitles.style.wordWrap = true;
         this.subtitles.style.align = "center";
-        this.subtitles.style.fontSize = "24";
+        this.subtitles.style.fontSize = "30";
         this.subtitles.style.dropShadow = {
             distance: 2,
             color: 0xffffff,
@@ -245,9 +245,9 @@ export class EffectsManager {
 
 const introData = [
     { text: `A long time ago, the Turtle Empire ruled the world, with an army of monsters they conjured.` },
-    { text: `Their rule lasted a thousand years, until humans managed to seal them away, with a help of a powerful magical Artefact.` },
-    { text: `After millennia, the Remnants of the Turtle Empire managed to break free, shattering the Artefact across the treads of time.` },
+    { text: `Their rule lasted a thousand years, until humans managed to seal them away, with a help of a powerful magical Artifact.` },
+    { text: `After millennia, the Remnants of the Turtle Empire managed to break free, shattering the Artifact across the threads of time.` },
     { text: `Now you need to defeat the Remnants of the Turtle empire, both in the past, and in the future, or humanity will serve under their reign once more.` },
 ];
 
-const outroLines = ["", `As the last of Remnants of the Turtle Empire are defeated, and Artefact pieces recombined, the threads of time fall back into their rightful places.`, `Now, you may rest.`];
+const outroLines = ["", `As the last of Remnants of the Turtle Empire are defeated, and Artifact pieces recombined, the threads of time fall back into their rightful places.`, `Now, you may rest.`];
