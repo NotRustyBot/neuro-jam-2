@@ -41,6 +41,7 @@ export class SoundManager {
 
         enemyBotDeath: new Howl({ src: "./sounds/enemyBotDeath.wav" }),
         enemyBugDeath: new Howl({ src: "./sounds/enemyBugDeath.wav" }),
+        enemyTurtleDeath: new Howl({ src: "./sounds/enemyTurtleDeath2.wav" }),
 
         player_damage: new Howl({ src: "./sounds/player_damage.wav" }),
         ticking: new Howl({ src: "./sounds/ticking.wav" }),

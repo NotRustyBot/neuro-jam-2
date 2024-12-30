@@ -113,9 +113,9 @@ export class EffectsManager {
         game.buttonContainer.visible = false;
         await game.timeManager.wait(3000);
         this.outroLineIndex = 1;
-        await game.soundManager.voice("as_the_last", 0.9);
+        await game.soundManager.voice("as_the_last", 0.5);
         this.outroLineIndex = 2;
-        await game.soundManager.voice("you_may_rest_1", 0.9);
+        await game.soundManager.voice("you_may_rest_1", 0.5);
         game.soundManager.setMusic("past");
         this.outroLineIndex = 0;
     }
@@ -180,14 +180,14 @@ export class EffectsManager {
         game.soundManager.cutMusic();
         this.slide.texture = Assets.get("intro1");
         this.slide.visible = true;
-        await game.soundManager.voice("a_long_time_ago", 0.9);
+        await game.soundManager.voice("a_long_time_ago", 0.4);
         this.introLinesIndex++;
-        game.soundManager.voice("their_rule_lasted", 0.9).then(async () => {
+        game.soundManager.voice("their_rule_lasted", 0.4).then(async () => {
             this.introLinesIndex++;
-            game.soundManager.voice("after_a_millennia", 0.9).then(async () => {
+            game.soundManager.voice("after_a_millennia", 0.4).then(async () => {
                 this.introLinesIndex++;
                 this.slide.texture = Assets.get("intro1");
-                await game.soundManager.voice("now_you_need_1", 0.9);
+                await game.soundManager.voice("now_you_need_1", 0.4);
                 game.timeManager.delay(() => this.skipIntro(), 100);
                 this.slide.visible = false;
                 game.soundManager.setMusic("menu");

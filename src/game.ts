@@ -63,6 +63,7 @@ export class Game {
     debugText!: Text;
 
     encounter!: Encounter;
+    nextTurnDisabled: boolean = false;
 
     time = 0;
     get phase() {
@@ -191,7 +192,7 @@ export class Game {
 
         let debounce = false;
         this.buttonContainer.on("pointerdown", () => {
-            if (debounce) return;
+            if (debounce || this.nextTurnDisabled) return;
             debounce = true;
 
             this.player.endTurn();

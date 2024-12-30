@@ -43,10 +43,10 @@ export class Enemy {
         this.maxHealth = template.health;
         this.actions = template.actions;
         this.container.visible = false;
-        if (template.name.includes("spiderbot")) this.spiderBotSetup();
-        if (this.template.name == "spider") this.spiderSetup();
-        if (this.template.name == "bee") this.beeSetup();
-        if (this.template.name == "drone") this.droneSetup();
+        if (this.template.name == "Spider Bot") this.spiderBotSetup();
+        if (this.template.name == "Spider") this.spiderSetup();
+        if (this.template.name == "Bee") this.beeSetup();
+        if (this.template.name == "Drone") this.droneSetup();
 
 
         this.hpText = new Text({
@@ -136,10 +136,12 @@ export class Enemy {
             game.camera.shakePower = 1000;
             this.health = 0;
             this.die();
-            if (this.template.name.includes("spiderbot")) game.soundManager.play("enemyBotDeath", 0.5);
-            if (this.template.name == "drone") game.soundManager.play("enemyBotDeath", 0.5);
+            if (this.template.name.includes("Spider Bot")) game.soundManager.play("enemyBotDeath", 0.4);
+            if (this.template.name == "Drone") game.soundManager.play("enemyBotDeath", 0.4);
+            if (this.template.name == "Turtle Bot") game.soundManager.play("enemyBotDeath", 0.4);
             if (this.template.name == "spider") game.soundManager.play("enemyBugDeath");
-            if (this.template.name == "bee") game.soundManager.play("enemyBugDeath");
+            if (this.template.name == "Bee") game.soundManager.play("enemyBugDeath");
+            if (this.template.name == "Turtle") game.soundManager.play("enemyTurtleDeath", 0.8);
             game.encounter.countdown = 0;
         }
 
@@ -156,10 +158,10 @@ export class Enemy {
         this.uiContainer.position.x = this.container.position.x;
         this.uiContainer.position.y = this.container.position.y;
 
-        if (this.template.name.includes("spiderbot")) this.spiderBotUpdate(dt);
-        if (this.template.name == "spider") this.spiderUpdate();
-        if (this.template.name == "bee") this.beeUpdate();
-        if (this.template.name == "drone") this.droneUpdate();
+        if (this.template.name == "Spider Bot") this.spiderBotUpdate(dt);
+        if (this.template.name == "Spider") this.spiderUpdate();
+        if (this.template.name == "Bee") this.beeUpdate();
+        if (this.template.name == "Drone") this.droneUpdate();
 
         this.sprite.skew.x = game.phase * 0.05;
 
@@ -182,6 +184,7 @@ export class Enemy {
                 this.destroy();
                 this.isDead = true;
                 if (game.encounter.otherInstance.enemy.health <= 0) {
+                    game.nextTurnDisabled = true;
                     game.effectsManager.fadeout();
                     game.timeManager.delay(() => game.encounter.win(), 800);
                 }
