@@ -88,6 +88,10 @@ export class Player {
         }
 
         this.sprite.tint = interpolateColors(0xffffff, 0xff0000, game.uiManager.recentPlayerDamage / 3);
+
+        if (game.uiManager.recentPlayerDamage > 1) {
+            game.soundManager.musicSpeed();
+        }
     }
 
     modifyAttackDamage(damage: number) {
@@ -141,6 +145,7 @@ export class Player {
         this.health -= damage;
 
         if (!this.isDead) {
+            game.soundManager.musicSpeed();
             if (this.health <= 0) {
                 this.health = 0;
                 this.isDead = true;

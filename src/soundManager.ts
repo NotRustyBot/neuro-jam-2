@@ -74,4 +74,21 @@ export class SoundManager {
             this.sounds[key as keyof typeof this.sounds].volume(this.soundVolume);
         }
     }
+
+    musicRate = 1;
+    musicTargetRate = 1;
+
+    musicSpeed() {
+        this.musicTargetRate = 1.1;
+    }
+
+    update() {
+        this.musicRate = this.musicRate * 0.9 + this.musicTargetRate * 0.1;
+
+        for (const key in this.music) {
+            this.music[key as keyof typeof this.music].rate(this.musicRate);
+        }
+
+        this.musicTargetRate = 1;
+    }
 }

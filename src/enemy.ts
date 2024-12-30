@@ -32,8 +32,11 @@ export class Enemy {
         game.uiContainer.addChild(this.uiContainer);
         this.uiContainer.addChild(this.hpBar);
         this.sprite = new Sprite(Assets.get(template.sprite));
-        this.sprite.anchor.set(0.5);
+        this.sprite.anchor.set(0.5, 1);
+        this.sprite.scale.set(4);
         this.sprite.x = 100;
+        this.sprite.y = 100;
+        this.sprite.texture.source.scaleMode = "nearest";
         this.container.addChild(this.sprite);
         game.enemyContainer.addChild(this.container);
         this.health = template.health;
@@ -44,6 +47,7 @@ export class Enemy {
         if (this.template.name == "spider") this.spiderSetup();
         if (this.template.name == "bee") this.beeSetup();
         if (this.template.name == "drone") this.droneSetup();
+
 
         this.hpText = new Text({
             text: ``,
@@ -61,7 +65,6 @@ export class Enemy {
         this.intentSprite.scale.set(0.5);
         this.uiContainer.addChild(this.intentSprite);
 
-
         this.intent = new Text({
             text: ``,
             style: {
@@ -70,8 +73,6 @@ export class Enemy {
                 fill: 0xffffff,
             },
         });
-
-
 
         this.hpText.anchor.set(0.5, 1);
 
@@ -91,7 +92,6 @@ export class Enemy {
         this.enemyName.position.set(0, -200);
 
         this.uiContainer.addChild(this.enemyName);
-
 
         this.intent.anchor.set(0, 1);
         this.intent.position.set(40, -170);
@@ -126,12 +126,12 @@ export class Enemy {
             }
         }
 
-        if(this.buffs.has(BuffType.vulnerable)) {
+        if (this.buffs.has(BuffType.vulnerable)) {
             damage = Math.floor(damage * 1.5);
         }
 
         this.health -= damage;
-        
+
         if (this.health <= 0) {
             game.camera.shakePower = 1000;
             this.health = 0;
@@ -157,6 +157,8 @@ export class Enemy {
         if (this.template.name == "bee") this.beeUpdate();
         if (this.template.name == "drone") this.droneUpdate();
 
+        this.sprite.skew.x = game.phase * 0.05;
+
         this.updateUi(dt);
 
         if (this.recentDamage > 0) {
@@ -168,6 +170,7 @@ export class Enemy {
         }
 
         if (this.isDying) {
+            game.soundManager.musicSpeed();
             this.dyingProgress -= dt / 1000;
             game.effectsManager.setBars(this.dyingProgress);
             this.container.alpha = this.dyingProgress;
@@ -388,11 +391,10 @@ export function desribeAction(action: EnemyAction) {
 }
 
 type EnemyAction = {
-    type: "attack" | "skill" ;
+    type: "attack" | "skill";
     action: (enemy: Enemy) => Promise<void>;
     description: string;
 };
-
 
 const intentTextureLookup = {
     attack: "attackType",

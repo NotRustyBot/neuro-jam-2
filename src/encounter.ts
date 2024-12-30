@@ -40,7 +40,7 @@ export class Encounter {
     }
 
     static createFirstEncounter(): Encounter {
-        return new Encounter(encounters[0]);
+        return new Encounter(encounters[game.encounterIndex]);
     }
 
     begin() {
@@ -255,7 +255,7 @@ const encounters: EncounterTemplate[] = [
         pastEnemy: {
             name: "turtle",
             health: 30,
-            sprite: "enemy1_p",
+            sprite: "cultist_turtle",
             actions: [
                 {
                     type: "skill",
@@ -276,7 +276,7 @@ const encounters: EncounterTemplate[] = [
         futureEnemy: {
             name: "turtle bot",
             health: 35,
-            sprite: "drone",
+            sprite: "tech_turtle",
             actions: [
                 {
                     type: "skill",

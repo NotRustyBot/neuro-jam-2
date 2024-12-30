@@ -29,6 +29,9 @@
     "enemy1_p": "./enemy1_p.png",
 
     "drone": "./drone.png",
+    "tech_turtle": "./tech_turtle.png",
+    "cultist_turtle": "./cultist_turtle.png",
+
 
     "bonusAttackDamage": "./buffs/bonusAttackDamage.png",
     "burn": "./buffs/burn.png",

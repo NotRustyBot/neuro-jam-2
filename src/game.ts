@@ -223,6 +223,7 @@ export class Game {
             this.background.update(dt);
             this.player.instance.enemy.update(dt);
             this.effectsManager.update(dt);
+            this.soundManager.update();
 
             const deck = this.player.deck.map((card) => card.definition.name).join(", ");
             const used = this.player.usedPile.map((card) => card.definition.name).join(", ");
