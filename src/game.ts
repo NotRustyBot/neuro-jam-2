@@ -32,7 +32,7 @@ export class Game {
     uiKeywordsContainer = new Container();
     containerToReflect = new Container();
     screenReflectContainer = new Container();
-    buttonContainer!: Container;
+    buttonContainer = new Container();
 
     menu!: Menu;
     selectionScreen!: SelectionScreen;
@@ -162,7 +162,6 @@ export class Game {
         const hoverTint = 0x22ff22;
         const clickTint = 0x00ffff;
 
-        this.buttonContainer = new Container();
         const button = new Sprite(Assets.get("nextTurn"));
         button.texture.source.scaleMode = "nearest";
         button.scale.set(5);
