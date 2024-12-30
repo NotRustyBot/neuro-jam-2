@@ -141,8 +141,8 @@ export class SelectionScreen {
             const equipmentColumns = Math.ceil(equipmentArray.length / MAX_PER_ROW);
 
             // create background
-            const { background, text } = this.createEquipmentBackground(
-                "Modern-Day Equipment", 0xffffff, 0, 200,
+            const { backgroundContainer: background, text: text } = this.createEquipmentBackground(
+                EquipmentCategory.starting, "Modern-Day Equipment", 0xffffff, 0, 200,
                 equipmentPerRow * this.buttonWidth + (equipmentPerRow - 1) * this.xPadding,
                 equipmentColumns * this.buttonHeight + (equipmentColumns - 1) * this.yPadding
             );
@@ -178,13 +178,13 @@ export class SelectionScreen {
             const hitechColumns = Math.ceil(hitechEquipment.length / MAX_PER_ROW);
 
             // create background for each pool
-            const { background: arcaneBackground, text: arcaneText } = this.createEquipmentBackground(
-                "Arcane Equipment", 0xff5555, 0, 200,
+            const { backgroundContainer: arcaneBackground, text: arcaneText } = this.createEquipmentBackground(
+                EquipmentCategory.arcane, "Arcane Equipment", 0xff5555, 0, 200,
                 arcanePerRow * this.buttonWidth + (arcanePerRow - 1) * this.xPadding,
                 arcaneColumns * this.buttonHeight + (arcaneColumns - 1) * this.yPadding
             );
-            const { background: hitechBackground, text: hitechText } = this.createEquipmentBackground(
-                "High-Tech Equipment", 0x55ffff,game.app.screen.width - this.equipmentContainer.position.x, 200,
+            const { backgroundContainer: hitechBackground, text: hitechText } = this.createEquipmentBackground(
+                EquipmentCategory.hitech, "High-Tech Equipment", 0x55ffff,game.app.screen.width - this.equipmentContainer.position.x, 200,
                 hitechPerRow * this.buttonWidth + (hitechPerRow - 1) * this.xPadding,
                 hitechColumns * this.buttonHeight + (hitechColumns - 1) * this.yPadding
             );
@@ -329,19 +329,49 @@ export class SelectionScreen {
         return button;
     }
 
-    createEquipmentBackground(titleText: string, color: number, x: number, y: number, width: number, height: number) {
+    createEquipmentBackground(category: EquipmentCategory, titleText: string, color: number, x: number, y: number, width: number, height: number) {
+        let frame = false;
+        let frameAsset;
+        let xOffset = 0;
+        let yOffset = 0;
+        switch (category) {
+            case EquipmentCategory.arcane:
+                frame = true;
+                frameAsset = "arcaneFrame";
+                xOffset = 68;
+                yOffset = 76;
+                break;
+            case EquipmentCategory.hitech:
+                frame = true;
+                frameAsset = "hitechFrame";
+                xOffset = 42;
+                yOffset = 48;
+                break;
+        }
 
+        const backgroundContainer = new Container();
+        backgroundContainer.position.set(x, y);
 
         const background = new Graphics();
         background.rect(0, 0, width, height);
-        background.position.set(x, y);
         background.fill(0x808080);
+        backgroundContainer.addChild(background);
+
+        if (frame) {
+            const frameSprite = new Sprite(Assets.get(frameAsset!));
+            frameSprite.texture.source.scaleMode = "nearest";
+            frameSprite.position.set(-xOffset / 2, -yOffset / 2);
+            frameSprite.width = background.width + xOffset;
+            frameSprite.height = background.height + yOffset;
+
+            backgroundContainer.addChild(frameSprite);
+        }
 
         const text = new Text({ text: titleText, style: { fontFamily: "monospace", fontSize: 40, fill: color, stroke: {color: 0x000000, width: 3} } });
         text.position.set(x + width / 2, y - 50);
         text.anchor.set(0.5);
 
-        return { background, text };
+        return { backgroundContainer, text };
     };
 
     showTooltip(equipment: Equipment) {
