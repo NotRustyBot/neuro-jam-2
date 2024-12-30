@@ -192,8 +192,9 @@ export class Card {
         const halfCount = Math.floor(cardCount / 2);
         const cardWidth = 230 - 10 * (cardCount - 1);
 
-        // angle towards the center (+0.5) cause it was irritating me
-        let targetAngle = (myIndex + 0.5) * 0.1 - halfCount * 0.1 + game.phase * 0.03;
+        // angle towards the center when irregular count of cards
+        let centerPoint = cardCount % 2 === 0 ? 0.5 : 0;
+        let targetAngle = (myIndex + centerPoint) * 0.1 - halfCount * 0.1 + game.phase * 0.03;
 
         if (this.isHovered && game.player.activeCard == null) {
             targetAngle = 0;
