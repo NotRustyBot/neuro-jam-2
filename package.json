@@ -6,7 +6,8 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "upload": "npm run build && 7z a -tzip static.zip .\\dist\\* && butler push static.zip notrustybot/time-torn:web"
   },
   "devDependencies": {
     "typescript": "~5.6.2",

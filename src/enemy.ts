@@ -372,9 +372,9 @@ export class Enemy {
                 this.myTurn = false;
             }, 200);
         } else {
-            await game.timeManager.wait(200);
+            await game.timeManager.wait(400);
             await this.doAction();
-            await game.timeManager.wait(200);
+            await game.timeManager.wait(400);
             this.buffs.endTurn();
             game.encounter.enemyEndTurn();
             this.myTurn = false;
