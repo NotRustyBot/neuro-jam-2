@@ -223,7 +223,12 @@ export class Card {
 
         this.wasHovered = this.isHovered;
 
+        const idleTint = 0xffffff;
+        const playableTint = 0x77ff77;
+        const unplayableTint = 0xff7777
+
         if (this.isActive && !game.mouse.down) {
+            this.container.tint = idleTint;
             this.isActive = false;
             game.uiManager.hideKeywords();
             if (game.mouse.y < game.app.canvas.height / 2) {
@@ -238,6 +243,18 @@ export class Card {
             targetAngle = 0;
             this.containerPosition.x = game.mouse.x;
             this.containerPosition.y = game.mouse.y;
+
+            if (game.mouse.y < game.app.canvas.height / 2) {
+                if (this.definition.cost == undefined || game.player.stamina >= this.definition.cost) {
+                    this.container.tint = playableTint;
+                }
+                else {
+                    this.container.tint = unplayableTint;
+                }
+            }
+            else {
+                this.container.tint = idleTint;
+            }
         } else {
             this.containerPosition.x = game.app.canvas.width / 2 + myIndex * cardWidth - (halfCount * cardWidth) / 2 - cardWidth / 2;
             this.containerPosition.y = game.app.canvas.height - 50;

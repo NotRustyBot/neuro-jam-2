@@ -171,9 +171,9 @@ export class Game {
 
         const buttonOuter = new Sprite(Assets.get("nextTurnOuter"));
         buttonOuter.texture.source.scaleMode = "nearest";
-        buttonOuter.scale.set(button.scale.x, button.scale.y);
-        buttonOuter.anchor.set(button.anchor.x, button.anchor.y);
-        buttonOuter.position.set(button.position.x, button.position.y);
+        buttonOuter.scale = button.scale;
+        buttonOuter.anchor = button.anchor;
+        buttonOuter.position = button.position;
 
         this.buttonContainer.cursor = "pointer";
         this.buttonContainer.interactive = true;
