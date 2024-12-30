@@ -45,6 +45,7 @@
     "stun": "./buffs/stun.png",
     "persistency": "./equipment/hitech/emGauntlet.png",
     "voicesOfThePast": "./equipment/arcane/summoningSigil.png",
+    "alchemist": "./equipment/arcane/unstableAlchemyBomb.png",
 
     "fryingPan": "./equipment/starting/fryingPan.png",
     "laserPointer": "./equipment/starting/laserPointer.png",
