@@ -7,6 +7,7 @@ export class EffectsManager {
     subtitles: Text;
     gameoverText: Text;
     slide: Sprite;
+    skipText: Text;
 
     constructor() {
         this.blackBars = new Graphics();
@@ -18,8 +19,10 @@ export class EffectsManager {
         game.temporaryContainer.addChild(this.slide);
         this.subtitles = new Text({ text: "", style: { fontFamily: "FunnelDisplay", fontSize: 20, fill: 0xffffff } });
         this.gameoverText = new Text({ text: "", style: { fontFamily: "FunnelDisplay", fontSize: 20, fill: 0xffffff } });
+        this.skipText = new Text({ text: "", style: { fontFamily: "FunnelDisplay", fontSize: 20, fill: 0x000000 } });
         game.temporaryContainer.addChild(this.subtitles);
         game.temporaryContainer.addChild(this.gameoverText);
+        game.temporaryContainer.addChild(this.skipText);
     }
 
     update(dt: number) {
@@ -177,32 +180,64 @@ export class EffectsManager {
         this.isIntro = true;
         this.introLinesIndex = 0;
         game.soundManager.cutMusic();
+
+        const skipIntroHandler = (event: KeyboardEvent) => {
+            if (event.code === "Space") {
+                this.skipIntro();
+                return;
+            }
+        };
+        window.addEventListener("keydown", skipIntroHandler);
+        this.skipText.text = "Press SPACE to skip";
+
+        await this.introSequence();
+        this.skipIntro();
+        window.removeEventListener("keydown", skipIntroHandler);
+    }
+
+    // unholy as fuck but I wanted a skippable intro without extra code lol
+    async introSequence() {
+        // first line
         this.slide.texture = Assets.get("intro1");
         this.slide.visible = true;
         await game.soundManager.voice("a_long_time_ago", 0.4);
+        if (!this.isIntro) return;
+
+        // second line
         this.introLinesIndex++;
-        game.soundManager.voice("their_rule_lasted", 0.4).then(async () => {
-            this.introLinesIndex++;
-            game.soundManager.voice("after_a_millennia", 0.4).then(async () => {
-                this.introLinesIndex++;
-                this.slide.texture = Assets.get("intro1");
-                await game.soundManager.voice("now_you_need_1", 0.4);
-                game.timeManager.delay(() => this.skipIntro(), 100);
-                this.slide.visible = false;
-                game.soundManager.setMusic("menu");
-            });
-            await game.timeManager.wait(3000);
+        setTimeout(() => {
+            if (!this.isIntro) return;
+            this.slide.texture = Assets.get("intro2");
+        }, 4000);
+        setTimeout(() => {
+            if (!this.isIntro) return;
+            this.slide.texture = Assets.get("intro3");
+        }, 5500);
+        await game.soundManager.voice("their_rule_lasted", 0.4);
+        if (!this.isIntro) return;
+
+        // third line
+        this.introLinesIndex++;
+        setTimeout(() => {
+            if (!this.isIntro) return;
             this.slide.texture = Assets.get("intro4");
-            await game.timeManager.wait(1000);
+        }, 3000);
+        setTimeout(() => {
+            if (!this.isIntro) return;
             this.slide.texture = Assets.get("intro5");
-            await game.timeManager.wait(500);
+        }, 4000);
+        setTimeout(() => {
+            if (!this.isIntro) return;
             this.slide.alpha = 0;
             this.slide.texture = Assets.get("intro6");
-        });
-        await game.timeManager.wait(4000);
-        this.slide.texture = Assets.get("intro2");
-        await game.timeManager.wait(1000);
-        this.slide.texture = Assets.get("intro3");
+        }, 4500);
+        await game.soundManager.voice("after_a_millennia", 0.4);
+        if (!this.isIntro) return;
+
+        // fourth line
+        this.introLinesIndex++;
+        this.slide.texture = Assets.get("intro1");
+        await game.soundManager.voice("now_you_need_1", 0.4);
     }
 
     handleIntro(dt: number) {
@@ -210,6 +245,9 @@ export class EffectsManager {
         this.graphics.fill({
             color: 0xffffff,
         });
+
+        this.skipText.anchor.set(0.5, 0.5);
+        this.skipText.position.set(game.app.screen.width / 2, 50);
 
         this.subtitles.anchor.set(0.5, 0.5);
         this.subtitles.position.set(game.app.screen.width / 2, game.app.screen.height - 50);
@@ -239,15 +277,19 @@ export class EffectsManager {
 
     skipIntro() {
         this.isIntro = false;
+        this.slide.visible = false;
         this.subtitles.text = "";
+        this.skipText.text = "";
+        game.soundManager.stopAllVoicelines();
+        game.soundManager.setMusic("menu");
     }
 }
 
 const introData = [
     { text: `A long time ago, the Turtle Empire ruled the world, with an army of monsters they conjured.` },
-    { text: `Their rule lasted a thousand years, until humans managed to seal them away, with a help of a powerful magical Artifact.` },
-    { text: `After millennia, the Remnants of the Turtle Empire managed to break free, shattering the Artifact across the threads of time.` },
-    { text: `Now you need to defeat the Remnants of the Turtle empire, both in the past, and in the future, or humanity will serve under their reign once more.` },
+    { text: `Their rule lasted a thousand years, until humans managed to seal them away, with the help of a powerful magical Artifact.` },
+    { text: `After a millennia, the Remnants of the Turtle Empire managed to break free, shattering the Artifact across the threads of time.` },
+    { text: `Now you need to defeat the Remnants of the Turtle empire, both in the past and in the future, or humanity will serve under their reign once more.` },
 ];
 
 const outroLines = ["", `As the last of Remnants of the Turtle Empire are defeated, and Artifact pieces recombined, the threads of time fall back into their rightful places.`, `Now, you may rest.`];

@@ -75,6 +75,7 @@ export class SoundManager {
             this.voicelines[voiceline].volume(volume * this.voiceVolume);
             this.voicelines[voiceline].play();
             this.voicelines[voiceline].once("end", resolve);
+            this.voicelines[voiceline].once("stop", resolve);
         });
     }
 
@@ -138,6 +139,12 @@ export class SoundManager {
 
         for (const key in this.sounds) {
             this.sounds[key as keyof typeof this.sounds].stop();
+        }
+    }
+
+    stopAllVoicelines() {
+        for (const key in this.voicelines) {
+            this.voicelines[key as keyof typeof this.voicelines].stop();
         }
     }
 }

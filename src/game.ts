@@ -118,8 +118,10 @@ export class Game {
         //return;
 
         // functions
-        this.menu.onStart = () => {
+        this.menu.onStart = async () => {
             this.menu.hide();
+            game.app.stage.addChild(game.temporaryContainer);
+            await game.effectsManager.playIntro();
             this.selectionScreen.show(SelectionMode.STARTING_EQUIPMENT);
         };
 
