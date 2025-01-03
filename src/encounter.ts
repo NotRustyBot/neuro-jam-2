@@ -51,9 +51,9 @@ export class Encounter {
         this.instance.enemy.show();
 
         if (this.inPast) {
-            game.soundManager.setMusic("past");
+            game.soundManager.setMusic("past", 1000);
         } else {
-            game.soundManager.setMusic("future");
+            game.soundManager.setMusic("future", 1000);
         }
 
         game.background.updateAssets();
@@ -73,7 +73,7 @@ export class Encounter {
     }
 
     die() {
-        game.soundManager.cutMusic();
+        game.soundManager.cutMusic(1000);
         game.soundManager.play("defeat_theme");
 
         game.effectsManager.defeat();
@@ -89,9 +89,9 @@ export class Encounter {
             game.player.instance.enemy.show();
 
             if (this.inPast) {
-                game.soundManager.setMusic("past");
+                game.soundManager.setMusic("past", 1000);
             } else {
-                game.soundManager.setMusic("future");
+                game.soundManager.setMusic("future", 1000);
             }
 
             game.background.updateAssets();
@@ -107,13 +107,13 @@ export class Encounter {
 
         if (game.encounterIndex == encounters.length) {
             game.effectsManager.victory();
-            game.soundManager.cutMusic();
+            game.soundManager.cutMusic(1000);
             game.soundManager.play("victory_theme");
             return;
         }
 
         game.selectionScreen.show(SelectionMode.POST_ENCOUNTER);
-        game.soundManager.setMusic("menu");
+        game.soundManager.setMusic("menu", 1000);
 
         game.selectionScreen.onSelectionComplete = (newEquipment) => {
             game.player.addEquipment(newEquipment);

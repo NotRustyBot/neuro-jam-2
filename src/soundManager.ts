@@ -1,6 +1,7 @@
 import { Howl } from "howler";
 
 export class SoundManager {
+    masterVolume = 1;
     soundVolume = 0.5;
     musicVolume = 0.5;
     voiceVolume = 0.5;
@@ -66,13 +67,13 @@ export class SoundManager {
     };
 
     play(sound: keyof typeof this.sounds, volume = 1) {
-        this.sounds[sound].volume(volume * this.soundVolume);
+        this.sounds[sound].volume(volume * this.soundVolume * this.masterVolume);
         this.sounds[sound].play();
     }
 
     async voice(voiceline: keyof typeof this.voicelines, volume: number) {
         return new Promise((resolve) => {
-            this.voicelines[voiceline].volume(volume * this.voiceVolume);
+            this.voicelines[voiceline].volume(volume * this.voiceVolume * this.masterVolume);
             this.voicelines[voiceline].play();
             this.voicelines[voiceline].once("end", resolve);
             this.voicelines[voiceline].once("stop", resolve);
@@ -88,30 +89,42 @@ export class SoundManager {
 
     syncable = ["future", "past"];
 
-    setMusic(music: keyof typeof this.music) {
+    // check for delay of 0 and set volume directly (no fade, and thus no issues when instantly starting the intro, it will cut)
+    setMusic(music: keyof typeof this.music, delay: number) {
         if (this.currentMusic === music) return;
         if (this.syncable.includes(music) && this.syncable.includes(this.currentMusic ?? "")) {
             if (this.currentMusic) this.music[music].seek(this.music[this.currentMusic].seek());
         }
-        if (this.currentMusic) this.music[this.currentMusic].fade(this.musicVolume, 0, 1000);
-        this.music[music].fade(0, this.musicVolume, 1000);
+        if (delay <= 0) {
+            if (this.currentMusic) this.music[this.currentMusic].volume(0);
+            this.music[music].volume(this.musicVolume * this.masterVolume);
+        }
+        else {
+            if (this.currentMusic) this.music[this.currentMusic].fade(this.musicVolume * this.masterVolume, 0, delay);
+            this.music[music].fade(0, this.musicVolume * this.masterVolume, delay);
+        }
         this.currentMusic = music;
     }
 
-    cutMusic() {
+    cutMusic(delay: number) {
         if (this.currentMusic) {
-            this.music[this.currentMusic].fade(this.musicVolume, 0, 1000);
+            if (delay <= 0) {
+                this.music[this.currentMusic].volume(0);
+            }
+            else {
+                this.music[this.currentMusic].fade(this.musicVolume * this.masterVolume, 0, delay);
+            }
             this.currentMusic = null;
         }
     }
 
     updateVolumes() {
         for (const key in this.music) {
-            this.music[key as keyof typeof this.music].volume(this.musicVolume);
+            this.music[key as keyof typeof this.music].volume(this.musicVolume * this.masterVolume);
         }
 
         for (const key in this.sounds) {
-            this.sounds[key as keyof typeof this.sounds].volume(this.soundVolume);
+            this.sounds[key as keyof typeof this.sounds].volume(this.soundVolume * this.masterVolume);
         }
     }
 

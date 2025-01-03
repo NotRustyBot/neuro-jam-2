@@ -87,6 +87,8 @@
     "nextTurn": "./nextTurn.png",
     "nextTurnOuter": "./nextTurnOuter.png",
 
+    "settings": "./settings.png",
+
     "intro1": "./intro/story1.png",
     "intro2": "./intro/story2.png",
     "intro3": "./intro/story3.png",

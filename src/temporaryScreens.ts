@@ -14,15 +14,15 @@ export class EffectsManager {
         this.graphics = new Graphics();
         this.slide = new Sprite(Texture.EMPTY);
         this.slide.visible = false;
-        game.temporaryContainer.addChild(this.blackBars);
         game.temporaryContainer.addChild(this.graphics);
         game.temporaryContainer.addChild(this.slide);
         this.subtitles = new Text({ text: "", style: { fontFamily: "FunnelDisplay", fontSize: 20, fill: 0xffffff } });
         this.gameoverText = new Text({ text: "", style: { fontFamily: "FunnelDisplay", fontSize: 20, fill: 0xffffff } });
-        this.skipText = new Text({ text: "", style: { fontFamily: "FunnelDisplay", fontSize: 20, fill: 0x000000 } });
+        this.skipText = new Text({ text: "", style: { fontFamily: "FunnelDisplay", fontSize: 20, fill: 0xffffff } });
         game.temporaryContainer.addChild(this.subtitles);
         game.temporaryContainer.addChild(this.gameoverText);
         game.temporaryContainer.addChild(this.skipText);
+        game.temporaryContainer.addChild(this.blackBars);
     }
 
     update(dt: number) {
@@ -125,10 +125,10 @@ export class EffectsManager {
     handleVictory(dt: number) {
         this.graphics.rect(0, 0, game.app.screen.width, game.app.screen.height);
         this.graphics.fill({
-            color: 0xffffff,
+            color: 0x000000,
         });
 
-        this.subtitles.style.fill = 0x000000;
+        this.subtitles.style.fill = 0xffffff;
         this.subtitles.style.wordWrap = true;
         this.subtitles.style.align = "center";
         this.subtitles.style.fontSize = "24";
@@ -137,7 +137,7 @@ export class EffectsManager {
             color: 0xffffff,
             alpha: 1,
             blur: 4,
-            angle: 0,
+            angle: 10,
         };
         this.subtitles.style.wordWrapWidth = game.app.screen.width / 2;
 
@@ -179,7 +179,7 @@ export class EffectsManager {
     async playIntro() {
         this.isIntro = true;
         this.introLinesIndex = 0;
-        game.soundManager.cutMusic();
+        game.soundManager.cutMusic(0);
 
         const skipIntroHandler = (event: KeyboardEvent) => {
             if (event.code === "Space") {
@@ -243,7 +243,7 @@ export class EffectsManager {
     handleIntro(dt: number) {
         this.graphics.rect(0, 0, game.app.screen.width, game.app.screen.height);
         this.graphics.fill({
-            color: 0xffffff,
+            color: 0x000000,
         });
 
         this.skipText.anchor.set(0.5, 0.5);
@@ -251,16 +251,16 @@ export class EffectsManager {
 
         this.subtitles.anchor.set(0.5, 0.5);
         this.subtitles.position.set(game.app.screen.width / 2, game.app.screen.height - 50);
-        this.subtitles.style.fill = 0x000000;
+        this.subtitles.style.fill = 0xffffff;
         this.subtitles.style.wordWrap = true;
         this.subtitles.style.align = "center";
-        this.subtitles.style.fontSize = "30";
+        this.subtitles.style.fontSize = "26";
         this.subtitles.style.dropShadow = {
             distance: 2,
             color: 0xffffff,
             alpha: 1,
             blur: 4,
-            angle: 0,
+            angle: 10,
         };
         this.subtitles.style.wordWrapWidth = game.app.screen.width / 2;
         this.subtitles.text = introData[this.introLinesIndex].text;
@@ -281,7 +281,7 @@ export class EffectsManager {
         this.subtitles.text = "";
         this.skipText.text = "";
         game.soundManager.stopAllVoicelines();
-        game.soundManager.setMusic("menu");
+        game.soundManager.setMusic("menu", 1000);
     }
 }
 

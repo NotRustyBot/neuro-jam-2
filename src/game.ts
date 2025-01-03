@@ -40,6 +40,8 @@ export class Game {
     temporaryContainer = new Container();
     particleContainer = new Container();
 
+    settingsContainer!: Container;
+
     menu!: Menu;
     selectionScreen!: SelectionScreen;
 
@@ -86,7 +88,10 @@ export class Game {
         this.particleManager = new ParticleManager();
         this.uiManager.initKeywords();
 
-        this.soundManager.setMusic("menu");
+        this.settingsContainer = new Container();
+        this.settingsContainer.visible = false;
+
+        this.soundManager.setMusic("menu", 0);
 
         // mouse
         this.app.stage.interactive = true;
@@ -160,6 +165,7 @@ export class Game {
         this.app.stage.addChild(this.screenReflectContainer);
         this.app.stage.addChild(this.cardContainer);
         this.app.stage.addChild(this.temporaryContainer);
+        this.app.stage.addChild(this.settingsContainer);
 
         this.containerToReflect.addChild(this.uiContainer);
         this.containerToReflect.addChild(this.uiKeywordsContainer);
@@ -216,7 +222,27 @@ export class Game {
         this.buttonContainer.addChild(button, buttonOuter);
         this.app.stage.addChild(this.buttonContainer);
 
-        // debug encounter
+        // settings button
+        const settings = new Sprite(Assets.get("settings"));
+        settings.texture.source.scaleMode = "nearest";
+        settings.scale.set(0.15);
+        settings.tint = 0x000000;
+        settings.interactive = true;
+        settings.cursor = "pointer";
+
+        settings.on("pointerover", () => {
+            if (settings.tint === 0x000000) settings.tint = 0x00ffff;
+        });
+        settings.on("pointerout", () => {
+            if (settings.tint === 0x00ffff) settings.tint = 0x000000;
+        });
+        settings.on("pointerdown", () => {
+            this.settingsContainer.visible = !this.settingsContainer.visible;
+            game.soundManager.play("button3");
+        });
+        this.app.stage.addChild(settings);
+
+        // first encounter
         this.encounter = Encounter.createFirstEncounter();
         this.encounter.begin();
 
@@ -241,6 +267,7 @@ export class Game {
         //this.cursor.position.set(this.mouse.x, this.mouse.y);
 
         this.buttonContainer.position.set(this.app.screen.width - 50, this.app.screen.height - 50);
+        this.settingsContainer.position.set(this.app.screen.width/2 - 150, this.app.screen.height/2 - 110);
 
         // encounter
         if (this.encounter) {
